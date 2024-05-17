@@ -49,7 +49,8 @@ module.exports = {
             }
         ],
         'react-hooks/rules-of-hooks': 'warn',
-        'react-hooks/exhaustive-deps': 'warn'
+        'react-hooks/exhaustive-deps': 'warn',
+        'react/react-in-jsx-scope': 'off'
     },
     settings: {
         react: {

@@ -1,0 +1,11 @@
+version: "3.9"
+
+services:
+  shineray-front:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: front
+    container_name: front
+    ports:
+      - "3000:3000"

@@ -1,19 +1,28 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import HomePage from './pages/HomePage'
+import { Home } from './pages/HomePage'
 import NotFoundPage from './pages/NotFoundPage'
-import { ROUTES } from './resources/routes-constants'
-import './styles/main.sass'
+import './styles/main.scss'
+import { RootLayout } from './components/Layout'
+import { PathE } from './enum'
+import RegistrationSuccess from './pages/RegistrationSuccess'
+import RegistrationToken from './pages/RegistrationToken'
+import { ProfilePage } from './pages/Profile'
 
 const RootComponent: React.FC = () => {
-    return (
-        <Router>
-            <Routes>
-                <Route path="*" element={<NotFoundPage />} />
-                <Route path={ROUTES.HOMEPAGE_ROUTE} element={<HomePage />} />
-            </Routes>
-        </Router>
-    )
+  return (
+    <Router>
+      <Routes>
+        <Route path={PathE.Home} element={<RootLayout />}>
+          <Route path="*" element={<NotFoundPage />} />
+          <Route index element={<Home />} />
+          <Route path={PathE.RegistrationConfirm} element={<RegistrationSuccess />} />
+          <Route path={PathE.AccessUserRegistration} element={<RegistrationToken />} />
+          <Route path={PathE.Profile} element={<ProfilePage />} />
+        </Route>
+      </Routes>
+    </Router>
+  )
 }
 
 export default RootComponent

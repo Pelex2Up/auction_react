@@ -1,0 +1,23 @@
+.btnGroup {
+  a {
+    color: #1d1e22;
+    letter-spacing: 1%;
+    line-height: 16.8px;
+    font-size: 14px;
+    font-weight: 400;
+    border-bottom: 1px solid transparent;
+    transition: ease-in 0.2s;
+    cursor: pointer;
+    text-decoration: none;
+
+    &:hover {
+      color: #008001;
+      border-bottom: 1px solid #008001;
+    }
+  }
+}
+
+.focused {
+  color: #008001 !important;
+  border-bottom: 1px solid #008001 !important;
+}

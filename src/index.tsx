@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import App from './App'
 import * as serviceWorker from './serviceWorker'
 
-const root = createRoot(document.getElementById('root')!) // createRoot(container!) if you use TypeScript
+const root = createRoot(document.getElementById('root') as HTMLElement)
 root.render(<App />)
 
 // If you want your app to work offline and load faster, you can change
