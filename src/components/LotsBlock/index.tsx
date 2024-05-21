@@ -5,7 +5,7 @@ import { SmallCard } from "../cards/smallCard";
 
 export const LotsBlock: FC = () => {
   return (
-    <div className="w-full xl:h-[490px] h-full flex-col justify-center items-start gap-8 inline-flex xl:px-[60px] px-5">
+    <div className="w-full h-full flex-col justify-center items-start gap-8 inline-flex xl:px-[60px] px-5">
       <div className="self-stretch justify-between items-center inline-flex">
         <div className="w-[372px] h-[29px] pr-[7px] justify-start items-center flex">
           <div className="text-zinc-900 text-2xl font-medium font-['SF Pro Text'] leading-[28.80px] tracking-tight">
@@ -53,7 +53,7 @@ export const LotsBlock: FC = () => {
           </div>
         </div>
       </div>
-      <div className="w-full h-[450px] justify-start items-start xl:gap-6 gap-[270px] flex overflow-x-scroll overflow-y-hidden">
+      <div className="w-full h-[450px] justify-start items-start xl:gap-6 gap-[270px] flex overflow-x-auto overflow-y-hidden">
         <AuctionCard />
         <FixedCard />
         <SmallCard />
