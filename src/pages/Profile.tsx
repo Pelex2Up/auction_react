@@ -28,7 +28,7 @@ export const ProfilePage: FC = () => {
 
   return (
     <div className="flex-row flex gap-8 px-[60px]">
-      <ul className="w-[312px] flex flex-col px-2 py-5 bg-[#F6F6F6]">
+      <ul className="w-[312px] h-min flex flex-col px-2 py-8 bg-[#F6F6F6] shadow-xl">
         <MenuButton text="Мои объявления">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
@@ -90,7 +90,7 @@ export const ProfilePage: FC = () => {
             />
           </svg>
         </MenuButton>
-        <div className="w-full relative h-[0px] border border-zinc-300" />
+        <div className="my-2 w-full relative h-[0px] border border-zinc-300" />
         <MenuButton text="Выход" onClick={() => logout()}>
           {isFetching ? (
             <Loader />

@@ -8,6 +8,7 @@ import { PathE } from './enum'
 import RegistrationSuccess from './pages/RegistrationSuccess'
 import RegistrationToken from './pages/RegistrationToken'
 import { ProfilePage } from './pages/Profile'
+import { MainProfile } from './components/profile/MainProfile'
 
 const RootComponent: React.FC = () => {
   return (
@@ -18,7 +19,9 @@ const RootComponent: React.FC = () => {
           <Route index element={<Home />} />
           <Route path={PathE.RegistrationConfirm} element={<RegistrationSuccess />} />
           <Route path={PathE.AccessUserRegistration} element={<RegistrationToken />} />
-          <Route path={PathE.Profile} element={<ProfilePage />} />
+          <Route path={PathE.Profile} element={<ProfilePage />}>
+            <Route index element={<MainProfile />} />
+          </Route>
         </Route>
       </Routes>
     </Router>

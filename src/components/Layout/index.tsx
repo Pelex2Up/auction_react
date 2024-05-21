@@ -2,6 +2,8 @@ import Header from '../header'
 import Footer from '../footer'
 import { FC, Suspense } from 'react'
 import { Outlet } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 export const RootLayout: FC = () => {
   return (
@@ -10,6 +12,7 @@ export const RootLayout: FC = () => {
         <Header />
       </Suspense>
       <Outlet />
+      <ToastContainer position="bottom-right" hideProgressBar/>
       <Footer />
     </div>
   )

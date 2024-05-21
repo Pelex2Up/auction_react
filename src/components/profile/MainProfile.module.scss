@@ -1,0 +1,18 @@
+.PhoneInput {
+  width: 315px;
+  border: '1px solid #D9D9D9';
+  font-size: 0.875rem /* 14px */ !important;
+  line-height: 1.25rem /* 20px */ !important;
+  font-weight: 400 !important;
+  div {
+    button {
+      height: auto !important;
+      padding: 12px !important;
+    }
+  }
+  input {
+    padding: 12px !important;
+    height: auto !important;
+    width: 100% !important;
+  }
+}

@@ -1,0 +1,41 @@
+.custom_radio {
+  display: inline-block;
+  position: relative;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.radio_circle {
+  display: block;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #d9d9d9;
+  border-radius: 50%;
+  background-color: #fff;
+  transition: background-color 0.3s;
+}
+
+.custom_radio input[type='radio'] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.custom_radio input[type='radio']:checked ~ .radio-circle {
+  background-color: #008001;
+}
+
+.custom_radio input[type='radio']:checked ~ .radio-dot {
+  opacity: 1;
+}
+
+.radio_dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: #008001;
+}
