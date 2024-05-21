@@ -18,11 +18,11 @@
   left: 0;
 }
 
-.radio_input:checked + span {
+.radio_input:checked + .custom_radio {
   border: 1px solid #008001;
 }
 
-.radio_input:checked + span:after {
+.radio_input:checked + .custom_radio::after {
   opacity: 1;
 }
 
@@ -36,7 +36,6 @@
   position: relative;
 }
 
-/* for inner filled circle */
 .custom_radio::after {
   content: '';
   width: 12px;
