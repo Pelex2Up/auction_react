@@ -2,13 +2,13 @@ import { FC, useEffect } from 'react'
 import { Outlet, generatePath, useNavigate } from 'react-router-dom'
 import { MenuButton } from '../components/common/buttons'
 import { selectUser, useAppDispatch, useAppSelector } from '../store/hooks'
-import { useLazyLogoutQuery } from '../api/loginService'
+import { useLogoutMutation } from '../api/loginService'
 import { logoutState } from '../store/redux/users/slice'
 import { PathE } from '../enum'
 import { Loader } from '../components/Loader'
 
 export const ProfilePage: FC = () => {
-  const [logout, { isFetching, isSuccess }] = useLazyLogoutQuery()
+  const [logout, { isLoading, isSuccess }] = useLogoutMutation()
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const { auth } = useAppSelector(selectUser)
@@ -92,7 +92,7 @@ export const ProfilePage: FC = () => {
         </MenuButton>
         <div className="my-2 w-full relative h-[0px] border border-zinc-300" />
         <MenuButton text="Выход" onClick={() => logout()}>
-          {isFetching ? (
+          {isLoading ? (
             <Loader />
           ) : (
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -11,7 +11,7 @@ import { PathE } from '../../enum/index'
 import { generatePath, useNavigate } from 'react-router-dom'
 import { selectUser, useAppSelector } from '../../store/hooks'
 import { Loader } from '../Loader'
-import { useLazyLogoutQuery } from '../../api/loginService'
+import { useLogoutMutation } from '../../api/loginService'
 
 export default function Header() {
   const navigate = useNavigate()
@@ -19,7 +19,7 @@ export default function Header() {
   const [modalState, setModalState] = useState<number>(1)
   const { auth, user } = useAppSelector(selectUser)
   const [showMenu, setShowMenu] = useState<boolean>(false)
-  const [logout, { isFetching, isSuccess }] = useLazyLogoutQuery()
+  const [logout, { isLoading, isSuccess }] = useLogoutMutation()
 
   const toggleSideMenu = () => {
     setShowMenu(!showMenu)
@@ -257,7 +257,7 @@ export default function Header() {
               <div className="w-[260px] relative h-[0px] border border-zinc-300" />
               <li>
                 <MenuButton text="Выход" onClick={() => logout()}>
-                  {isFetching ? (
+                  {isLoading ? (
                     <Loader />
                   ) : (
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

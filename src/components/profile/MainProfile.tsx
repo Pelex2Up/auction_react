@@ -19,6 +19,7 @@ interface IProfileError {
   phone_number: string
   passwordNew: string
   passwordOld: string
+  unp: string
 }
 
 export const MainProfile: FC = () => {
@@ -29,11 +30,12 @@ export const MainProfile: FC = () => {
   const dispatch = useAppDispatch()
   const [updateProfile, { isLoading }] = useUpdateProfileDataMutation()
   const [changePassword, { isLoading: isPassLoading }] = useChangePasswordMutation()
-  const [selectedOption, setSelectedOption] = useState(userProfile?.profile.type || 'person')
-  const [errors, setErrors] = useState<IProfileError>({ name: '', phone_number: '', passwordNew: '', passwordOld: '' })
+  const [selectedOption, setSelectedOption] = useState('')
+  const [errors, setErrors] = useState<IProfileError>({ name: '', phone_number: '', passwordNew: '', passwordOld: '', unp: '' })
   const radioGroup = [
     { value: 'person', label: 'Физическое лицо' },
-    { value: 'sole_proprietor', label: 'Индивидуальный предприниматель' }
+    { value: 'sole_proprietor', label: 'Индивидуальный предприниматель' },
+    { value: 'company', label: 'Юридическое лицо' }
   ]
 
   function formatPhoneNumber(e164Number: string): string {
@@ -53,8 +55,9 @@ export const MainProfile: FC = () => {
   useEffect(() => {
     if (user && !userProfile) {
       setUserProfile(user)
+      !selectedOption && setSelectedOption(user.profile.type)
     }
-  }, [user, userProfile])
+  }, [selectedOption, user, userProfile])
 
   const onChangeAvatar = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -90,6 +93,12 @@ export const MainProfile: FC = () => {
         profileFormData.append('profile.type', type)
       }
     }
+    if (formdata.get('unp')) {
+      const unp = formdata.get('unp') as string
+      if (unp !== userProfile?.profile.unp) {
+        profileFormData.append('profile.unp', unp)
+      }
+    }
     if (formdata.get('phone_number')) {
       const phone = formdata.get('phone_number') as string
       if (formatPhoneNumber(phone) !== userProfile?.profile.phone_number) {
@@ -115,7 +124,8 @@ export const MainProfile: FC = () => {
       profileFormData.get('username') ||
       profileFormData.get('profile.phone_number') ||
       profileFormData.get('profile.type') ||
-      profileFormData.get('profile.avatar')
+      profileFormData.get('profile.avatar') ||
+      profileFormData.get('profile.unp')
     ) {
       await updateProfile(profileFormData)
         .unwrap()
@@ -197,7 +207,8 @@ export const MainProfile: FC = () => {
         </li>
         <li className="flex-col justify-center items-start gap-1.5 inline-flex">
           <label htmlFor="name" className="text-zinc-900 text-sm font-normal leading-[16.80px] tracking-tight">
-            Имя Фамилия Отчество<span className="text-red-500 text-xl font-normal leading-[16.80px] tracking-tight">*</span>
+            {selectedOption === 'person' ? 'Имя пользователя' : selectedOption === 'company' ? 'Название организации' : 'Название ИП'}
+            <span className="text-red-500 text-xl font-normal leading-[16.80px] tracking-tight">*</span>
           </label>
           <Input
             multiline={false}
@@ -205,32 +216,54 @@ export const MainProfile: FC = () => {
             error={errors && errors.name.length > 0}
             defaultValue={userProfile?.profile.name || ''}
             onChange={() => setErrors({ ...errors, name: '' })}
-            placeholder="Иванов Иван Иванович"
+            placeholder={selectedOption === 'person' ? 'Иванов Иван Иванович' : selectedOption === 'company' ? 'Ваше название' : 'ИП'}
             className="w-[315px]"
             name="name"
             id="name"
           />
-          <label className="text-red-600 text-xs font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">{errors.name}</label>
+          {errors.name && <label className="text-red-600 text-xs font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">{errors.name}</label>}
         </li>
+        {selectedOption !== 'person' && (
+          <li className="flex-col justify-center items-start gap-1.5 inline-flex">
+            <label htmlFor="unp" className="text-zinc-900 text-sm font-normal leading-[16.80px] tracking-tight">
+              УНП
+              <span className="text-red-500 text-xl font-normal leading-[16.80px] tracking-tight">*</span>
+            </label>
+            <Input
+              multiline={false}
+              required
+              error={errors && errors.name.length > 0}
+              defaultValue={userProfile?.profile.unp || ''}
+              onChange={() => setErrors({ ...errors, unp: '' })}
+              placeholder="Введите Ваш УНП"
+              className="w-[315px]"
+              name="unp"
+              id="unp"
+            />
+            {errors.unp && <label className="text-red-600 text-xs font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">{errors.unp}</label>}
+          </li>
+        )}
         <li className="flex-col justify-center items-start gap-1.5 inline-flex">
           <label htmlFor="email" className="text-zinc-900 text-sm font-normal leading-[16.80px] tracking-tight">
             Электронная почта
           </label>
-          <div className="inline-flex items-center">
-            <Input
-              multiline={false}
-              placeholder={userProfile?.email}
-              defaultValue={userProfile?.email}
-              disabled
-              className="w-[315px]"
-              name="email"
-              id="email"
-            />
+          <div className="inline-flex items-center gap-[10px]">
+            <div className="min-w-[315px]">
+              <Input
+                multiline={false}
+                className="w-[315px]"
+                placeholder={userProfile?.email}
+                defaultValue={userProfile?.email}
+                disabled
+                name="email"
+                id="email"
+              />
+            </div>
             <div className="inline-flex items-center gap-2 w-full">
               <QuestionSVG />
               <div
                 style={{
-                  width: '100%',
+                  width: '320px',
                   height: 38,
                   paddingLeft: 5,
                   paddingRight: 5,

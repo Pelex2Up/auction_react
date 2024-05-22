@@ -35,16 +35,15 @@ export const userLoginService = createApi({
       },
       invalidatesTags: ['login']
     }),
-    logout: builder.query<void, void>({
+    logout: builder.mutation<void, void>({
       query: () => {
         return {
           url: `/logout/`,
           method: 'POST'
         }
-      },
-      providesTags: ['logout']
+      }
     })
   })
 })
 
-export const { useLoginMutation, useLazyLogoutQuery, useRegisterMutation, useSendTokenMutation } = userLoginService
+export const { useLoginMutation, useLogoutMutation, useRegisterMutation, useSendTokenMutation } = userLoginService

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import userImage from '../../assets/icons/newUser.svg'
 import { MenuButton } from '../common/buttons'
 import { selectUser, useAppDispatch, useAppSelector } from '../../store/hooks'
-import { useLazyLogoutQuery } from '../../api/loginService'
+import { useLogoutMutation } from '../../api/loginService'
 import { logoutState } from '../../store/redux/users/slice'
 import { Loader } from '../Loader'
 import { generatePath, useNavigate } from 'react-router-dom'
@@ -12,7 +12,7 @@ export default function ProfileHeader({ ...props }: { username: string; avatar: 
   const listRef = useRef<HTMLUListElement>(null)
   const [show, setShow] = useState<boolean>(false)
   const { user } = useAppSelector(selectUser)
-  const [logout, { isFetching, isSuccess }] = useLazyLogoutQuery()
+  const [logout, { isLoading, isSuccess }] = useLogoutMutation()
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
 
@@ -199,7 +199,7 @@ export default function ProfileHeader({ ...props }: { username: string; avatar: 
             <div className="w-[260px] relative h-[0px] border border-zinc-300" />
             <li>
               <MenuButton text="Выход" onClick={() => logout()}>
-                {isFetching ? (
+                {isLoading ? (
                   <Loader />
                 ) : (
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

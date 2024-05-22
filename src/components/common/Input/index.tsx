@@ -16,7 +16,7 @@ export const Input: FC<InputT> = ({ multiline, error = false, secure = false, ..
         {...rest}
         type={eyeState ? 'password' : 'text'}
         style={error ? { border: '1px solid red' } : { border: '1px solid #D9D9D9' }}
-        className={`${secure ? 'pr-12' : ''} p-[12px] rounded ${rest.disabled ? 'bg-[#F7F5F5], cursor-not-allowed' : 'bg-transparent'} text-sm font-normal relative ${
+        className={`${secure ? 'pr-12' : ''} p-[12px] rounded ${rest.disabled ? 'bg-[#F7F5F5] cursor-not-allowed' : 'bg-transparent'} text-sm font-normal relative ${
           rest.className
         }`}
       />
