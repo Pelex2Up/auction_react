@@ -30,7 +30,7 @@ export const MainProfile: FC = () => {
   const dispatch = useAppDispatch()
   const [updateProfile, { isLoading }] = useUpdateProfileDataMutation()
   const [changePassword, { isLoading: isPassLoading }] = useChangePasswordMutation()
-  const [selectedOption, setSelectedOption] = useState('')
+  const [selectedOption, setSelectedOption] = useState('person')
   const [errors, setErrors] = useState<IProfileError>({ name: '', phone_number: '', passwordNew: '', passwordOld: '', unp: '' })
   const radioGroup = [
     { value: 'person', label: 'Физическое лицо' },
