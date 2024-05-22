@@ -4,7 +4,7 @@ import warning from '../../assets/images/warning.png'
 import { useEffect, useState } from 'react'
 
 export const VerificationData = ({ token }: { token: string }) => {
-  const [validationData, setValidationData] = useState<string>()
+  const [validationData, setValidationData] = useState<string>('Проверка токена регистрации...')
   const [sendToken] = useSendTokenMutation()
   useEffect(() => {
     if (token) {

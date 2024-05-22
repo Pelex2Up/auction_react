@@ -21,11 +21,6 @@ interface IProfileError {
   passwordOld: string
 }
 
-function formatPhoneNumber(e164Number: string): string {
-  // Убираем все символы, кроме цифр
-  return e164Number.replace(/[^+\d]/g, '')
-}
-
 export const MainProfile: FC = () => {
   const { user } = useAppSelector(selectUser)
   const [userProfile, setUserProfile] = useState<IProfile>()
@@ -40,6 +35,11 @@ export const MainProfile: FC = () => {
     { value: 'person', label: 'Физическое лицо' },
     { value: 'sole_proprietor', label: 'Индивидуальный предприниматель' }
   ]
+
+  function formatPhoneNumber(e164Number: string): string {
+    // Убираем все символы, кроме цифр
+    return e164Number.replace(/[^+\d]/g, '')
+  }
 
   const countries = defaultCountries.filter((country) => {
     const { iso2 } = parseCountry(country)
@@ -202,7 +202,7 @@ export const MainProfile: FC = () => {
           <Input
             multiline={false}
             required
-            error={errors.name.length > 0}
+            error={errors && errors.name.length > 0}
             defaultValue={userProfile?.profile.name || ''}
             onChange={() => setErrors({ ...errors, name: '' })}
             placeholder="Иванов Иван Иванович"
@@ -269,7 +269,7 @@ export const MainProfile: FC = () => {
             inputProps={{ required: true, name: 'phone_number', id: 'phone_number' }}
             defaultCountry="by"
             countries={countries}
-            value={userProfile?.profile.phone_number}
+            value={userProfile?.profile.phone_number || ''}
             placeholder="Введите номер телефона"
             className={styles.PhoneInput}
             // localization={ru}
@@ -305,7 +305,7 @@ export const MainProfile: FC = () => {
           <div className="w-[315px]">
             <Input
               multiline={false}
-              error={errors.passwordNew.length > 0}
+              error={errors && errors.passwordNew.length > 0}
               onChange={() => setErrors({ ...errors, passwordNew: '' })}
               secure
               placeholder="Введите пароль"
@@ -324,7 +324,7 @@ export const MainProfile: FC = () => {
             <Input
               multiline={false}
               secure
-              error={errors.passwordNew.length > 0}
+              error={errors && errors.passwordNew.length > 0}
               onChange={() => setErrors({ ...errors, passwordNew: '' })}
               placeholder="Введите пароль повторно"
               className="w-[315px]"

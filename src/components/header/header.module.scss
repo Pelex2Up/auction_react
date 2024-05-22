@@ -78,4 +78,28 @@
   align-items: center;
   justify-content: space-between;
   background-color: #e8e8e8;
+  position: relative;
+  transition: ease-in-out 0.4s all;
+
+  &_sideMenu {
+    position: absolute;
+    padding: 2rem 1rem;
+    width: 100vw;
+    height: 100vh;
+    top: 100%;
+    right: -100vw;
+    bottom: 0;
+    overflow-y: auto;
+    z-index: 100;
+    background-color: #e8e8e8;
+    transition: right ease 0.3s;
+  }
+}
+
+.open {
+  right: 0;
+}
+
+.closed {
+  right: -100vw;
 }
