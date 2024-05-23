@@ -19,10 +19,9 @@ export const ResetPasswordForm: FC = () => {
     const formdata = new FormData(form)
     const pass1 = formdata.get('new_password1') as string
     const pass2 = formdata.get('new_password2') as string
-    const resetToken = token?.split('?token=')[0]
 
-    if (pass1 && pass2 && pass1 === pass2 && pass1.length >= 8 && resetToken) {
-      formdata.append('token', resetToken)
+    if (pass1 && pass2 && pass1 === pass2 && pass1.length >= 8 && token) {
+      formdata.append('token', token)
       sendNewPass(formdata)
         .unwrap()
         .then(() => navigate(generatePath(PathE.ResetPasswordSuccess)))
