@@ -2,7 +2,7 @@ import { FC } from "react";
 
 export const SmallCard: FC = () => {
   return (
-    <div className="w-[255px] h-[418px] relative">
+    <div className="w-[255px] h-[420px] relative">
       <div className="w-[255px] h-[418px] left-0 top-0 absolute bg-white rounded shadow"></div>
       <div className="w-[139px] h-[98px] left-[12px] top-[12px] absolute">
         <div className="w-[65px] h-[65px] pl-[21px] pr-[23px] pt-[15px] pb-3.5 left-0 top-0 absolute bg-green-800 rounded justify-center items-center inline-flex">

@@ -3,7 +3,7 @@ import LotImage from "../../../assets/images/lot.png";
 
 export const FixedCard: FC = () => {
   return (
-    <div className="w-[255px] h-[418px] relative">
+    <div className="w-[255px] h-[420px] relative">
       <div className="w-[255px] h-[418px] left-0 top-0 absolute bg-white rounded shadow"></div>
       <div className="w-[255px] h-[197px] left-0 top-0 absolute justify-center items-center inline-flex">
         <img

@@ -139,7 +139,7 @@ export default function Header() {
             <ul className={`w-full z-10 cursor-default`}>
               <div className="w-full relative">
                 <li>
-                  <div className="inline-flex px-6 py-3 items-center justify-start w-full text-zinc-900 text-base font-normal leading-tight tracking-tight">
+                  <div className="inline-flex px-6 py-3 items-center justify-start gap-[10px] w-full text-zinc-900 text-base font-normal leading-tight tracking-tight">
                     <img src={user.profile.avatar || userImage} className="w-[46px] h-[46px] rounded-full" />
                     {user.username}
                   </div>
