@@ -217,7 +217,7 @@ export const MainProfile: FC = () => {
             defaultValue={userProfile?.profile.name || ''}
             onChange={() => setErrors({ ...errors, name: '' })}
             placeholder={selectedOption === 'person' ? 'Иванов Иван Иванович' : selectedOption === 'company' ? 'Ваше название' : 'ИП'}
-            className="w-[315px]"
+            className="w-full max-w-[315px] xl:w-[315px]"
             name="name"
             id="name"
           />
@@ -236,7 +236,7 @@ export const MainProfile: FC = () => {
               defaultValue={userProfile?.profile.unp || ''}
               onChange={() => setErrors({ ...errors, unp: '' })}
               placeholder="Введите Ваш УНП"
-              className="w-[315px]"
+              className="w-full max-w-[315px] xl:w-[315px]"
               name="unp"
               id="unp"
             />
@@ -251,7 +251,7 @@ export const MainProfile: FC = () => {
             <div className="xl:min-w-[315px] w-full">
               <Input
                 multiline={false}
-                className="w-[315px]"
+                className="w-full max-w-[315px] xl:w-[315px]"
                 placeholder={userProfile?.email}
                 defaultValue={userProfile?.email}
                 disabled
@@ -328,7 +328,14 @@ export const MainProfile: FC = () => {
             Текущий пароль
           </label>
           <div className="w-full max-w-[315px] xl:w-[315px]">
-            <Input multiline={false} secure placeholder="Введите пароль" className="w-[315px]" name="old_password" id="password-current" />
+            <Input
+              multiline={false}
+              secure
+              placeholder="Введите пароль"
+              className="w-full max-w-[315px] xl:w-[315px]"
+              name="old_password"
+              id="password-current"
+            />
           </div>
         </li>
         <li className="flex-col justify-center items-start gap-1.5 inline-flex">
@@ -342,7 +349,7 @@ export const MainProfile: FC = () => {
               onChange={() => setErrors({ ...errors, passwordNew: '' })}
               secure
               placeholder="Введите пароль"
-              className="w-[315px]"
+              className="w-full max-w-[315px] xl:w-[315px]"
               name="new_password1"
               id="password-new"
             />
@@ -360,7 +367,7 @@ export const MainProfile: FC = () => {
               error={errors && errors.passwordNew.length > 0}
               onChange={() => setErrors({ ...errors, passwordNew: '' })}
               placeholder="Введите пароль повторно"
-              className="w-[315px]"
+              className="w-full max-w-[315px] xl:w-[315px]"
               name="new_password2"
               id="password-new-repeat"
             />
