@@ -210,7 +210,7 @@ export const MainProfile: FC = () => {
         </li>
         <li className="flex-col justify-center items-start gap-1.5 inline-flex">
           <label htmlFor="name" className="text-zinc-900 text-sm font-normal leading-[16.80px] tracking-tight">
-            {selectedOption === 'person' ? 'Имя пользователя' : selectedOption === 'company' ? 'Название организации' : 'Название ИП'}
+            {selectedOption === 'person' ? 'Имя Фамилия Отчество' : selectedOption === 'company' ? 'Название организации' : 'Название ИП'}
             <span className="text-red-500 text-xl font-normal leading-[16.80px] tracking-tight">*</span>
           </label>
           <Input

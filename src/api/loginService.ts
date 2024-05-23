@@ -42,8 +42,27 @@ export const userLoginService = createApi({
           method: 'POST'
         }
       }
+    }),
+    resetPassword: builder.mutation<void, FormData>({
+      query: (credentials) => {
+        return {
+          url: `/reset-password-request/`,
+          method: 'POST',
+          body: credentials
+        }
+      }
+    }),
+    getNewPassword: builder.mutation<void, FormData>({
+      query: (credentials) => {
+        return {
+          url: `/reset-password/`,
+          method: 'POST',
+          body: credentials
+        }
+      }
     })
   })
 })
 
-export const { useLoginMutation, useLogoutMutation, useRegisterMutation, useSendTokenMutation } = userLoginService
+export const { useLoginMutation, useLogoutMutation, useRegisterMutation, useSendTokenMutation, useResetPasswordMutation, useGetNewPasswordMutation } =
+  userLoginService
