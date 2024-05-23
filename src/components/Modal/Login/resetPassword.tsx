@@ -28,7 +28,7 @@ export const ResetPassword: FC<IReset> = ({ close }) => {
           close()
           navigate(generatePath(PathE.ResetPasswordRequest, { email: String(formdata.get('email')) }))
         })
-        .catch((error) => {
+        .catch(() => {
           setError('Данный email не зарегистрирован в системе')
           toast('Неверный email', { type: 'error' })
         })

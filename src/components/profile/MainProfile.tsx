@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ChangeEvent, FC, FormEvent, useEffect, useState } from 'react'
 import { selectUser, useAppDispatch, useAppSelector } from '../../store/hooks'
 import { UserProfilePhotoSVG } from '../../assets/svg/userProfile'
@@ -157,13 +158,15 @@ export const MainProfile: FC = () => {
       profileResetData.append('old_password', oldPass)
       profileResetData.append('new_password1', newPass1)
       profileResetData.append('new_password2', newPass2)
-      if (newPass1 === newPass2) {
+      if (newPass1 === newPass2 && newPass1.length >= 8) {
         await changePassword(profileResetData)
           .unwrap()
           .then(() => toast('Пароль успешно изменен', { type: 'success' }))
           .catch(() => {
             toast('Неверный текущий пароль', { type: 'error' })
           })
+      } else if (newPass1.length < 8 || newPass2.length < 8) {
+        setErrors({ ...errors, passwordNew: 'Пароль должен содержать более 8 символов' })
       } else {
         setErrors({ ...errors, passwordNew: 'Пароли не совпадают' })
         toast('Пароли не совпадают', { type: 'error' })

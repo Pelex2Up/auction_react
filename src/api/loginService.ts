@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { baseQuery } from './baseApi'
 import { createApi } from '@reduxjs/toolkit/query/react'
 

@@ -7,7 +7,6 @@ import { Loader } from '../../Loader'
 import DefaultLink from '../../common/DefaultLink'
 import { Input } from '../../common/Input'
 import { Button } from '../../common/buttons'
-import Checkbox from '../../common/checkbox'
 import styles from './LoginModal.module.scss'
 import { ChangeEvent, Dispatch, FC, FormEvent, SetStateAction, useEffect, useState } from 'react'
 
@@ -23,7 +22,7 @@ export const LoginElement: FC<IElement> = ({ changeAction, close }) => {
     pass: ''
   })
   const [loginUser, { isLoading, isSuccess }] = useLoginMutation()
-  const [getUser, { data, isFetching }] = useLazyFetchProfileQuery()
+  const [getUser, { isFetching }] = useLazyFetchProfileQuery()
 
   const handleEmailChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     event.preventDefault()
@@ -123,7 +122,7 @@ export const LoginElement: FC<IElement> = ({ changeAction, close }) => {
           />
         </div>
         <Button text={'Войти'} type="submit" className={styles.button}>
-          {isFetching || (isLoading && <Loader />)}
+          {(isFetching || isLoading) && <Loader />}
         </Button>
         <div className="justify-center items-center gap-2 inline-flex">
           <div className="text-zinc-500 text-base font-normal font-['SF Pro Text'] leading-snug">Еще нет аккаунта?</div>
