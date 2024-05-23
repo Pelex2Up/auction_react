@@ -28,7 +28,7 @@ export const Portal: FC<IPortal> = ({ children, close }) => {
   return (
     <>
       <div id="overlay" className="w-full h-full absolute top-0 left-0 right-0 bottom-0 z-20 bg-black bg-opacity-40 overflow-hidden"></div>
-      <div className="w-screen h-screen flex absolute top-0 left-0 bottom-0 right-0 justify-center items-center overflow-auto">{children}</div>
+      <div className="w-screen h-screen flex absolute top-0 left-0 bottom-0 right-0 justify-center items-center overflow-hidden">{children}</div>
     </>
   )
 }

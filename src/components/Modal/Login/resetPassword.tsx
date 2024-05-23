@@ -3,16 +3,17 @@ import { useResetPasswordMutation } from '../../../api/loginService'
 import { Input } from '../../common/Input'
 import { Button } from '../../common/buttons'
 import styles from './LoginModal.module.scss'
-import { FC, FormEvent, useEffect, useState } from 'react'
+import { FC, FormEvent, useState } from 'react'
 import { generatePath, useNavigate } from 'react-router-dom'
 import { PathE } from '../../../enum'
+import { Loader } from '../../Loader'
 
 interface IReset {
   close: () => void
 }
 
 export const ResetPassword: FC<IReset> = ({ close }) => {
-  const [resetPass, { isLoading, isSuccess }] = useResetPasswordMutation()
+  const [resetPass, { isLoading }] = useResetPasswordMutation()
   const navigate = useNavigate()
   const [error, setError] = useState<string>('')
 
@@ -57,13 +58,17 @@ export const ResetPassword: FC<IReset> = ({ close }) => {
           type="email"
         />
         <label className="text-red-600 text-xs font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">{error}</label>
-        <Button
-          type="submit"
-          className={styles.button}
-          style={{ marginTop: '1.5rem' }}
-          // className="xl:left-[94px] top-[302px] absolute"
-          text="Сбросить текущий пароль"
-        />
+        {isLoading ? (
+          <Loader />
+        ) : (
+          <Button
+            type="submit"
+            className={styles.button}
+            style={{ marginTop: '1.5rem' }}
+            // className="xl:left-[94px] top-[302px] absolute"
+            text="Сбросить текущий пароль"
+          />
+        )}
       </div>
     </form>
   )
