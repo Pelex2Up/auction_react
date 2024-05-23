@@ -27,8 +27,8 @@ export const ProfilePage: FC = () => {
   }, [dispatch, isSuccess, navigate])
 
   return (
-    <div className="flex-row flex gap-8 px-[60px]">
-      <ul className="w-[312px] h-min flex flex-col px-2 py-8 bg-[#F6F6F6] shadow-xl">
+    <div className="flex-col xl:flex-row flex gap-8 px-4 xl:px-[60px]">
+      <ul className="w-[312px] h-min hidden xl:flex flex-col px-2 py-8 bg-[#F6F6F6] shadow-xl">
         <MenuButton text="Мои объявления">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path

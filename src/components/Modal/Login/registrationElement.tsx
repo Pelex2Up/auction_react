@@ -52,7 +52,7 @@ export const RegistrationElement: FC<IElement> = ({ changeAction, close }) => {
 
   return step === 1 ? (
     <form onSubmit={submitForm}>
-      <div className="flex flex-col gap-[20px] justify-start w-full top-[159px] relative px-[93px] py-[30px]">
+      <div className="flex flex-col gap-[20px] justify-start w-full top-[159px] relative px-6 py-3 xl:px-[93px] xl:py-[30px]">
         <div className="w-full flex flex-col gap-1">
           <label className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">Электронная почта</label>
           <Input

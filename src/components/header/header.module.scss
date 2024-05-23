@@ -83,16 +83,18 @@
 
   &_sideMenu {
     position: absolute;
-    padding: 2rem 1rem;
+    padding: 0 1rem;
     width: 100vw;
     height: 100vh;
     top: 100%;
     right: -100vw;
     bottom: 0;
-    overflow-y: auto;
     z-index: 100;
     background-color: #e8e8e8;
     transition: right ease 0.3s;
+    display: flex;
+    gap: 1rem;
+    flex-direction: column;
   }
 }
 
@@ -102,4 +104,9 @@
 
 .closed {
   right: -100vw;
+}
+
+.sideBarButton {
+  margin-left: 1.5rem;
+  width: calc(100% - 3rem);
 }

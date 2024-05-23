@@ -21,27 +21,27 @@ export const LoginModal: FC<LoginT> = ({ close, selectedState }) => {
     <div
       className={
         selected === 1
-          ? "w-[501px] h-[530px] relative z-30"
+          ? "w-full h-full xl:w-[501px] xl:h-[530px] relative z-30"
           : selected === 2
-          ? "w-[501px] h-[673px] relative z-30"
-          : "w-[501px] h-[410px] relative z-30"
+          ? "w-full h-full xl:w-[501px] xl:h-[673px] relative z-30"
+          : "w-full h-full xl:w-[501px] xl:h-[410px] relative z-30"
       }
       style={{ transition: "ease-in all 0.2s" }}
     >
       <div
         className={
           selected === 1
-            ? "w-[501px] h-[530px] left-0 top-0 absolute bg-white rounded shadow"
+            ? "w-full h-full xl:w-[501px] xl:h-[530px] left-0 top-0 absolute bg-white rounded shadow"
             : selected === 2
-            ? "w-[501px] h-[673px] left-0 top-0 absolute bg-white rounded shadow"
-            : "w-[501px] h-[410px] left-0 top-0 absolute bg-white rounded shadow"
+            ? "w-full h-full xl:w-[501px] xl:h-[673px] left-0 top-0 absolute bg-white rounded shadow"
+            : "w-full h-full xl:w-[501px] xl:h-[410px] left-0 top-0 absolute bg-white rounded shadow"
         }
       />
       <div className="w-[162.78px] h-[30px] left-[32px] top-[29px] absolute justify-center items-start gap-[6.67px] inline-flex">
         <img src={Logo} alt="logo" />
         <div className="w-[51.11px] h-[30px] relative origin-top-left rotate-180 flex-col justify-start items-start flex" />
       </div>
-      <div className="w-6 h-6 left-[445px] top-[32px] absolute justify-center items-center inline-flex cursor-pointer">
+      <div className="w-6 h-6 right-6 xl:left-[445px] top-[32px] absolute justify-center items-center inline-flex cursor-pointer">
         <button
           className="w-6 h-6 relative flex-col justify-start items-start flex"
           onClick={handleClose}

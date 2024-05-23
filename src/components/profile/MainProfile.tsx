@@ -170,7 +170,7 @@ export const MainProfile: FC = () => {
 
   return (
     <form onSubmit={handleSaveProfile} className="flex-col flex gap-8">
-      <ul className="w-[733px] flex flex-col px-4 py-6 gap-8 bg-white shadow-md">
+      <ul className="w-full xl:w-[733px] flex flex-col px-4 py-6 gap-8 bg-white shadow-md">
         <li className="text-zinc-900 text-lg font-normal leading-snug tracking-tight">Персональные данные</li>
         <li className="justify-start items-center gap-[9px] inline-flex">
           <div className="relative">
@@ -190,9 +190,9 @@ export const MainProfile: FC = () => {
           <Input multiline={false} defaultValue={userProfile?.username || ''} placeholder="User_12345" className="w-[315px]" name="username" id="username" />
         </li>
       </ul>
-      <ul className="w-[733px] flex flex-col px-4 py-6 gap-6 bg-white shadow-md">
+      <ul className="w-full xl:w-[733px] flex flex-col px-4 py-6 gap-6 bg-white shadow-md">
         <li className="text-zinc-900 text-lg font-normal leading-snug tracking-tight">Контактная информация</li>
-        <li className="justify-start items-center gap-[9px] inline-flex">
+        <li className="justify-start items-start xl:items-center gap-[9px] flex flex-col xl:flex-row xl:inline-flex">
           {radioGroup.map((option) => (
             <RadioButton
               key={option.label + option.value}
@@ -247,8 +247,8 @@ export const MainProfile: FC = () => {
           <label htmlFor="email" className="text-zinc-900 text-sm font-normal leading-[16.80px] tracking-tight">
             Электронная почта
           </label>
-          <div className="inline-flex items-center gap-[10px]">
-            <div className="min-w-[315px]">
+          <div className="xl:inline-flex xl:flex-row flex flex-col items-center gap-[10px] w-full">
+            <div className="xl:min-w-[315px] w-full">
               <Input
                 multiline={false}
                 className="w-[315px]"
@@ -321,13 +321,13 @@ export const MainProfile: FC = () => {
           <label className="text-red-600 text-xs font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">{errors.phone_number}</label>
         </li>
       </ul>
-      <ul className="w-[733px] flex flex-col px-4 py-6 gap-8 bg-white shadow-md">
+      <ul className="w-full xl:w-[733px] flex flex-col px-4 py-6 gap-8 bg-white shadow-md">
         <li className="text-zinc-900 text-lg font-normal leading-snug tracking-tight">Изменение пароля от профиля</li>
         <li className="flex-col justify-center items-start gap-1.5 inline-flex">
           <label htmlFor="password-current" className="text-zinc-900 text-sm font-normal leading-[16.80px] tracking-tight">
             Текущий пароль
           </label>
-          <div className="w-[315px]">
+          <div className="w-full xl:w-[315px]">
             <Input multiline={false} secure placeholder="Введите пароль" className="w-[315px]" name="old_password" id="password-current" />
           </div>
         </li>
@@ -335,7 +335,7 @@ export const MainProfile: FC = () => {
           <label htmlFor="password-new" className="text-zinc-900 text-sm font-normal leading-[16.80px] tracking-tight">
             Новый пароль
           </label>
-          <div className="w-[315px]">
+          <div className="w-full xl:w-[315px]">
             <Input
               multiline={false}
               error={errors && errors.passwordNew.length > 0}
@@ -353,7 +353,7 @@ export const MainProfile: FC = () => {
           <label htmlFor="password-new-repeat" className="text-zinc-900 text-sm font-normal leading-[16.80px] tracking-tight">
             Повторить пароль
           </label>
-          <div className="w-[315px]">
+          <div className="w-full xl:w-[315px]">
             <Input
               multiline={false}
               secure
