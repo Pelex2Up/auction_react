@@ -140,6 +140,9 @@ export const MainProfile: FC = () => {
           if (err.data && 'profile' in err.data && 'phone_number' in err.data.profile && err.data.profile.phone_number) {
             setErrors({ ...errors, phone_number: 'Введен некорректный номер телефона' })
             toast('Введен некорректный номер телефона', { type: 'error' })
+          } else if (err.data && 'profile' in err.data && 'unp' in err.data.profile && err.data.profile.unp) {
+            setErrors({ ...errors, unp: 'Некорректный УНП' })
+            toast('Введен некорректный УНП', { type: 'error' })
           } else {
             toast('Ошибка изменения профиля. Проверьте корректность введенных данных', { type: 'error' })
           }
