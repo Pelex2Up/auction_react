@@ -247,7 +247,7 @@ export const MainProfile: FC = () => {
           <label htmlFor="email" className="text-zinc-900 text-sm font-normal leading-[16.80px] tracking-tight">
             Электронная почта
           </label>
-          <div className="xl:inline-flex xl:flex-row flex flex-col items-center gap-[10px] w-full">
+          <div className="xl:inline-flex xl:flex-row flex flex-col items-start xl:items-center gap-[10px] w-full">
             <div className="xl:min-w-[315px] w-full">
               <Input
                 multiline={false}
@@ -259,7 +259,7 @@ export const MainProfile: FC = () => {
                 id="email"
               />
             </div>
-            <div className="inline-flex items-center gap-2 w-full">
+            <div className="inline-flex items-center gap-2 w-full max-w-[315px]">
               <QuestionSVG />
               <div
                 style={{
@@ -327,7 +327,7 @@ export const MainProfile: FC = () => {
           <label htmlFor="password-current" className="text-zinc-900 text-sm font-normal leading-[16.80px] tracking-tight">
             Текущий пароль
           </label>
-          <div className="w-full xl:w-[315px]">
+          <div className="w-full max-w-[315px] xl:w-[315px]">
             <Input multiline={false} secure placeholder="Введите пароль" className="w-[315px]" name="old_password" id="password-current" />
           </div>
         </li>
@@ -335,7 +335,7 @@ export const MainProfile: FC = () => {
           <label htmlFor="password-new" className="text-zinc-900 text-sm font-normal leading-[16.80px] tracking-tight">
             Новый пароль
           </label>
-          <div className="w-full xl:w-[315px]">
+          <div className="w-full max-w-[315px] xl:w-[315px]">
             <Input
               multiline={false}
               error={errors && errors.passwordNew.length > 0}
@@ -353,7 +353,7 @@ export const MainProfile: FC = () => {
           <label htmlFor="password-new-repeat" className="text-zinc-900 text-sm font-normal leading-[16.80px] tracking-tight">
             Повторить пароль
           </label>
-          <div className="w-full xl:w-[315px]">
+          <div className="w-full max-w-[315px] xl:w-[315px]">
             <Input
               multiline={false}
               secure
