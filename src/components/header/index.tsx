@@ -8,13 +8,15 @@ import { LoginModal } from '../Modal/Login'
 import ProfileHeader from '../profile'
 import userImage from '../../assets/icons/newUser.svg'
 import Logo from '../../assets/logo/logo.svg'
-import { PathE } from '../../enum/index'
+import { LotPathE, PathE } from '../../enum/index'
 import { generatePath, useNavigate } from 'react-router-dom'
 import { selectUser, useAppDispatch, useAppSelector } from '../../store/hooks'
 import { Loader } from '../Loader'
 import { useLogoutMutation } from '../../api/loginService'
 import { logoutState } from '../../store/redux/users/slice'
 import Hamburger from 'hamburger-react'
+import { Modal } from '../Modal/DefaultModal/ModalTypes'
+import { DefaultModal } from '../Modal/DefaultModal'
 
 export default function Header() {
   const navigate = useNavigate()
@@ -24,6 +26,8 @@ export default function Header() {
   const { auth, user } = useAppSelector(selectUser)
   const [showMenu, setShowMenu] = useState<boolean>(false)
   const [logout, { isLoading, isSuccess }] = useLogoutMutation()
+  const [newModal, setNewModal] = useState<boolean>(false)
+  const [variant, setVariant] = useState<string>('')
 
   const toggleSideMenu = () => {
     setShowMenu(!showMenu)
@@ -39,6 +43,11 @@ export default function Header() {
       closeSideMenu()
     }
   }, [dispatch, isSuccess])
+
+  const openModal = (variant: string) => {
+    setVariant(variant)
+    setNewModal(true)
+  }
 
   useEffect(() => {
     if (showMenu) {
@@ -89,7 +98,13 @@ export default function Header() {
             <CourseInfo />
           </div>
           <div className={styles.wrapper_bottomHeader_rightContent}>
-            <Button text="Подать объявление" variant={user ? 'secondary' : 'primary'}>
+            <Button
+              text="Подать объявление"
+              variant={user ? 'secondary' : 'primary'}
+              onClick={() => {
+                auth ? navigate(generatePath(LotPathE.CreateLot)) : openModal(Modal.EmptyProfile)
+              }}
+            >
               <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M11 1V21V1ZM1 10.9385H21H1Z" fill="white" />
                 <path d="M11 1V21M1 10.9385H21" stroke={user ? 'green' : 'white'} strokeLinecap="round" strokeLinejoin="round" />
@@ -124,7 +139,7 @@ export default function Header() {
             closeSideMenu()
           }}
         />
-        <Hamburger toggle={toggleSideMenu} toggled={showMenu} color="#afafaf"/>
+        <Hamburger toggle={toggleSideMenu} toggled={showMenu} color="#afafaf" />
         <nav id="nav-menu" className={`${styles.mobileWrapper_sideMenu} ${showMenu ? styles.open : styles.closed}`}>
           <div className="w-full relative h-[0px] border border-zinc-300" />
           <ul className="w-full flex flex-col gap-4 px-6 font-normal text-base">
@@ -296,7 +311,12 @@ export default function Header() {
                 text="Вход в аккаунт и регистрация"
                 variant="secondary"
               />
-              <Button className={styles.sideBarButton} text="Подать объявление" variant={user ? 'secondary' : 'primary'}>
+              <Button
+                className={styles.sideBarButton}
+                text="Подать объявление"
+                variant={user ? 'secondary' : 'primary'}
+                onClick={() => openModal(Modal.EmptyProfile)}
+              >
                 <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M11 1V21V1ZM1 10.9385H21H1Z" fill="white" />
                   <path d="M11 1V21M1 10.9385H21" stroke={user ? 'green' : 'white'} strokeLinecap="round" strokeLinejoin="round" />
@@ -311,6 +331,7 @@ export default function Header() {
           </Portal>
         )}
       </header>
+      {newModal && <DefaultModal variant={variant} onClose={() => setNewModal(false)} />}
     </>
   )
 }

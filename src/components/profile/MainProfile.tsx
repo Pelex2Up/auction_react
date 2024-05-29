@@ -227,7 +227,7 @@ export const MainProfile: FC = () => {
             name="name"
             id="name"
           />
-          {errors.name && <label className="text-red-600 text-xs font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">{errors.name}</label>}
+          {errors.name && <label className="text-red-600 text-xs font-normal leading-[16.80px] tracking-tight">{errors.name}</label>}
         </li>
         {selectedOption && selectedOption !== 'person' && (
           <li className="flex-col justify-center items-start gap-1.5 inline-flex">
@@ -246,7 +246,7 @@ export const MainProfile: FC = () => {
               name="unp"
               id="unp"
             />
-            {errors.unp && <label className="text-red-600 text-xs font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">{errors.unp}</label>}
+            {errors.unp && <label className="text-red-600 text-xs font-normal leading-[16.80px] tracking-tight">{errors.unp}</label>}
           </li>
         )}
         <li className="flex-col justify-center items-start gap-1.5 inline-flex">
@@ -254,7 +254,7 @@ export const MainProfile: FC = () => {
             Электронная почта
           </label>
           <div className="xl:inline-flex xl:flex-row flex flex-col items-start xl:items-center gap-[10px] w-full">
-            <div className="xl:min-w-[315px] w-full">
+            <div className="xl:w-[315px] w-full">
               <Input
                 multiline={false}
                 className="w-full max-w-[315px] xl:w-[315px]"
@@ -265,11 +265,11 @@ export const MainProfile: FC = () => {
                 id="email"
               />
             </div>
-            <div className="inline-flex items-center gap-2 w-full max-w-[315px]">
+            <div className="inline-flex items-center gap-2 w-full max-w-[335px]">
               <QuestionSVG />
               <div
                 style={{
-                  width: '320px',
+                  width: '100%',
                   height: 38,
                   paddingLeft: 5,
                   paddingRight: 5,

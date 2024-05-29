@@ -1,5 +1,6 @@
 @import './_variables';
 @import './_mixins';
+@import url('https://fonts.cdnfonts.com/css/sf-pro-display');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -15,7 +16,7 @@ body {
 }
 
 body {
-  font-family: 'SF Pro Text', sans-serif;
+  font-family: 'SF Pro Display', sans-serif;
   width: 100vw;
   position: relative;
   margin: 0;

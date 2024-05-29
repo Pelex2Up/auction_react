@@ -1,6 +1,6 @@
-export const QuestionSVG = () => {
+export const QuestionSVG = ({ ...props }) => {
   return (
-    <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg {...props} width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g clipPath="url(#clip0_3125_68941)">
         <path
           d="M12.0022 23.6431C18.1563 23.6431 23.1451 18.6543 23.1451 12.5003C23.1451 6.34625 18.1563 1.35742 12.0022 1.35742C5.8482 1.35742 0.859375 6.34625 0.859375 12.5003C0.859375 18.6543 5.8482 23.6431 12.0022 23.6431Z"
