@@ -5,11 +5,6 @@
     line-height: 1.25rem /* 20px */ !important;
     font-weight: 400 !important;
   
-    @media (max-width: 1224px) {
-      width: 100%;
-      max-width: 315px;
-    }
-  
     div {
       button {
         height: auto !important;

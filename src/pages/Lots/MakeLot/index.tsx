@@ -209,10 +209,10 @@ export const CreateLotPage: FC = () => {
   }
 
   return (
-    <form onSubmit={handleSubmitForm} className="px-[60px] w-full flex flex-col gap-8 relative">
+    <form onSubmit={handleSubmitForm} className="lg:px-[60px] px-4 w-full flex flex-col gap-8 relative">
       <ul className="w-full flex flex-col gap-8">
         <li className="text-zinc-900 text-2xl font-extrabold leading-[28.80px]">Подача объявления</li>
-        <li className="inline-flex items-start gap-8">
+        <li className="inline-flex items-start gap-8 flex-col md:flex-row">
           <span className="text-zinc-900 text-lg font-medium leading-snug tracking-tight">Тариф</span>
           <div className="justify-start items-start xl:items-center gap-6 flex flex-col xl:flex-row xl:inline-flex">
             {tarriffGroup.map((option) => (
@@ -229,7 +229,7 @@ export const CreateLotPage: FC = () => {
             ))}
           </div>
         </li>
-        <li className="inline-flex items-start gap-8">
+        <li className="inline-flex items-start gap-8 flex-col md:flex-row">
           <span className="text-zinc-900 text-lg font-medium leading-snug tracking-tight">Вид объявления</span>
           <div className="justify-start items-start xl:items-center gap-6 flex flex-col xl:flex-row xl:inline-flex">
             {typeGroup.map((option) => (
@@ -245,7 +245,7 @@ export const CreateLotPage: FC = () => {
             ))}
           </div>
         </li>
-        <li className="inline-flex items-start gap-8">
+        <li className="inline-flex items-start gap-8 flex-col md:flex-row">
           <span className="text-zinc-900 text-lg font-medium leading-snug tracking-tight">Тип объявления</span>
           <div className="justify-start items-start xl:items-center gap-6 flex flex-col xl:flex-row xl:inline-flex">
             {lotTypeGroup.map((option) => (
@@ -375,7 +375,7 @@ export const CreateLotPage: FC = () => {
             </div>
           </div>
         </li>
-        <li className="inline-flex items-start gap-8">
+        <li className="inline-flex items-start gap-8 flex-col md:flex-row">
           <span className="text-zinc-900 text-base font-normal leading-snug tracking-tight">Состояние</span>
           <div className="justify-start items-start xl:items-center gap-6 flex flex-col xl:flex-row xl:inline-flex">
             {productStateOptions.map((option) => (
@@ -402,14 +402,13 @@ export const CreateLotPage: FC = () => {
             <ImagesInput images={photoList} setImages={setPhotoList} />
             <div className="flex justify-between w-full">
               <div className="text-zinc-500 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">Максимальный размер файла 10МБ</div>
-              <div>
-                <span className="text-zinc-500 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">{'Загружено '}</span>
-                <span className="text-red-500 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">
-                  {imagesCount === 6 && imagesCount}
-                </span>
-                <span className="text-green-800 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">
-                  {imagesCount < 6 && imagesCount}
-                </span>
+              <div className="flex items-start justify-start">
+                <span className="text-zinc-500 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight mr-[2px]">{'Загружено'}</span>
+                {imagesCount === 6 ? (
+                  <span className="text-red-500 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight mr-[2px]">{imagesCount}</span>
+                ) : (
+                  <span className="text-green-800 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight mr-[2px]">{imagesCount}</span>
+                )}
                 <span className="text-zinc-500 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">{' из 6 фотографий'}</span>
               </div>
             </div>
@@ -516,7 +515,7 @@ export const CreateLotPage: FC = () => {
               <QuestionSVG onClick={toggleToast} className="cursor-pointer" />
             </div>
             {externalNumber1 && (
-              <div className="w-full inline-flex gap-[10px] items-center">
+              <div className="w-full mt-4 inline-flex gap-[10px] items-center">
                 <div className="w-full max-w-[535px]">
                   <PhoneInput
                     className={styles.PhoneInput}
@@ -529,7 +528,7 @@ export const CreateLotPage: FC = () => {
               </div>
             )}
             {externalNumber2 && (
-              <div className="w-full inline-flex gap-[10px] items-center">
+              <div className="w-full mt-4 inline-flex gap-[10px] items-center">
                 <div className="w-full max-w-[535px]">
                   <PhoneInput
                     className={styles.PhoneInput}

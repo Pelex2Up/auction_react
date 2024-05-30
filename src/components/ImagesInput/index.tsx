@@ -31,9 +31,9 @@ export const ImagesInput: FC<ImagesInputT> = ({ images, setImages }) => {
   }
 
   return (
-    <div className="w-full h-[174px] px-8 py-4 relative flex-col justify-center items-center inline-flex">
+    <div className="w-full lg:h-[174px] h-full px-8 py-4 relative flex-col justify-center items-center inline-flex">
       <div className="w-full absolute top-0 bottom-0 left-0 right-0 bg-stone-50 rounded shadow" />
-      <div className="justify-start items-start gap-[87px] inline-flex">
+      <div className="justify-start items-start gap-[20px] lg:gap-[87px] flex-col lg:flex-row inline-flex">
         <div className="w-[110px] h-[110px] relative cursor-pointer">
           {images && images[0].image ? (
             <img src={URL.createObjectURL(images[0].image)} alt="image-upload" data-input-id={images[0].id} />
