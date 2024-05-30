@@ -15,7 +15,7 @@ export const Checkbox: FC<CheckboxT> = ({ label, ...rest }) => {
   const [isChecked, setIsChecked] = useState(false);
   return (
     <div className={styles.wrapper}>
-      <label className="max-w-[276px] flex flex-row gap-[12px] items-center justify-start">
+      <label className="w-full flex flex-row gap-[12px] items-center justify-start">
         <input
           {...rest}
           type="checkbox"

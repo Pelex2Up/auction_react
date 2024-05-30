@@ -59,7 +59,7 @@ export const SelectInput: FC<SelectInputPropsT> = ({ optionsList, selectedOption
   return (
     <div ref={menuRef} className={styles.wrapper} onClick={toggleOptions}>
       <div className={styles.container}>
-        <button onClick={handleToggleOptionsOpen} className="absolute right-0 top-0 z-30">
+        <button onClick={handleToggleOptionsOpen} className="absolute right-0 top-0 z-10">
           <ArrowDown style={{ transform: `${isOptionsOpen ? 'rotate(180deg)' : ''}`, transition: 'all ease-in-out 80ms' }} />
         </button>
 

@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, useEffect, useState } from 'react'
+import { ChangeEvent, FC, FormEvent, useEffect, useState } from 'react'
 import { RadioButton } from '../../../components/common/RadioButton'
 import Input from '../../../components/common/Input'
 import { SelectInput } from '../../../components/common/SelectInput/SelectInput'
@@ -6,6 +6,11 @@ import { ImagesInput } from '../../../components/ImagesInput'
 import { selectUser, useAppSelector } from '../../../store/hooks'
 import { QuestionSVG } from '../../../assets/svg/questionSVG'
 import { toast } from 'react-toastify'
+import { AddPhoneButton, Button } from '../../../components/common/buttons'
+import Checkbox from '../../../components/common/checkbox'
+import DefaultLink from '../../../components/common/DefaultLink'
+import { PhoneInput, defaultCountries, parseCountry } from 'react-international-phone'
+import styles from './MakeLot.module.scss'
 
 const tarriffGroup = [
   {
@@ -126,6 +131,13 @@ export const CreateLotPage: FC = () => {
   const [imagesCount, setImagesCount] = useState<number>(0)
   const [selectedProfileType, setSelectedProfileType] = useState<string>('')
   const [username, setUsername] = useState<string>('')
+  const [externalNumber1, setExternalNumber1] = useState<string | undefined>()
+  const [externalNumber2, setExternalNumber2] = useState<string | undefined>()
+
+  const countries = defaultCountries.filter((country) => {
+    const { iso2 } = parseCountry(country)
+    return ['by', 'ru'].includes(iso2)
+  })
 
   useEffect(() => {
     const filesCount = photoList.filter((item) => item.image !== null).length
@@ -183,8 +195,21 @@ export const CreateLotPage: FC = () => {
     toast('Вы указали эту информацию в Вашем профиле, ее нельзя изменить при подаче объявления', { type: 'info' })
   }
 
+  const handleAddNumber = () => {
+    if (!externalNumber1) {
+      setExternalNumber1('+375')
+    } else if (externalNumber1 && !externalNumber2) {
+      setExternalNumber2('+375')
+    }
+  }
+
+  const handleSubmitForm = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    console.log('1')
+  }
+
   return (
-    <div className="px-[60px] w-full flex flex-col gap-8 relative">
+    <form onSubmit={handleSubmitForm} className="px-[60px] w-full flex flex-col gap-8 relative">
       <ul className="w-full flex flex-col gap-8">
         <li className="text-zinc-900 text-2xl font-extrabold leading-[28.80px]">Подача объявления</li>
         <li className="inline-flex items-start gap-8">
@@ -490,9 +515,48 @@ export const CreateLotPage: FC = () => {
               </div>
               <QuestionSVG onClick={toggleToast} className="cursor-pointer" />
             </div>
+            {externalNumber1 && (
+              <div className="w-full inline-flex gap-[10px] items-center">
+                <div className="w-full max-w-[535px]">
+                  <PhoneInput
+                    className={styles.PhoneInput}
+                    defaultCountry="by"
+                    countries={countries}
+                    value={externalNumber1}
+                    onChange={(event) => setExternalNumber1(event)}
+                  />
+                </div>
+              </div>
+            )}
+            {externalNumber2 && (
+              <div className="w-full inline-flex gap-[10px] items-center">
+                <div className="w-full max-w-[535px]">
+                  <PhoneInput
+                    className={styles.PhoneInput}
+                    defaultCountry="by"
+                    countries={countries}
+                    value={externalNumber2}
+                    onChange={(event) => setExternalNumber2(event)}
+                  />
+                </div>
+              </div>
+            )}
           </div>
         </li>
+        <li className="w-full h-auto justify-start gap-8 items-start flex-col inline-flex">
+          {!externalNumber2 && <AddPhoneButton type="button" text="Добавить номер" onClick={handleAddNumber} />}
+          <div className="w-full flex">
+            <Checkbox
+              label={
+                <p className="w-full text-xs text-[#808080] font-normal">
+                  Я принимаю условия <DefaultLink text="Пользовательского соглашения" style={{ color: '#008001' }} />
+                </p>
+              }
+            />
+          </div>
+          <Button type="submit" variant="primary" text="Подать объявление" />
+        </li>
       </ul>
-    </div>
+    </form>
   )
 }
