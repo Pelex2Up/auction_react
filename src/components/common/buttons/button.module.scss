@@ -18,6 +18,10 @@
   color: white;
   transition: ease-in 0.13s;
 
+  div {
+    background: white;
+  }
+
   svg {
     path {
       stroke: white;
@@ -27,6 +31,10 @@
   &:hover {
     background: transparent;
     color: #008001;
+
+    div {
+      background: #008001;
+    }
 
     svg {
       path {
@@ -42,9 +50,17 @@
   color: #008001;
   transition: ease-in 0.13s;
 
+  div {
+    background: #008001;
+  }
+
   &:hover {
     background: #008001;
     color: white;
+
+    div {
+      background: white;
+    }
 
     svg {
       path {

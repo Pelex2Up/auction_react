@@ -27,13 +27,16 @@ export const rtkQueryErrorLogger: Middleware = (api: MiddlewareAPI) => (next) =>
 export const rootReducer = combineReducers({
   [services.userLoginService.reducerPath]: services.userLoginService.reducer,
   [services.userService.reducerPath]: services.userService.reducer,
-  user: slices.authReduce
+  [services.lotService.reducerPath]: services.lotService.reducer,
+  [services.courseService.reducerPath]: services.courseService.reducer,
+  user: slices.authReduce,
+  course: slices.courseReduce
 })
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['user']
+  whitelist: ['user', 'course']
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
@@ -46,7 +49,7 @@ export const store = configureStore({
       serializableCheck: false,
       immutableCheck: false
     })
-      .concat(services.userLoginService.middleware, services.userService.middleware)
+      .concat(services.userLoginService.middleware, services.userService.middleware, services.lotService.middleware, services.courseService.middleware)
       .concat(rtkQueryErrorLogger)
 })
 

@@ -13,10 +13,11 @@ import { generatePath, useNavigate } from 'react-router-dom'
 import { selectUser, useAppDispatch, useAppSelector } from '../../store/hooks'
 import { Loader } from '../Loader'
 import { useLogoutMutation } from '../../api/loginService'
-import { logoutState } from '../../store/redux/users/slice'
+import { logoutState, updateUser } from '../../store/redux/users/slice'
 import Hamburger from 'hamburger-react'
 import { Modal } from '../Modal/DefaultModal/ModalTypes'
 import { DefaultModal } from '../Modal/DefaultModal'
+import { useLazyFetchProfileQuery } from '../../api/userService'
 
 export default function Header() {
   const navigate = useNavigate()
@@ -28,6 +29,7 @@ export default function Header() {
   const [logout, { isLoading, isSuccess }] = useLogoutMutation()
   const [newModal, setNewModal] = useState<boolean>(false)
   const [variant, setVariant] = useState<string>('')
+  const [getUserData] = useLazyFetchProfileQuery()
 
   const toggleSideMenu = () => {
     setShowMenu(!showMenu)
@@ -36,6 +38,14 @@ export default function Header() {
   const closeSideMenu = () => {
     setShowMenu(false)
   }
+
+  useEffect(() => {
+    if (auth && !user) {
+      getUserData()
+        .unwrap()
+        .then((data) => dispatch(updateUser(data)))
+    }
+  })
 
   useEffect(() => {
     if (isSuccess) {

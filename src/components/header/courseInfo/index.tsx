@@ -1,68 +1,75 @@
-import { fetchData } from "../../../api/fetchData";
-import { FC, useEffect, useState } from "react";
-import usaDollar from "../../../assets/icons/usa.svg";
-import euro from "../../../assets/icons/euro.svg";
-import rub from "../../../assets/icons/russia.svg";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { FC, useEffect } from 'react'
+import usaDollar from '../../../assets/icons/usa.svg'
+import euro from '../../../assets/icons/euro.svg'
+import rub from '../../../assets/icons/russia.svg'
+import { selectCourse, useAppDispatch, useAppSelector } from '../../../store/hooks'
+import { updateCourse, updateExpiration } from '../../../store/redux/moneyCourse/slice'
+import { useFetchEURMutation, useFetchRUBMutation, useFetchUSDMutation } from '../../../api/courseService'
 
 export const CourseInfo: FC = () => {
-  const [usDollar, setUsDollar] = useState<number>();
-  const [euroVal, setEuroVal] = useState<number>();
-  const [rubVal, setRubVal] = useState<number>();
+  const dispatch = useAppDispatch()
+  const courses = useAppSelector(selectCourse)
+  const [fetchUSD, { data: usdCourse, isLoading: isUSDLoad }] = useFetchUSDMutation()
+  const [fetchEUR, { data: euroCourse, isLoading: isEURLoad }] = useFetchEURMutation()
+  const [fetchRUB, { data: rubCourse, isLoading: isRUBLoad }] = useFetchRUBMutation()
+  const today = new Date()
 
   useEffect(() => {
-    if (!usDollar) {
-      fetchData("https://api.nbrb.by/exrates/rates/431").then(
-        (data: { Cur_OfficialRate: number }) =>
-          setUsDollar(data.Cur_OfficialRate)
-      );
+    if (courses) {
+      if (
+        (!courses.expires || Number(courses.expires.split('.')[0]) < Number(today.toLocaleDateString().split('.')[0])) &&
+        !isUSDLoad &&
+        !isRUBLoad &&
+        !isEURLoad
+      ) {
+        fetchUSD().unwrap()
+        fetchEUR()
+        fetchRUB()
+      }
     }
-    if (!euroVal) {
-      fetchData("https://api.nbrb.by/exrates/rates/451").then(
-        (data: { Cur_OfficialRate: number }) =>
-          setEuroVal(data.Cur_OfficialRate)
-      );
-    }
-    if (!rubVal) {
-      fetchData("https://api.nbrb.by/exrates/rates/456").then(
-        (data: { Cur_OfficialRate: number }) => setRubVal(data.Cur_OfficialRate)
-      );
-    }
-  }, [euroVal, rubVal, usDollar]);
+  }, [courses, dispatch, fetchEUR, fetchRUB, fetchUSD, isEURLoad, isRUBLoad, isUSDLoad, today])
 
-  const today = new Date();
-  const date = () => {
-    const array = today.toLocaleDateString().split("/");
-    const formated =
-      array.length === 3 &&
-      `${array[1].padStart(2, "0")}.${array[0].padStart(2, "0")}.${array[2]}`;
-    return formated;
-  };
+  useEffect(() => {
+    if (
+      usdCourse &&
+      euroCourse &&
+      rubCourse &&
+      (!courses.expires || Number(courses.expires.split('.')[0]) < Number(today.toLocaleDateString().split('.')[0]))
+    ) {
+      dispatch(updateCourse({ usd: usdCourse.Cur_OfficialRate, euro: euroCourse.Cur_OfficialRate, rub: rubCourse.Cur_OfficialRate }))
+      dispatch(updateExpiration(`${String(today.getDate() + 1).padStart(2, '0')}.${String(today.getMonth() + 1).padStart(2, '0')}.${today.getFullYear()}`))
+    }
+  }, [courses.expires, dispatch, euroCourse, rubCourse, today, usdCourse])
+
+  // const date = () => {
+  //   const array = today.toLocaleDateString().split('/')
+  //   const formated = array.length === 3 && `${array[1].padStart(2, '0')}.${array[0].padStart(2, '0')}.${array[2]}`
+  //   return formated
+  // }
 
   return (
     <div className="flex flex-row gap-8 text-sm items-center">
-      <p>
-        Курс валют НБРБ на {String(today.getDate()).padStart(2, "0")}.
-        {String(today.getMonth() + 1).padStart(2, "0")}.{today.getFullYear()}:
-      </p>
+      <p>Курс валют НБРБ на {today.toLocaleDateString()}:</p>
       <div className="flex gap-2 items-center">
         <img src={usaDollar} alt="us-dollar" />
         <p>USD</p>
-        {usDollar}
+        {courses.course?.usd}
       </div>
       <div className="flex gap-2 items-center">
         <img src={euro} alt="euro" />
         <p>EUR</p>
-        {euroVal}
+        {courses.course?.euro}
       </div>
       <div className="flex gap-2 items-center">
         <img src={rub} alt="euro" />
         <p className="flex gap-1">
           RUB <span className="font-medium text-xs ">100</span>
         </p>
-        {rubVal}
+        {courses.course?.rub}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CourseInfo;
+export default CourseInfo

@@ -11,6 +11,8 @@ import Checkbox from '../../../components/common/checkbox'
 import DefaultLink from '../../../components/common/DefaultLink'
 import { PhoneInput, defaultCountries, parseCountry } from 'react-international-phone'
 import styles from './MakeLot.module.scss'
+import { useCreateLotMutation, useSendPhotoMutation } from '../../../api/lotService'
+import { Loader } from '../../../components/Loader'
 
 const tarriffGroup = [
   {
@@ -29,11 +31,11 @@ const tarriffGroup = [
 
 const typeGroup = [
   {
-    value: 'buy',
+    value: 'BUY',
     label: 'Покупка'
   },
   {
-    value: 'sell',
+    value: 'SELL',
     label: 'Продажа'
   }
 ]
@@ -57,11 +59,11 @@ const countList = [
 
 const productStateOptions = [
   {
-    value: 'new',
+    value: 'NEW',
     label: 'Новый'
   },
   {
-    value: 'used',
+    value: 'USED',
     label: 'Бывший в употреблении'
   }
 ]
@@ -112,14 +114,14 @@ const category = [{ value: '1', label: 'Электроника' }]
 export const CreateLotPage: FC = () => {
   const { user } = useAppSelector(selectUser)
   const [tarriffOption, setTarriffOption] = useState<string>('default')
-  const [typeOption, setTypeOption] = useState<string>('sell')
+  const [typeOption, setTypeOption] = useState<string>('SELL')
   const [lotTypeOption, setLotTypeOption] = useState<string>('auction')
   const [lotName, setLotName] = useState<string>('')
   const [lotDescription, setLotDescription] = useState<string>('')
   const [count, setCount] = useState<string>('')
   const [price, setPrice] = useState<string>('')
   const [date, setDate] = useState<{ day: string; month: string; year: string }>({ day: '', month: '', year: '' })
-  const [productState, setProductState] = useState<string>('new')
+  const [productState, setProductState] = useState<string>('NEW')
   const [photoList, setPhotoList] = useState<{ image: File | null; id: number }[]>([
     { image: null, id: 1 },
     { image: null, id: 2 },
@@ -133,6 +135,8 @@ export const CreateLotPage: FC = () => {
   const [username, setUsername] = useState<string>('')
   const [externalNumber1, setExternalNumber1] = useState<string | undefined>()
   const [externalNumber2, setExternalNumber2] = useState<string | undefined>()
+  const [sendForm, { isLoading }] = useCreateLotMutation()
+  const [sendPhoto] = useSendPhotoMutation()
 
   const countries = defaultCountries.filter((country) => {
     const { iso2 } = parseCountry(country)
@@ -203,9 +207,32 @@ export const CreateLotPage: FC = () => {
     }
   }
 
-  const handleSubmitForm = (event: FormEvent<HTMLFormElement>) => {
+  const dateTime = new Date()
+
+  console.log(dateTime.toISOString())
+
+  const handleSubmitForm = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    console.log('1')
+    const formdata = new FormData()
+    if (user) {
+      formdata.append('user', String(user.id))
+    }
+    formdata.append('ad_type', typeOption)
+    formdata.append('condition', productState)
+    formdata.append('title', lotName)
+    formdata.append('description', lotDescription)
+    formdata.append('category', '1')
+    formdata.append('is_auction', 'true')
+    formdata.append('price', price)
+    formdata.append('auction_end_date', dateTime.toISOString())
+    photoList.map((photo) => photo.image !== null && formdata.append('photos_input', photo.image))
+    await sendForm(formdata).unwrap()
+    // .then(async (data) => {
+    //   const photoData = new FormData()
+    //   photoList.map((photo) => photo.image !== null && photoData.append('image', photo.image))
+    //   photoData.append('advertisement', String(data.id))
+    //   await sendPhoto({ id: data.id, lotData: photoData })
+    // })
   }
 
   return (
@@ -270,7 +297,7 @@ export const CreateLotPage: FC = () => {
             <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
               Название объявления<span className="text-red-500 text-sm font-normal leading-[16.80px] tracking-tight">*</span>
             </div>
-            <Input maxLength={50} multiline={false} className="w-full" value={lotName} onChange={(event) => setLotName(event.target.value)} />
+            <Input maxLength={50} required multiline={false} className="w-full" value={lotName} onChange={(event) => setLotName(event.target.value)} />
             <div>
               <span className="text-red-500 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">{lotName.length}</span>
               <span className="text-zinc-300 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight"> </span>
@@ -295,6 +322,7 @@ export const CreateLotPage: FC = () => {
               maxLength={4000}
               multiline={true}
               rows={4}
+              required
               className="w-full"
               value={lotDescription}
               onChange={(event) => setLotDescription(event.target.value)}
@@ -325,6 +353,7 @@ export const CreateLotPage: FC = () => {
               placeholder="Введите количество"
               className="w-full"
               value={count}
+              required
               type="number"
               onKeyDown={handleKeyPress}
               onChange={(event) => setCount(String(event.target.value))}
@@ -342,6 +371,7 @@ export const CreateLotPage: FC = () => {
               placeholder="Введите стоимость"
               className="w-full"
               value={price}
+              required
               type="number"
               onKeyDown={handleKeyPress}
               onChange={(event) => setPrice(String(event.target.value))}
@@ -546,6 +576,7 @@ export const CreateLotPage: FC = () => {
           {!externalNumber2 && <AddPhoneButton type="button" text="Добавить номер" onClick={handleAddNumber} />}
           <div className="w-full flex">
             <Checkbox
+              required
               label={
                 <p className="w-full text-xs text-[#808080] font-normal">
                   Я принимаю условия <DefaultLink text="Пользовательского соглашения" style={{ color: '#008001' }} />
@@ -553,7 +584,9 @@ export const CreateLotPage: FC = () => {
               }
             />
           </div>
-          <Button type="submit" variant="primary" text="Подать объявление" />
+          <Button type="submit" variant="primary" text="Подать объявление">
+            {isLoading && <Loader />}
+          </Button>
         </li>
       </ul>
     </form>
