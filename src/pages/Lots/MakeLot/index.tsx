@@ -13,6 +13,7 @@ import { PhoneInput, defaultCountries, parseCountry } from 'react-international-
 import styles from './MakeLot.module.scss'
 import { useCreateLotMutation, useSendPhotoMutation } from '../../../api/lotService'
 import { Loader } from '../../../components/Loader'
+import CreateLotSuccess from './SuccessCreated'
 
 const tarriffGroup = [
   {
@@ -137,6 +138,7 @@ export const CreateLotPage: FC = () => {
   const [externalNumber2, setExternalNumber2] = useState<string | undefined>()
   const [sendForm, { isLoading }] = useCreateLotMutation()
   const [sendPhoto] = useSendPhotoMutation()
+  const [createdSuccessfuly, setCreatedSuccessfuly] = useState<boolean>(false)
 
   const countries = defaultCountries.filter((country) => {
     const { iso2 } = parseCountry(country)
@@ -226,16 +228,14 @@ export const CreateLotPage: FC = () => {
     formdata.append('price', price)
     formdata.append('auction_end_date', dateTime.toISOString())
     photoList.map((photo) => photo.image !== null && formdata.append('photos_input', photo.image))
-    await sendForm(formdata).unwrap()
-    // .then(async (data) => {
-    //   const photoData = new FormData()
-    //   photoList.map((photo) => photo.image !== null && photoData.append('image', photo.image))
-    //   photoData.append('advertisement', String(data.id))
-    //   await sendPhoto({ id: data.id, lotData: photoData })
-    // })
+    await sendForm(formdata)
+      .unwrap()
+      .then(() => setCreatedSuccessfuly(true))
   }
 
-  return (
+  return createdSuccessfuly ? (
+    <CreateLotSuccess />
+  ) : (
     <form onSubmit={handleSubmitForm} className="lg:px-[60px] px-4 w-full flex flex-col gap-8 relative">
       <ul className="w-full flex flex-col gap-8">
         <li className="text-zinc-900 text-2xl font-extrabold leading-[28.80px]">Подача объявления</li>

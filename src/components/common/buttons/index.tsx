@@ -24,7 +24,7 @@ export const Button: FC<ButtonT> = ({ variant = 'primary', children, text, ...re
 
 export const MenuButton: FC<ButtonT> = ({ variant = 'primary', children, text, ...restProps }) => {
   return (
-    <button {...restProps} className={styles.MenuButton}>
+    <button {...restProps} className={`${restProps.className} ${styles.MenuButton}`}>
       {children}
       <div className="text-zinc-900 text-base font-normal leading-tight tracking-tight">{text}</div>
     </button>

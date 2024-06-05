@@ -4,7 +4,7 @@ import { Home } from './pages/HomePage'
 import NotFoundPage from './pages/NotFoundPage'
 import './styles/main.scss'
 import { RootLayout } from './components/Layout'
-import { LotPathE, PathE } from './enum'
+import { LotPathE, PathE, ProfilePathE } from './enum'
 import RegistrationSuccess from './pages/RegistrationSuccess'
 import RegistrationToken from './pages/RegistrationToken'
 import { ProfilePage } from './pages/Profile'
@@ -14,6 +14,9 @@ import { ResetPasswordForm } from './pages/ResetPasswordForm'
 import ResetPasswordSuccess from './pages/ResetPasswordSuccess'
 import { LotPage } from './pages/Lots'
 import { CreateLotPage } from './pages/Lots/MakeLot'
+import { TarriffPlans } from './pages/MainPages/TarriffPlans'
+import { UsageRules } from './pages/MainPages/Rules'
+import { MyLots } from './pages/ProfilePages/MyLots'
 
 const RootComponent: React.FC = () => {
   return (
@@ -30,7 +33,10 @@ const RootComponent: React.FC = () => {
           <Route path={LotPathE.CreateLot} element={<CreateLotPage />} />
           <Route path={PathE.Profile} element={<ProfilePage />}>
             <Route index element={<MainProfile />} />
+            <Route path={ProfilePathE.MyLots} element={<MyLots />} />
           </Route>
+          <Route path={PathE.TarriffPlans} element={<TarriffPlans />} />
+          <Route path={PathE.Rules} element={<UsageRules />} />
           <Route path={LotPathE.LotDetail} element={<LotPage />} />
         </Route>
       </Routes>

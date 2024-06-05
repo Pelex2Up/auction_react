@@ -76,8 +76,8 @@ export default function Header() {
             <DefaultLink text="Главная" href={PathE.Home} />
             <DefaultLink text="Объявления о покупке" />
             <DefaultLink text="Объявления о продаже" />
-            <DefaultLink text="Правила участия" />
-            <DefaultLink text="Тарифы" />
+            <DefaultLink text="Правила участия" href={PathE.Rules} />
+            <DefaultLink text="Тарифы" href={PathE.TarriffPlans} />
             <DefaultLink text="Реклама" />
           </div>
           <div className={styles.wrapper_topHeader_rightContent}>
@@ -156,8 +156,8 @@ export default function Header() {
             <DefaultLink text="Главная" href={PathE.Home} />
             <DefaultLink text="Объявления о покупке" />
             <DefaultLink text="Объявления о продаже" />
-            <DefaultLink text="Правила участия" />
-            <DefaultLink text="Тарифы" />
+            <DefaultLink text="Правила участия" href={PathE.Rules} />
+            <DefaultLink text="Тарифы" href={PathE.TarriffPlans} />
             <DefaultLink text="Реклама" />
           </ul>
           {auth && user ? (

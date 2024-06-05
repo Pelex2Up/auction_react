@@ -6,7 +6,7 @@ import { useLogoutMutation } from '../../api/loginService'
 import { logoutState } from '../../store/redux/users/slice'
 import { Loader } from '../Loader'
 import { generatePath, useNavigate } from 'react-router-dom'
-import { PathE } from '../../enum'
+import { PathE, ProfilePathE } from '../../enum'
 
 export default function ProfileHeader({ ...props }: { username: string; avatar: string }) {
   const listRef = useRef<HTMLUListElement>(null)
@@ -85,7 +85,13 @@ export default function ProfileHeader({ ...props }: { username: string; avatar: 
             </li>
             <div className="w-[260px] relative h-[0px] border border-zinc-300" />
             <li>
-              <MenuButton text="Мои объявления">
+              <MenuButton
+                text="Мои объявления"
+                onClick={() => {
+                  setShow(false)
+                  navigate(generatePath(ProfilePathE.MyLots))
+                }}
+              >
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path
                     d="M19.7132 0.857422H4.2846C3.33782 0.857422 2.57031 1.62493 2.57031 2.57171V21.4289C2.57031 22.3756 3.33782 23.1431 4.2846 23.1431H19.7132C20.6599 23.1431 21.4275 22.3756 21.4275 21.4289V2.57171C21.4275 1.62493 20.6599 0.857422 19.7132 0.857422Z"
@@ -158,7 +164,13 @@ export default function ProfileHeader({ ...props }: { username: string; avatar: 
               </MenuButton>
             </li>
             <li>
-              <MenuButton text="Мой тариф">
+              <MenuButton
+                text="Мой тариф"
+                onClick={() => {
+                  setShow(!show)
+                  navigate(generatePath(PathE.TarriffPlans))
+                }}
+              >
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path
                     d="M22.2863 11.8974C22.2702 13.6822 21.7604 15.4277 20.8134 16.9405C19.8663 18.4534 18.519 19.6746 16.9206 20.4688L12.0006 23.1431L7.08057 20.5717C5.46661 19.7696 4.10895 18.5324 3.16083 16.9997C2.21272 15.4669 1.71188 13.6997 1.71486 11.8974V2.57171C1.71486 2.11705 1.89547 1.68102 2.21696 1.35952C2.53845 1.03803 2.97449 0.857422 3.42914 0.857422H20.572C21.0267 0.857422 21.4627 1.03803 21.7842 1.35952C22.1057 1.68102 22.2863 2.11705 22.2863 2.57171V11.8974Z"

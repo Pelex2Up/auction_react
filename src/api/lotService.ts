@@ -6,6 +6,9 @@ export const lotService = createApi({
   baseQuery: baseQuery(),
   tagTypes: ['auction'],
   endpoints: (builder) => ({
+    fetchUserLots: builder.query<any, void>({
+      query: () => ''
+    }),
     createLot: builder.mutation<any, FormData>({
       query: (lotData) => ({
         url: '/auction/advertisement/',
@@ -23,4 +26,4 @@ export const lotService = createApi({
   })
 })
 
-export const { useCreateLotMutation, useSendPhotoMutation } = lotService
+export const { useCreateLotMutation, useSendPhotoMutation, useFetchUserLotsQuery } = lotService
