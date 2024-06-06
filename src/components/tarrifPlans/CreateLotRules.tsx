@@ -8,7 +8,7 @@ import { AdminSuccessSVG } from './config/success'
 
 export const CreateLotRules: FC = () => {
   return (
-    <div className="w-full lg:h-[180px] inline-flex justify-start gap-0">
+    <div className="w-full lg:h-[180px] inline-flex justify-start 2xl:justify-center gap-0">
       <div className="h-full flex flex-col gap-2 justify-start items-center">
         <BookWithPencilSVG />
         <div className="w-[252px] h-[47px] flex-col justify-start items-center gap-2 inline-flex">
