@@ -18,7 +18,7 @@ export const FixedPriceLotComponent: FC<ILotComp> = ({ lot, deleteLot }) => {
   return (
     <div className="w-full h-auto py-6 pl-0 pr-6 gap-6 flex shadow bg-white">
       <div className="w-full max-w-[259px] h-full relative cursor-pointer">
-        <img className="w-full h-full max-h-[187px] rounded object-fill" src={lot.photos[0].image || ''} />
+        <img className="w-full h-full max-h-[187px] rounded object-fill" src={lot.photos.length > 0 ? lot.photos[0].image : ''} />
         <div className="w-32 h-10 ml-2 mt-2 flex-col justify-start items-start gap-1.5 inline-flex">
           <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">Аукцион до:</div>
           <div className="flex-col justify-start items-start gap-1.5 flex">
