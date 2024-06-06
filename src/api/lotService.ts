@@ -1,3 +1,4 @@
+import { LotT } from '../types/lotTypes'
 import { baseQuery } from './baseApi'
 import { createApi } from '@reduxjs/toolkit/query/react'
 
@@ -6,8 +7,14 @@ export const lotService = createApi({
   baseQuery: baseQuery(),
   tagTypes: ['auction'],
   endpoints: (builder) => ({
-    fetchUserLots: builder.query<any, void>({
-      query: () => ''
+    fetchUserLots: builder.query<LotT[], void>({
+      query: () => '/auction/advertisement/my-ad'
+    }),
+    deleteUserLot: builder.mutation<void, number>({
+      query: (id) => ({
+        url: `/auction/advertisement/${id}/`,
+        method: 'DELETE'
+      })
     }),
     createLot: builder.mutation<any, FormData>({
       query: (lotData) => ({
@@ -22,8 +29,11 @@ export const lotService = createApi({
         method: 'POST',
         body: data.lotData
       })
+    }),
+    fetchCategories: builder.query<any, void>({
+      query: () => '/auction/categories/'
     })
   })
 })
 
-export const { useCreateLotMutation, useSendPhotoMutation, useFetchUserLotsQuery } = lotService
+export const { useCreateLotMutation, useSendPhotoMutation, useFetchUserLotsQuery, useDeleteUserLotMutation, useFetchCategoriesQuery } = lotService

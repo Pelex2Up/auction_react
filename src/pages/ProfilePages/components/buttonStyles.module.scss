@@ -1,0 +1,23 @@
+.buttons {
+  transition: all ease-in-out 0.3s;
+  &:hover {
+    svg {
+      path {
+        stroke: green;
+      }
+    }
+  }
+}
+
+.link {
+  letter-spacing: -0.025em;
+  line-height: 28.8px;
+  font-weight: 400;
+  --tw-text-opacity: 1;
+  color: rgb(22 101 52 / var(--tw-text-opacity));
+  font-size: 1.5rem /* 24px */;
+
+  &:hover {
+    border: none;
+  }
+}

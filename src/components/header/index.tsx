@@ -8,7 +8,7 @@ import { LoginModal } from '../Modal/Login'
 import ProfileHeader from '../profile'
 import userImage from '../../assets/icons/newUser.svg'
 import Logo from '../../assets/logo/logo.svg'
-import { LotPathE, PathE } from '../../enum/index'
+import { LotPathE, PathE, ProfilePathE } from '../../enum/index'
 import { generatePath, useNavigate } from 'react-router-dom'
 import { selectUser, useAppDispatch, useAppSelector } from '../../store/hooks'
 import { Loader } from '../Loader'
@@ -171,7 +171,13 @@ export default function Header() {
                 </li>
                 <div className="w-full relative h-[0px] border border-zinc-300" />
                 <li>
-                  <MenuButton text="Мои объявления">
+                  <MenuButton
+                    text="Мои объявления"
+                    onClick={() => {
+                      closeSideMenu()
+                      navigate(generatePath(ProfilePathE.MyLots))
+                    }}
+                  >
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path
                         d="M19.7132 0.857422H4.2846C3.33782 0.857422 2.57031 1.62493 2.57031 2.57171V21.4289C2.57031 22.3756 3.33782 23.1431 4.2846 23.1431H19.7132C20.6599 23.1431 21.4275 22.3756 21.4275 21.4289V2.57171C21.4275 1.62493 20.6599 0.857422 19.7132 0.857422Z"

@@ -11,7 +11,7 @@ import Checkbox from '../../../components/common/checkbox'
 import DefaultLink from '../../../components/common/DefaultLink'
 import { PhoneInput, defaultCountries, parseCountry } from 'react-international-phone'
 import styles from './MakeLot.module.scss'
-import { useCreateLotMutation, useSendPhotoMutation } from '../../../api/lotService'
+import { useCreateLotMutation, useFetchCategoriesQuery, useSendPhotoMutation } from '../../../api/lotService'
 import { Loader } from '../../../components/Loader'
 import CreateLotSuccess from './SuccessCreated'
 
@@ -71,35 +71,35 @@ const productStateOptions = [
 
 const oblastList = [
   {
-    value: '1',
+    value: 'Все',
     label: 'Все'
   },
   {
-    value: '2',
+    value: 'г. Минск',
     label: 'Минск'
   },
   {
-    value: '3',
+    value: 'Брестская обл.',
     label: 'Брестская'
   },
   {
-    value: '4',
+    value: 'Гомельская обл.',
     label: 'Гомельская'
   },
   {
-    value: '5',
+    value: 'Гродненская обл.',
     label: 'Гродненская'
   },
   {
-    value: '6',
+    value: 'Могилевская обл.',
     label: 'Могилевская'
   },
   {
-    value: '7',
+    value: 'Минская обл.',
     label: 'Минская'
   },
   {
-    value: '8',
+    value: 'Витебская обл.',
     label: 'Витебская'
   }
 ]
@@ -113,6 +113,7 @@ const radioGroup = [
 const category = [{ value: '1', label: 'Электроника' }]
 
 export const CreateLotPage: FC = () => {
+  const { data: categories } = useFetchCategoriesQuery()
   const { user } = useAppSelector(selectUser)
   const [tarriffOption, setTarriffOption] = useState<string>('default')
   const [typeOption, setTypeOption] = useState<string>('SELL')
@@ -139,6 +140,8 @@ export const CreateLotPage: FC = () => {
   const [sendForm, { isLoading }] = useCreateLotMutation()
   const [sendPhoto] = useSendPhotoMutation()
   const [createdSuccessfuly, setCreatedSuccessfuly] = useState<boolean>(false)
+  const [category, setCategory] = useState<string>('')
+  const [city, setCity] = useState<string>('')
 
   const countries = defaultCountries.filter((country) => {
     const { iso2 } = parseCountry(country)
@@ -209,12 +212,9 @@ export const CreateLotPage: FC = () => {
     }
   }
 
-  const dateTime = new Date()
-
-  console.log(dateTime.toISOString())
-
   const handleSubmitForm = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    const auctionEndDate = new Date(`${date.month}.${date.day}.${date.year}`)
     const formdata = new FormData()
     if (user) {
       formdata.append('user', String(user.id))
@@ -224,9 +224,11 @@ export const CreateLotPage: FC = () => {
     formdata.append('title', lotName)
     formdata.append('description', lotDescription)
     formdata.append('category', '1')
-    formdata.append('is_auction', 'true')
+    formdata.append('is_auction', lotTypeOption === 'auction' ? 'true' : 'false')
     formdata.append('price', price)
-    formdata.append('auction_end_date', dateTime.toISOString())
+    formdata.append('auction_end_date', auctionEndDate.toISOString())
+    formdata.append('city', city)
+    formdata.append('category', category)
     photoList.map((photo) => photo.image !== null && formdata.append('photos_input', photo.image))
     await sendForm(formdata)
       .unwrap()
@@ -310,7 +312,7 @@ export const CreateLotPage: FC = () => {
             <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
               Выбор категории<span className="text-red-500 text-sm font-normal leading-[16.80px] tracking-tight">*</span>
             </div>
-            <SelectInput optionsList={category} defaultOption="Выберите категорию" />
+            <SelectInput optionsList={categories || []} setSelectedValue={(event) => setCategory(event as string)} defaultOption="Выберите категорию" />
           </div>
         </li>
         <li className="w-full h-auto justify-center items-center inline-flex">
@@ -385,18 +387,21 @@ export const CreateLotPage: FC = () => {
             </div>
             <div className="w-full flex gap-[10px]">
               <SelectInput
+                key={'selectDay'}
                 optionsList={daysList}
                 selectedOption={date.day}
                 setSelectedValue={(event) => setDate({ ...date, day: event as string })}
                 defaultOption="дд"
               />
               <SelectInput
+                key={'selectMonth'}
                 optionsList={monthsList}
                 selectedOption={date.month}
                 setSelectedValue={(event) => setDate({ ...date, month: event as string })}
                 defaultOption="мм"
               />
               <SelectInput
+                key={'selectYear'}
                 optionsList={yearsList}
                 selectedOption={date.year}
                 setSelectedValue={(event) => setDate({ ...date, year: event as string })}
@@ -453,7 +458,7 @@ export const CreateLotPage: FC = () => {
             <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
               Область<span className="text-red-500 text-sm font-normal leading-[16.80px] tracking-tight">*</span>
             </div>
-            <SelectInput optionsList={oblastList} defaultOption="Не выбрано" />
+            <SelectInput optionsList={oblastList} setSelectedValue={(event) => setCity(event as string)} defaultOption="Не выбрано" />
           </div>
         </li>
         <li className="w-full h-auto justify-center items-center inline-flex">
@@ -462,7 +467,7 @@ export const CreateLotPage: FC = () => {
               Город / Район
               <span className="text-red-500 text-sm font-normal leading-[16.80px] tracking-tight">*</span>
             </div>
-            <SelectInput optionsList={oblastList} defaultOption="Не выбрано" />
+            <SelectInput optionsList={oblastList} setSelectedValue={(event) => setCity(event as string)} defaultOption="Не выбрано" />
           </div>
         </li>
       </ul>
