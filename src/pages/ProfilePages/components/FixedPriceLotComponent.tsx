@@ -84,7 +84,7 @@ export const FixedPriceLotComponent: FC<ILotComp> = ({ lot, deleteLot, isDeletin
 
         <div className="justify-start items-start gap-1.5 inline-flex">
           <div className=" text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
-            {`Добавлено ${createdDate.toLocaleDateString()}${lot.city ? `${lot.city}` : ''}`}
+            {`Добавлено ${createdDate.toLocaleDateString()}, ${lot.city ? `${lot.city}` : ''}`}
           </div>
         </div>
       </div>
