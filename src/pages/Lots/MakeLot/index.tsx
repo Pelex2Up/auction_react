@@ -113,6 +113,7 @@ const radioGroup = [
 const category = [{ value: '1', label: 'Электроника' }]
 
 export const CreateLotPage: FC = () => {
+  const dateNow = new Date()
   const { data: categories } = useFetchCategoriesQuery()
   const { user } = useAppSelector(selectUser)
   const [tarriffOption, setTarriffOption] = useState<string>('default')
@@ -122,7 +123,11 @@ export const CreateLotPage: FC = () => {
   const [lotDescription, setLotDescription] = useState<string>('')
   const [count, setCount] = useState<string>('')
   const [price, setPrice] = useState<string>('')
-  const [date, setDate] = useState<{ day: string; month: string; year: string }>({ day: '', month: '', year: '' })
+  const [date, setDate] = useState<{ day: string; month: string; year: string }>({
+    day: String(dateNow.getDate()),
+    month: String(dateNow.getMonth()),
+    year: String(dateNow.getFullYear())
+  })
   const [productState, setProductState] = useState<string>('NEW')
   const [photoList, setPhotoList] = useState<{ image: File | null; id: number }[]>([
     { image: null, id: 1 },
@@ -138,7 +143,7 @@ export const CreateLotPage: FC = () => {
   const [externalNumber1, setExternalNumber1] = useState<string | undefined>()
   const [externalNumber2, setExternalNumber2] = useState<string | undefined>()
   const [sendForm, { isLoading }] = useCreateLotMutation()
-  const [sendPhoto] = useSendPhotoMutation()
+  // const [sendPhoto] = useSendPhotoMutation()
   const [createdSuccessfuly, setCreatedSuccessfuly] = useState<boolean>(false)
   const [category, setCategory] = useState<string>('')
   const [city, setCity] = useState<string>('')
@@ -219,20 +224,25 @@ export const CreateLotPage: FC = () => {
     if (user) {
       formdata.append('user', String(user.id))
     }
-    formdata.append('ad_type', typeOption)
-    formdata.append('condition', productState)
-    formdata.append('title', lotName)
-    formdata.append('description', lotDescription)
-    formdata.append('category', '1')
-    formdata.append('is_auction', lotTypeOption === 'auction' ? 'true' : 'false')
-    formdata.append('price', price)
-    formdata.append('auction_end_date', auctionEndDate.toISOString())
-    formdata.append('city', city)
-    formdata.append('category', category)
-    photoList.map((photo) => photo.image !== null && formdata.append('photos_input', photo.image))
-    await sendForm(formdata)
-      .unwrap()
-      .then(() => setCreatedSuccessfuly(true))
+    if (!city) {
+      toast('Пожалуйста, укажите город', { type: 'warning' })
+    } else if (!category) {
+      toast('Необходимо указать категорию товара', { type: 'warning' })
+    } else {
+      formdata.append('ad_type', typeOption)
+      formdata.append('condition', productState)
+      formdata.append('title', lotName)
+      formdata.append('description', lotDescription)
+      formdata.append('is_auction', lotTypeOption === 'auction' ? 'true' : 'false')
+      formdata.append('price', price)
+      formdata.append('auction_end_date', auctionEndDate.toISOString())
+      formdata.append('city', city)
+      formdata.append('category', category)
+      photoList.map((photo) => photo.image !== null && formdata.append('photos_input', photo.image))
+      await sendForm(formdata)
+        .unwrap()
+        .then(() => setCreatedSuccessfuly(true))
+    }
   }
 
   return createdSuccessfuly ? (
@@ -395,15 +405,15 @@ export const CreateLotPage: FC = () => {
               />
               <SelectInput
                 key={'selectMonth'}
-                optionsList={monthsList}
                 selectedOption={date.month}
+                optionsList={monthsList}
                 setSelectedValue={(event) => setDate({ ...date, month: event as string })}
                 defaultOption="мм"
               />
               <SelectInput
                 key={'selectYear'}
-                optionsList={yearsList}
                 selectedOption={date.year}
+                optionsList={yearsList}
                 setSelectedValue={(event) => setDate({ ...date, year: event as string })}
                 defaultOption="гг"
               />

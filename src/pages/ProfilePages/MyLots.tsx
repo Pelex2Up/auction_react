@@ -6,8 +6,8 @@ import { FixedPriceLotComponent } from './components/FixedPriceLotComponent'
 import { toast } from 'react-toastify'
 
 export const MyLots: FC = () => {
-  const { data, isFetching, isSuccess, refetch } = useFetchUserLotsQuery()
-  const [deleteLot, { isSuccess: deletedSuccess, isError }] = useDeleteUserLotMutation()
+  const { data, refetch } = useFetchUserLotsQuery()
+  const [deleteLot, { isSuccess: deletedSuccess, isLoading: isDeleting, isError }] = useDeleteUserLotMutation()
 
   useEffect(() => {
     if (deletedSuccess) {
@@ -22,7 +22,7 @@ export const MyLots: FC = () => {
     }
   }, [isError])
 
-  if (!data || isFetching) {
+  if (!data) {
     return (
       <div className="w-full flex justify-center items-center">
         <Loader />
@@ -33,7 +33,7 @@ export const MyLots: FC = () => {
   return (
     <div className="w-full flex flex-col gap-4 justify-center items-center">
       {data.length && data.length > 0 ? (
-        data.map((lot, index) => <FixedPriceLotComponent deleteLot={deleteLot} key={index + `_${lot.title}`} lot={lot} />)
+        data.map((lot, index) => <FixedPriceLotComponent isDeleting={isDeleting} deleteLot={deleteLot} key={index + `_${lot.title}`} lot={lot} />)
       ) : (
         <EmptyLots />
       )}

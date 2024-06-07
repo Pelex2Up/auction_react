@@ -5,20 +5,31 @@ import { DeleteSVG } from '../../../assets/svg/deleteSVG'
 import styles from './buttonStyles.module.scss'
 import { Tooltip } from '@mui/material'
 import DefaultLink from '../../../components/common/DefaultLink'
+import { Loader } from '../../../components/Loader'
 
 interface ILotComp {
   lot: LotT
   deleteLot: (id: number) => void
+  isDeleting: boolean
 }
 
-export const FixedPriceLotComponent: FC<ILotComp> = ({ lot, deleteLot }) => {
+export const FixedPriceLotComponent: FC<ILotComp> = ({ lot, deleteLot, isDeleting }) => {
   const createdDate = new Date(lot.created)
   const endDate = new Date(lot.auction_end_date)
 
   return (
     <div className="w-full h-auto py-6 pl-0 pr-6 gap-6 flex shadow bg-white">
       <div className="w-full max-w-[259px] h-full relative cursor-pointer">
-        <img className="w-full h-full max-h-[187px] rounded object-fill" src={lot.photos.length > 0 ? lot.photos[0].image : ''} />
+        {lot.photos.length > 0 ? (
+          <img className="w-full h-[187px] rounded object-cover" src={lot.photos[0].image} />
+        ) : (
+          <div className="w-full h-[187px] pl-[9px] pr-2 flex-col justify-center items-center gap-4 inline-flex">
+            <div className="w-[65px] h-[65px] pl-[21px] pr-[23px] pt-[15px] pb-3.5 bg-green-800 rounded justify-center items-center inline-flex">
+              <div className="w-auto h-9 text-white text-3xl font-medium font-['SF Pro Text'] leading-9 tracking-tight">Г</div>
+            </div>
+            <div className="w-auto text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">ИП Гренкина А.А</div>
+          </div>
+        )}
         <div className="w-32 h-10 ml-2 mt-2 flex-col justify-start items-start gap-1.5 inline-flex">
           <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">Аукцион до:</div>
           <div className="flex-col justify-start items-start gap-1.5 flex">
@@ -45,11 +56,17 @@ export const FixedPriceLotComponent: FC<ILotComp> = ({ lot, deleteLot }) => {
                   <EditSVG />
                 </button>
               </Tooltip>
-              <Tooltip title="Удалить">
-                <button onClick={() => deleteLot(lot.id)}>
-                  <DeleteSVG />
-                </button>
-              </Tooltip>
+              {isDeleting ? (
+                <div className="w-[22px] h-[24px] flex items-center justify-center">
+                  <Loader />
+                </div>
+              ) : (
+                <Tooltip title="Удалить">
+                  <button onClick={() => deleteLot(lot.id)}>
+                    <DeleteSVG />
+                  </button>
+                </Tooltip>
+              )}
             </div>
           </div>
           <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">

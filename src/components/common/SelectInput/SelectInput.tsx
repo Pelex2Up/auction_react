@@ -1,6 +1,7 @@
-import { FC, useEffect, useRef, useState } from 'react'
 import styles from './selectInput.module.scss'
 import { ArrowDown } from '../../../assets/svg/arrowDown'
+import { FC, useState, useRef, useEffect } from 'react'
+import { useOutsideClick } from '../../../utils/useOutsideClickHook'
 
 interface DefaultOptions {
   label?: string
@@ -13,67 +14,48 @@ export type SelectInputPropsT = {
   optionsList: DefaultOptions[]
   selectedOption?: string
   defaultOption?: string
-  setSelectedValue?: (value: number | string) => void
+  setSelectedValue?: (value: string) => void
 }
 
 export const SelectInput: FC<SelectInputPropsT> = ({ optionsList, selectedOption, defaultOption = 'выбрать', setSelectedValue }) => {
   const [isOptionsOpen, setIsOptionsOpen] = useState<boolean>(false)
-  const [selectOption, setSelectOption] = useState<number | null>(null)
-  const [defaultOp, setDefaultOp] = useState<string>('')
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
 
   const toggleOptions = () => {
     setIsOptionsOpen(!isOptionsOpen)
   }
 
-  const handleToggleOptionsOpen = () => {
-    setIsOptionsOpen(!selectOption)
-  }
-
   const menuRef = useRef<HTMLDivElement>(null)
+  useOutsideClick(menuRef, () => setIsOptionsOpen(false))
 
-  const handleClick = (event: MouseEvent) => {
-    const target = event?.target as HTMLHeadingElement
+  useEffect(() => {
+    const selectingOption = optionsList.find(
+      (option) => option.value?.toLowerCase() === selectedOption?.toLowerCase() || (option.id && String(option.id) === selectedOption)
+    )
+    setSelectedIndex(selectingOption ? optionsList.indexOf(selectingOption) : null)
+  }, [optionsList, selectedOption])
 
-    if (!menuRef.current?.contains(target)) {
-      setIsOptionsOpen(false)
-    }
+  const handleOptionClick = (index: number) => {
+    toggleOptions()
+    setSelectedIndex(index)
+    setIsOptionsOpen(false)
+    setSelectedValue?.(typeof optionsList[index].id !== 'number' ? String(optionsList[index].value) : String(optionsList[index].id))
   }
-
-  useEffect(() => {
-    document.addEventListener('click', handleClick)
-
-    return () => {
-      document.removeEventListener('click', handleClick)
-    }
-  }, [])
-
-  useEffect(() => {
-    if (typeof selectedOption !== 'undefined') {
-      const indexOfItem = optionsList.findIndex((option) => {
-        (option.value && option.value.toLowerCase() === selectedOption?.toLowerCase()) || (option.id && String(option.id) === selectedOption?.toLowerCase())
-      })
-
-      if (indexOfItem !== -1) {
-        setSelectOption(indexOfItem)
-        setDefaultOp('')
-      } else {
-        setSelectOption(null)
-        setDefaultOp(defaultOption)
-      }
-    } else {
-      setDefaultOp(defaultOption)
-    }
-  }, [defaultOption, optionsList, selectedOption])
 
   return (
     <div ref={menuRef} className={styles.wrapper} onClick={toggleOptions}>
       <div className={styles.container}>
-        <button type="button" onClick={handleToggleOptionsOpen} className="absolute right-0 top-0 z-10">
-          <ArrowDown style={{ transform: `${isOptionsOpen ? 'rotate(180deg)' : ''}`, transition: 'all ease-in-out 80ms' }} />
+        <button type="button" onClick={toggleOptions} className="absolute right-0 top-0 z-10">
+          <ArrowDown
+            style={{
+              transform: `${isOptionsOpen ? 'rotate(180deg)' : ''}`,
+              transition: 'all ease-in-out 80ms'
+            }}
+          />
         </button>
 
         <button className={styles.container_btn} type="button" aria-haspopup="listbox" aria-expanded={isOptionsOpen}>
-          {defaultOp ? defaultOp : typeof selectOption === 'number' ? optionsList[selectOption].label || optionsList[selectOption].title : ''}
+          {selectedIndex !== null ? optionsList[selectedIndex].label || optionsList[selectedIndex].title : defaultOption}
         </button>
         <ul
           tabIndex={-1}
@@ -83,19 +65,8 @@ export const SelectInput: FC<SelectInputPropsT> = ({ optionsList, selectedOption
           }}
           className={`${styles.options} ${isOptionsOpen ? styles.show : ''}`}
         >
-          {optionsList?.map((option, index: number) => (
-            <li
-              key={index + `_${selectedOption}`}
-              tabIndex={0}
-              role="option"
-              aria-selected={selectOption === index}
-              onClick={() => {
-                setSelectOption(index)
-                setDefaultOp('')
-                setIsOptionsOpen(false)
-                setSelectedValue && setSelectedValue(typeof option.id !== 'number' ? (option.value as string) : String(option.id))
-              }}
-            >
+          {optionsList.map((option, index) => (
+            <li key={index} tabIndex={0} role="option" aria-selected={selectedIndex === index} onClick={() => handleOptionClick(index)}>
               {option.label || String(option.title)}
             </li>
           ))}
