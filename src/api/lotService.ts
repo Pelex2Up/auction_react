@@ -7,8 +7,8 @@ export const lotService = createApi({
   baseQuery: baseQuery(),
   tagTypes: ['auction'],
   endpoints: (builder) => ({
-    fetchUserLots: builder.query<LotT[], void>({
-      query: () => '/auction/advertisement/my-ad'
+    fetchUserLots: builder.query<LotT[], { type: string; order: string }>({
+      query: (arg) => `/auction/advertisement/my-ad/?type=${arg.type}&order=${arg.order}`
     }),
     deleteUserLot: builder.mutation<void, number>({
       query: (id) => ({
@@ -16,11 +16,17 @@ export const lotService = createApi({
         method: 'DELETE'
       })
     }),
-    createLot: builder.mutation<any, FormData>({
+    createLot: builder.mutation<LotT, FormData>({
       query: (lotData) => ({
         url: '/auction/advertisement/',
         method: 'POST',
         body: lotData
+      })
+    }),
+    fetchLotData: builder.mutation<LotT, number>({
+      query: (id) => ({
+        url: `/auction/advertisement/${id}`,
+        method: 'GET'
       })
     }),
     sendPhoto: builder.mutation<any, { id: number; lotData: FormData }>({
@@ -36,4 +42,5 @@ export const lotService = createApi({
   })
 })
 
-export const { useCreateLotMutation, useSendPhotoMutation, useFetchUserLotsQuery, useDeleteUserLotMutation, useFetchCategoriesQuery } = lotService
+export const { useCreateLotMutation, useSendPhotoMutation, useFetchUserLotsQuery, useDeleteUserLotMutation, useFetchCategoriesQuery, useFetchLotDataMutation } =
+  lotService

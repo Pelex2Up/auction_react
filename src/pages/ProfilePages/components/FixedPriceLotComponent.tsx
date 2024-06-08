@@ -6,6 +6,8 @@ import styles from './buttonStyles.module.scss'
 import { Tooltip } from '@mui/material'
 import DefaultLink from '../../../components/common/DefaultLink'
 import { Loader } from '../../../components/Loader'
+import { generatePath, useNavigate } from 'react-router-dom'
+import { LotPathE } from '../../../enum'
 
 interface ILotComp {
   lot: LotT
@@ -16,6 +18,7 @@ interface ILotComp {
 export const FixedPriceLotComponent: FC<ILotComp> = ({ lot, deleteLot, isDeleting }) => {
   const createdDate = new Date(lot.created)
   const endDate = new Date(lot.auction_end_date)
+  const navigate = useNavigate()
 
   return (
     <div className="w-full h-auto py-6 pl-0 pr-6 gap-6 flex shadow bg-white">
@@ -25,9 +28,13 @@ export const FixedPriceLotComponent: FC<ILotComp> = ({ lot, deleteLot, isDeletin
         ) : (
           <div className="w-full h-[187px] pl-[9px] pr-2 flex-col justify-center items-center gap-4 inline-flex">
             <div className="w-[65px] h-[65px] pl-[21px] pr-[23px] pt-[15px] pb-3.5 bg-green-800 rounded justify-center items-center inline-flex">
-              <div className="w-auto h-9 text-white text-3xl font-medium font-['SF Pro Text'] leading-9 tracking-tight">Г</div>
+              <div className="w-auto h-9 text-white text-3xl font-medium font-['SF Pro Text'] leading-9 tracking-tight">
+                {lot.user.profile.name[0].toUpperCase()}
+              </div>
             </div>
-            <div className="w-auto text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">ИП Гренкина А.А</div>
+            <div className="w-auto text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">{`${
+              lot.user.profile.type === 'person' ? 'ФЛ' : lot.user.profile.type === 'company' ? 'ЮЛ' : 'ИП'
+            } ${lot.user.profile.name}`}</div>
           </div>
         )}
         <div className="w-32 h-10 ml-2 mt-2 flex-col justify-start items-start gap-1.5 inline-flex">
@@ -52,7 +59,7 @@ export const FixedPriceLotComponent: FC<ILotComp> = ({ lot, deleteLot, isDeletin
 
             <div className="flex gap-2">
               <Tooltip title="Редактировать">
-                <button className={styles.buttons}>
+                <button className={styles.buttons} onClick={() => navigate(generatePath(LotPathE.EditLot, { id: String(lot.id) }))}>
                   <EditSVG />
                 </button>
               </Tooltip>

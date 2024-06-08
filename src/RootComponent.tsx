@@ -17,6 +17,7 @@ import { CreateLotPage } from './pages/Lots/MakeLot'
 import { TarriffPlans } from './pages/MainPages/TarriffPlans'
 import { UsageRules } from './pages/MainPages/Rules'
 import { MyLots } from './pages/ProfilePages/MyLots'
+import { EditLotPage } from './pages/Lots/EditLot'
 
 const RootComponent: React.FC = () => {
   return (
@@ -31,6 +32,7 @@ const RootComponent: React.FC = () => {
           <Route path={PathE.ResetPassword} element={<ResetPasswordForm />} />
           <Route path={PathE.ResetPasswordSuccess} element={<ResetPasswordSuccess />} />
           <Route path={LotPathE.CreateLot} element={<CreateLotPage />} />
+          <Route path={LotPathE.EditLot} element={<EditLotPage />} />
           <Route path={PathE.Profile} element={<ProfilePage />}>
             <Route index element={<MainProfile />} />
             <Route path={ProfilePathE.MyLots} element={<MyLots />} />

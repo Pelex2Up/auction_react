@@ -1,3 +1,5 @@
+import { IProfile } from './profile'
+
 export interface IPhotoResponse {
   advertisement: number
   id: number
@@ -22,5 +24,5 @@ export type LotT = {
   step_bid: string
   title: string
   updated: string
-  user: number
+  user: IProfile
 }
