@@ -53,9 +53,9 @@ export const lotTypeGroup = [
 ]
 
 export const countList = [
-  { value: '1', label: 'шт' },
-  { value: '2', label: 'кг' },
-  { value: '3', label: 'тонн' }
+  { value: 'PIECE', label: 'шт' },
+  { value: 'KG', label: 'кг' },
+  { value: 'TON', label: 'тонн' }
 ]
 
 export const productStateOptions = [
@@ -129,7 +129,7 @@ export const yearsList: { value: string; label: string }[] = Array.from({ length
 }))
 
 export const handleKeyPress: React.KeyboardEventHandler<HTMLInputElement> & React.KeyboardEventHandler<HTMLTextAreaElement> = (event) => {
-  if (!/[0-9]/.test(event.key) && event.key !== 'Backspace') {
+  if (!/[0-9]/.test(event.key) && event.key !== 'Backspace' && event.key !== '.') {
     event.preventDefault()
   }
 }

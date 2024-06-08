@@ -1,3 +1,4 @@
+import { ICategory } from '../types/commonTypes'
 import { LotT } from '../types/lotTypes'
 import { baseQuery } from './baseApi'
 import { createApi } from '@reduxjs/toolkit/query/react'
@@ -23,6 +24,13 @@ export const lotService = createApi({
         body: lotData
       })
     }),
+    updateLot: builder.mutation<LotT, { data: FormData; lotId: number }>({
+      query: (arg) => ({
+        url: `/auction/advertisement/${arg.lotId}`,
+        method: 'PATCH',
+        body: arg.data
+      })
+    }),
     fetchLotData: builder.mutation<LotT, number>({
       query: (id) => ({
         url: `/auction/advertisement/${id}`,
@@ -36,11 +44,18 @@ export const lotService = createApi({
         body: data.lotData
       })
     }),
-    fetchCategories: builder.query<any, void>({
+    fetchCategories: builder.query<ICategory[], void>({
       query: () => '/auction/categories/'
     })
   })
 })
 
-export const { useCreateLotMutation, useSendPhotoMutation, useFetchUserLotsQuery, useDeleteUserLotMutation, useFetchCategoriesQuery, useFetchLotDataMutation } =
-  lotService
+export const {
+  useCreateLotMutation,
+  useUpdateLotMutation,
+  useSendPhotoMutation,
+  useFetchUserLotsQuery,
+  useDeleteUserLotMutation,
+  useFetchCategoriesQuery,
+  useFetchLotDataMutation
+} = lotService

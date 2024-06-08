@@ -1,6 +1,6 @@
 import { FC, useEffect, useState, ChangeEvent, FormEvent } from 'react'
 import { useParams } from 'react-router-dom'
-import { useFetchCategoriesQuery, useFetchLotDataMutation } from '../../../api/lotService'
+import { useFetchCategoriesQuery, useFetchLotDataMutation, useUpdateLotMutation } from '../../../api/lotService'
 import { LotT } from '../../../types/lotTypes'
 import { Loader } from '../../../components/Loader'
 import { RadioButton } from '../../../components/common/RadioButton'
@@ -15,32 +15,22 @@ import Checkbox from '../../../components/common/checkbox'
 import DefaultLink from '../../../components/common/DefaultLink'
 import { PhoneInput, defaultCountries, parseCountry } from 'react-international-phone'
 import styles from './MakeLot.module.scss'
-import {
-  countList,
-  daysList,
-  handleKeyPress,
-  lotTypeGroup,
-  monthsList,
-  oblastList,
-  productStateOptions,
-  radioGroup,
-  tarriffGroup,
-  typeGroup,
-  yearsList
-} from '../MakeLot'
+import { countList, daysList, handleKeyPress, lotTypeGroup, monthsList, oblastList, productStateOptions, radioGroup, typeGroup, yearsList } from '../MakeLot'
+import { ICategory } from '../../../types/commonTypes'
 
 export const EditLotPage: FC = () => {
   const { id: lotId } = useParams()
   const { user } = useAppSelector(selectUser)
-  const [fetchLot, { data: lotPureData }] = useFetchLotDataMutation()
+  const [fetchLot, { data: lotPureData, isError }] = useFetchLotDataMutation()
   const { data: categories } = useFetchCategoriesQuery()
+  const [updateLot, { isSuccess, isLoading }] = useUpdateLotMutation()
   const [lotData, setLotData] = useState<LotT>()
-  const [tarriffOption, setTarriffOption] = useState<string>('default')
   const [typeOption, setTypeOption] = useState<string>('')
   const [lotTypeOption, setLotTypeOption] = useState<string>('')
   const [productState, setProductState] = useState<string>('')
-  const [selectedProfileType, setSelectedProfileType] = useState<string>('')
   const [category, setCategory] = useState<string>('')
+  const [subCategoriesList, setSubCategoriesList] = useState<ICategory[]>()
+  const [subCategory, setSubCategory] = useState<string>('')
 
   useEffect(() => {
     if (!lotPureData && lotId) {
@@ -52,32 +42,103 @@ export const EditLotPage: FC = () => {
           setTypeOption(data.ad_type)
           setProductState(data.condition)
         })
+        .catch(() => toast('Произошла непредвиденная ошибка', { type: 'error' }))
     }
   }, [fetchLot, lotData, lotId, lotPureData])
 
   const handleChangeOption = (option: string, event: ChangeEvent<HTMLInputElement>) => {
-    if (option === 'tariff') {
-      setTarriffOption(event.target.value)
-    } else if (option === 'type') {
+    if (option === 'type') {
       setTypeOption(event.target.value)
     } else if (option === 'lotType') {
       setLotTypeOption(event.target.value)
     } else if (option === 'state') {
       setProductState(event.target.value)
-    } else if (option === 'profile') {
-      setSelectedProfileType(event.target.value)
     }
   }
 
-  const handleSubmitForm = () => {
-    console.log('')
+  const changeLotFields = (fieldName: string, value: any) => {
+    if (lotData) {
+      setLotData({ ...lotData, [fieldName]: value })
+    }
+  }
+
+  const handleSubmitForm = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    if (lotData && lotPureData && categories) {
+      const formdata = new FormData()
+      if (lotData.ad_type !== lotPureData.ad_type) {
+        formdata.append('ad_type', typeOption)
+      }
+    //   if (!subCategory) {
+    //     const cat = categories.find((cat) => cat.title === category)
+    //     formdata.append('category', String(cat?.id))
+    //   } else {
+    //     formdata.append('category', subCategory)
+    //   }
+      if (lotTypeOption !== 'auction' && lotPureData.is_auction) {
+        formdata.append('is_auction', 'true')
+      } else {
+        formdata.append('is_auction', 'false')
+      }
+      if (lotData.city !== lotPureData.city) {
+        formdata.append('city', lotData.city)
+      }
+      if (productState !== lotPureData.condition) {
+        formdata.append('condition', productState)
+      }
+      if (lotData.count !== lotPureData.count) {
+        formdata.append('count', String(lotData.count))
+      }
+      if (lotData.description !== lotPureData.description) {
+        formdata.append('description', lotData.description)
+      }
+      if (lotData.price !== lotPureData.price) {
+        formdata.append('price', lotData.price)
+      }
+      if (lotData.region !== lotPureData.region) {
+        formdata.append('region', lotData.region)
+      }
+      if (lotData.title !== lotPureData.title) {
+        formdata.append('title', lotData.title)
+      }
+      if (lotData.unit !== lotPureData.unit) {
+        formdata.append('unit', lotData.unit)
+      }
+      if (lotData.username !== lotPureData.username) {
+        formdata.append('username', String(lotData.username))
+      }
+      formdata.append('user', String(lotData.profile.id))
+
+      if (formdata) {
+        await updateLot({ data: formdata, lotId: lotData.id })
+          .unwrap()
+          .then(() => toast('Лот успешно обновлен', { type: 'success' }))
+          .catch(() => toast('При редактировании лота произошла ошибка', { type: 'error' }))
+      }
+    }
   }
 
   const toggleToast = () => {
     toast('Вы указали эту информацию в Вашем профиле, ее нельзя изменить при подаче объявления', { type: 'info' })
   }
 
-  if (!lotData) {
+  useEffect(() => {
+    if (!category && lotData && categories) {
+      const cat = categories.find((cat: any) => cat.id === lotData.category)
+      cat && setCategory(cat.title)
+    }
+  }, [categories, category, lotData, setCategory])
+
+  useEffect(() => {
+    if (category && categories) {
+      const subCatList = categories.find((cat) => cat.title === category)?.children
+      if (subCatList) {
+        setSubCategoriesList(subCatList)
+      } else setSubCategoriesList([])
+    }
+  }, [categories, category, setCategory])
+
+  if (!lotData || isError) {
     return (
       <div className="w-full h-[200px] flex justify-center items-center">
         <Loader />
@@ -85,25 +146,28 @@ export const EditLotPage: FC = () => {
     )
   }
 
+  console.log(lotData)
+
   return (
     <form onSubmit={handleSubmitForm} className="lg:px-[60px] px-4 w-full flex flex-col gap-8 relative">
       <ul className="w-full flex flex-col gap-8">
         <li className="text-zinc-900 text-2xl font-extrabold leading-[28.80px]">Редактирование объявления</li>
         <li className="inline-flex items-start gap-8 flex-col md:flex-row">
-          <span className="text-zinc-900 text-lg font-medium leading-snug tracking-tight">Тариф</span>
+          <span className="text-zinc-900 text-lg font-medium leading-snug tracking-tight">Ваш тариф</span>
           <div className="justify-start items-start xl:items-center gap-6 flex flex-col xl:flex-row xl:inline-flex">
-            {tarriffGroup.map((option) => (
+            {user?.subscription ? (
               <RadioButton
-                key={option.label + option.value}
+                key={user.subscription.tariff.name}
                 name="tariff"
-                id={option.value}
-                value={option.value}
-                text={option.label}
-                onChange={(event) => handleChangeOption('tariff', event)}
-                checked={tarriffOption === option.value}
+                id={user.subscription.tariff.name}
+                value={user.subscription.tariff.name}
+                text={user.subscription.tariff.name}
+                checked
                 textStyle={{ style: { fontSize: 14 } }}
               />
-            ))}
+            ) : (
+              <p>Нет оплаченного тарифа</p>
+            )}
           </div>
         </li>
         <li className="inline-flex items-start gap-8 flex-col md:flex-row">
@@ -153,7 +217,7 @@ export const EditLotPage: FC = () => {
               multiline={false}
               className="w-full"
               value={lotData.title}
-              // onChange={(event) => setLotName(event.target.value)}
+              onChange={(event) => changeLotFields('title', event.target.value)}
             />
             <div>
               <span className="text-red-500 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">{lotData.title.length}</span>
@@ -167,9 +231,28 @@ export const EditLotPage: FC = () => {
             <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
               Выбор категории<span className="text-red-500 text-sm font-normal leading-[16.80px] tracking-tight">*</span>
             </div>
-            <SelectInput optionsList={categories || []} setSelectedValue={(event) => setCategory(event as string)} defaultOption="Выберите категорию" />
+            <SelectInput
+              optionsList={categories || []}
+              selectedOption={category}
+              setSelectedValue={(event) => setCategory(event as string)}
+              defaultOption={category || 'Выберите категорию'}
+            />
           </div>
         </li>
+        {subCategoriesList && subCategoriesList.length > 0 && (
+          <li className="w-full h-auto justify-center items-center inline-flex">
+            <div className="w-full h-full relative flex-col justify-start items-start flex gap-2">
+              <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
+                Выбор подкатегории<span className="text-red-500 text-sm font-normal leading-[16.80px] tracking-tight">*</span>
+              </div>
+              <SelectInput
+                optionsList={subCategoriesList}
+                setSelectedValue={(event) => setSubCategory(event as string)}
+                defaultOption="Выберите подкатегорию"
+              />
+            </div>
+          </li>
+        )}
         <li className="w-full h-auto justify-center items-center inline-flex">
           <div className="w-full h-full relative flex-col justify-start items-start flex gap-2">
             <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
@@ -182,7 +265,7 @@ export const EditLotPage: FC = () => {
               required
               className="w-full"
               value={lotData.description}
-              //   onChange={(event) => setLotDescription(event.target.value)}
+              onChange={(event) => changeLotFields('description', event.target.value)}
             />
             <div>
               <span className="text-red-500 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">{lotData.description.length}</span>
@@ -196,7 +279,7 @@ export const EditLotPage: FC = () => {
             <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
               Единица измерения<span className="text-red-500 text-sm font-normal leading-[16.80px] tracking-tight">*</span>
             </div>
-            <SelectInput optionsList={countList} defaultOption="Выберите единицу измерения" />
+            <SelectInput optionsList={countList} defaultOption="Выберите единицу измерения" setSelectedValue={(event) => changeLotFields('unit', event)} />
           </div>
         </li>
         <li className="w-full max-w-[294px] h-auto justify-center items-center inline-flex">
@@ -209,11 +292,11 @@ export const EditLotPage: FC = () => {
               multiline={false}
               placeholder="Введите количество"
               className="w-full"
-              //   value={count}
+              value={lotData.count || ''}
               required
               type="number"
               onKeyDown={handleKeyPress}
-              //   onChange={(event) => setCount(String(event.target.value))}
+              onChange={(event) => changeLotFields('count', Number(event.target.value))}
             />
           </div>
         </li>
@@ -227,15 +310,15 @@ export const EditLotPage: FC = () => {
               multiline={false}
               placeholder="Введите стоимость"
               className="w-full"
-              //   value={price}
+              value={lotData.price}
               required
               type="number"
               onKeyDown={handleKeyPress}
-              //   onChange={(event) => setPrice(String(event.target.value))}
+              onChange={(event) => changeLotFields('price', String(event.target.value))}
             />
           </div>
         </li>
-        <li className="w-full max-w-[294px] h-auto justify-center items-center inline-flex">
+        {/* <li className="w-full max-w-[294px] h-auto justify-center items-center inline-flex">
           <div className="w-full h-full relative flex-col justify-start items-start flex gap-2">
             <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
               Дата окончания аукциона<span className="text-red-500 text-sm font-normal leading-[16.80px] tracking-tight">*</span>
@@ -264,7 +347,7 @@ export const EditLotPage: FC = () => {
               />
             </div>
           </div>
-        </li>
+        </li> */}
         <li className="inline-flex items-start gap-8 flex-col md:flex-row">
           <span className="text-zinc-900 text-base font-normal leading-snug tracking-tight">Состояние</span>
           <div className="justify-start items-start xl:items-center gap-6 flex flex-col xl:flex-row xl:inline-flex">
@@ -313,11 +396,7 @@ export const EditLotPage: FC = () => {
             <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
               Область<span className="text-red-500 text-sm font-normal leading-[16.80px] tracking-tight">*</span>
             </div>
-            <SelectInput
-              optionsList={oblastList}
-              // setSelectedValue={(event) => setCity(event as string)}
-              defaultOption="Не выбрано"
-            />
+            <SelectInput optionsList={oblastList} setSelectedValue={(event) => changeLotFields('region', event as string)} defaultOption="Не выбрано" />
           </div>
         </li>
         <li className="w-full h-auto justify-center items-center inline-flex">
@@ -326,10 +405,13 @@ export const EditLotPage: FC = () => {
               Город / Район
               <span className="text-red-500 text-sm font-normal leading-[16.80px] tracking-tight">*</span>
             </div>
-            <SelectInput
-              optionsList={oblastList}
-              // setSelectedValue={(event) => setCity(event as string)}
-              defaultOption="Не выбрано"
+            <Input
+              maxLength={60}
+              required
+              multiline={false}
+              className="w-full"
+              value={lotData.city}
+              onChange={(event) => changeLotFields('city', event.target.value)}
             />
           </div>
         </li>
@@ -346,7 +428,7 @@ export const EditLotPage: FC = () => {
               value={option.value}
               text={option.label}
               onChange={(event) => handleChangeOption('i', event)}
-              checked={selectedProfileType === option.value}
+              checked={lotData.profile.type === option.value}
             />
           ))}
           <QuestionSVG onClick={toggleToast} className="cursor-pointer" />
@@ -360,20 +442,16 @@ export const EditLotPage: FC = () => {
               required
               multiline={false}
               className="w-full max-w-[535px]"
-              value={lotData.user.username}
+              value={String(lotData.username)}
               name="username"
-              //   onChange={(event) => setUsername(event.target.value)}
+              onChange={(event) => changeLotFields('username', event.target.value)}
             />
           </div>
         </li>
         <li className="w-full h-auto justify-center items-center inline-flex">
           <div className="w-full h-full relative flex-col justify-start items-start flex gap-2">
             <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
-              {lotData.user.profile.type === 'person'
-                ? 'Имя Фамилия Отчество'
-                : lotData.user.profile.type === 'company'
-                ? 'Название организации'
-                : 'Название ИП'}
+              {lotData.profile.type === 'person' ? 'Имя Фамилия Отчество' : lotData.profile.type === 'company' ? 'Название организации' : 'Название ИП'}
             </div>
             <div className="w-full inline-flex gap-[10px] items-center">
               <div className="w-full max-w-[535px]">
@@ -383,7 +461,7 @@ export const EditLotPage: FC = () => {
             </div>
           </div>
         </li>
-        {lotData.user.profile.type !== 'person' && (
+        {lotData.profile.type !== 'person' && (
           <li className="w-full h-auto justify-center items-center inline-flex">
             <div className="w-full h-full relative flex-col justify-start items-start flex gap-2">
               <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">УНП</div>
@@ -457,7 +535,7 @@ export const EditLotPage: FC = () => {
             />
           </div>
           <Button type="submit" variant="primary" text="Сохранить изменения">
-            {/* {isLoading && <Loader />} */}
+            {isLoading && <Loader />}
           </Button>
         </li>
       </ul>

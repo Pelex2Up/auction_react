@@ -30,3 +30,11 @@ export type IconSvgT = {
   onPointerDown?: (event: PointerEvent<SVGSVGElement | SVGPathElement>) => void
   onClick?: () => void
 }
+
+export interface ICategory {
+  id: number
+  parent: number
+  products: number[]
+  title: string
+  children: ICategory[]
+}

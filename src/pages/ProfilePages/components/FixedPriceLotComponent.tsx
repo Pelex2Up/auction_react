@@ -29,12 +29,12 @@ export const FixedPriceLotComponent: FC<ILotComp> = ({ lot, deleteLot, isDeletin
           <div className="w-full h-[187px] pl-[9px] pr-2 flex-col justify-center items-center gap-4 inline-flex">
             <div className="w-[65px] h-[65px] pl-[21px] pr-[23px] pt-[15px] pb-3.5 bg-green-800 rounded justify-center items-center inline-flex">
               <div className="w-auto h-9 text-white text-3xl font-medium font-['SF Pro Text'] leading-9 tracking-tight">
-                {lot.user.profile.name[0].toUpperCase()}
+                {lot.profile.name[0].toUpperCase()}
               </div>
             </div>
             <div className="w-auto text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">{`${
-              lot.user.profile.type === 'person' ? 'ФЛ' : lot.user.profile.type === 'company' ? 'ЮЛ' : 'ИП'
-            } ${lot.user.profile.name}`}</div>
+              lot.profile.type === 'person' ? 'ФЛ' : lot.profile.type === 'company' ? 'ЮЛ' : 'ИП'
+            } ${lot.profile.name}`}</div>
           </div>
         )}
         <div className="w-32 h-10 ml-2 mt-2 flex-col justify-start items-start gap-1.5 inline-flex">

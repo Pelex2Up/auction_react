@@ -5,6 +5,7 @@ import RootComponent from './RootComponent'
 import { persistor, store } from './store/redux/store'
 
 const App: React.FC = () => {
+
   return (
     // <React.StrictMode>
     <Provider store={store}>
