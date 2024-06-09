@@ -1,5 +1,5 @@
-import { FC, useEffect, useState, ChangeEvent, FormEvent } from 'react'
-import { useParams } from 'react-router-dom'
+import { FC, useEffect, useState, ChangeEvent, FormEvent, useCallback } from 'react'
+import { generatePath, useNavigate, useParams } from 'react-router-dom'
 import { useFetchCategoriesQuery, useFetchLotDataMutation, useUpdateLotMutation } from '../../../api/lotService'
 import { LotT } from '../../../types/lotTypes'
 import { Loader } from '../../../components/Loader'
@@ -17,10 +17,12 @@ import { PhoneInput, defaultCountries, parseCountry } from 'react-international-
 import styles from './MakeLot.module.scss'
 import { countList, daysList, handleKeyPress, lotTypeGroup, monthsList, oblastList, productStateOptions, radioGroup, typeGroup, yearsList } from '../MakeLot'
 import { ICategory } from '../../../types/commonTypes'
+import { LotPathE, PathE, ProfilePathE } from '../../../enum'
 
 export const EditLotPage: FC = () => {
   const { id: lotId } = useParams()
   const { user } = useAppSelector(selectUser)
+  const navigate = useNavigate()
   const [fetchLot, { data: lotPureData, isError }] = useFetchLotDataMutation()
   const { data: categories } = useFetchCategoriesQuery()
   const [updateLot, { isSuccess, isLoading }] = useUpdateLotMutation()
@@ -29,8 +31,48 @@ export const EditLotPage: FC = () => {
   const [lotTypeOption, setLotTypeOption] = useState<string>('')
   const [productState, setProductState] = useState<string>('')
   const [category, setCategory] = useState<string>('')
-  const [subCategoriesList, setSubCategoriesList] = useState<ICategory[]>()
+  const [subCategoriesList, setSubCategoriesList] = useState<ICategory[]>([])
   const [subCategory, setSubCategory] = useState<string>('')
+  const [imagesCount, setImagesCount] = useState<number>(0)
+  const [lotPhotos, setLotPhotos] = useState<{ image: File | string | null; order?: number; id: number; advertisement?: number }[]>()
+
+  useEffect(() => {
+    if (categories && categories.length > 0) {
+      if (category) {
+        const currentCategory = categories.find((cat) => String(cat.id) === category || cat.title === category)
+        if (currentCategory?.children && currentCategory.children.length > 0) {
+          setSubCategoriesList(currentCategory.children)
+        } else {
+          setSubCategoriesList([])
+          setSubCategory('')
+        }
+      } else if (lotData && categories) {
+        const cat = categories.find((cat) => cat.id === lotData.category)
+        if (cat) {
+          setCategory(cat.title)
+          setSubCategoriesList(cat.children || [])
+        } else {
+          const subCat = categories.find((cat) => cat.children.some((subCat) => subCat.id === lotData.category))
+          if (subCat) {
+            setCategory(String(subCat.id))
+            const selectedSubCategory = subCat.children?.find((sc) => sc.id === lotData.category || sc.title === subCategory || String(sc.id) === subCategory)
+            if (selectedSubCategory) {
+              setSubCategory(String(selectedSubCategory?.title))
+            }
+          } else {
+            setSubCategory('')
+          }
+        }
+      }
+    }
+  }, [categories, category, lotData, setCategory, setSubCategory, subCategory])
+
+  useEffect(() => {
+    if (lotPhotos) {
+      const filesCount = lotPhotos.filter((item) => item.image !== null).length
+      setImagesCount(filesCount)
+    }
+  }, [lotPhotos])
 
   useEffect(() => {
     if (!lotPureData && lotId) {
@@ -41,10 +83,54 @@ export const EditLotPage: FC = () => {
           setLotTypeOption(data.is_auction ? 'auction' : 'fixPrice')
           setTypeOption(data.ad_type)
           setProductState(data.condition)
+          if (data.photos && data.photos.length > 0) {
+            setLotPhotos(data.photos)
+          } else {
+            setLotPhotos([
+              {
+                image: null,
+                advertisement: data?.id,
+                order: 1,
+                id: 0
+              },
+              {
+                image: null,
+                advertisement: data?.id,
+                order: 2,
+                id: 1
+              },
+              {
+                image: null,
+                advertisement: data?.id,
+                order: 3,
+                id: 2
+              },
+              {
+                image: null,
+                advertisement: data?.id,
+                order: 4,
+                id: 3
+              },
+              {
+                image: null,
+                advertisement: data?.id,
+                order: 5,
+                id: 4
+              },
+              {
+                image: null,
+                advertisement: data?.id,
+                order: 6,
+                id: 5
+              }
+            ])
+          }
         })
         .catch(() => toast('Произошла непредвиденная ошибка', { type: 'error' }))
     }
   }, [fetchLot, lotData, lotId, lotPureData])
+
+  console.log(lotPhotos)
 
   const handleChangeOption = (option: string, event: ChangeEvent<HTMLInputElement>) => {
     if (option === 'type') {
@@ -66,15 +152,17 @@ export const EditLotPage: FC = () => {
     event.preventDefault()
     if (lotData && lotPureData && categories) {
       const formdata = new FormData()
-      if (lotData.ad_type !== lotPureData.ad_type) {
+      if (typeOption !== lotPureData.ad_type) {
         formdata.append('ad_type', typeOption)
       }
-    //   if (!subCategory) {
-    //     const cat = categories.find((cat) => cat.title === category)
-    //     formdata.append('category', String(cat?.id))
-    //   } else {
-    //     formdata.append('category', subCategory)
-    //   }
+      if (!subCategory) {
+        const cat = categories.find((cat) => cat.title === category || String(cat.id) === category)
+        formdata.append('category', String(cat?.id))
+      } else {
+        const subCat = categories.find((cat) => cat.children.find((subCat) => String(subCat.id) === subCategory || subCat.title === subCategory))
+        const selectedSubCategory = subCat?.children?.find((sc) => String(sc.id) === subCategory || sc.title === subCategory)
+        formdata.append('category', String(selectedSubCategory?.id))
+      }
       if (lotTypeOption !== 'auction' && lotPureData.is_auction) {
         formdata.append('is_auction', 'true')
       } else {
@@ -118,25 +206,13 @@ export const EditLotPage: FC = () => {
     }
   }
 
+  if (isSuccess) {
+    navigate(generatePath(ProfilePathE.MyLots))
+  }
+
   const toggleToast = () => {
     toast('Вы указали эту информацию в Вашем профиле, ее нельзя изменить при подаче объявления', { type: 'info' })
   }
-
-  useEffect(() => {
-    if (!category && lotData && categories) {
-      const cat = categories.find((cat: any) => cat.id === lotData.category)
-      cat && setCategory(cat.title)
-    }
-  }, [categories, category, lotData, setCategory])
-
-  useEffect(() => {
-    if (category && categories) {
-      const subCatList = categories.find((cat) => cat.title === category)?.children
-      if (subCatList) {
-        setSubCategoriesList(subCatList)
-      } else setSubCategoriesList([])
-    }
-  }, [categories, category, setCategory])
 
   if (!lotData || isError) {
     return (
@@ -145,8 +221,6 @@ export const EditLotPage: FC = () => {
       </div>
     )
   }
-
-  console.log(lotData)
 
   return (
     <form onSubmit={handleSubmitForm} className="lg:px-[60px] px-4 w-full flex flex-col gap-8 relative">
@@ -246,9 +320,10 @@ export const EditLotPage: FC = () => {
                 Выбор подкатегории<span className="text-red-500 text-sm font-normal leading-[16.80px] tracking-tight">*</span>
               </div>
               <SelectInput
-                optionsList={subCategoriesList}
+                optionsList={subCategoriesList || []}
                 setSelectedValue={(event) => setSubCategory(event as string)}
-                defaultOption="Выберите подкатегорию"
+                selectedOption={subCategory}
+                defaultOption={subCategory.length > 0 ? subCategory : 'Выберите подкатегорию'}
               />
             </div>
           </li>
@@ -279,7 +354,12 @@ export const EditLotPage: FC = () => {
             <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
               Единица измерения<span className="text-red-500 text-sm font-normal leading-[16.80px] tracking-tight">*</span>
             </div>
-            <SelectInput optionsList={countList} defaultOption="Выберите единицу измерения" setSelectedValue={(event) => changeLotFields('unit', event)} />
+            <SelectInput
+              optionsList={countList}
+              selectedOption={lotData.unit}
+              defaultOption="Выберите единицу измерения"
+              setSelectedValue={(event) => changeLotFields('unit', event)}
+            />
           </div>
         </li>
         <li className="w-full max-w-[294px] h-auto justify-center items-center inline-flex">
@@ -369,10 +449,10 @@ export const EditLotPage: FC = () => {
       <div className="w-full h-[0px] border border-zinc-300"></div>
       <ul className="w-full flex flex-col gap-6">
         <li className="text-zinc-900 text-lg font-medium font-['SF Pro Text'] leading-snug tracking-tight">Фотография</li>
-        {/* <li className="w-full h-auto justify-center items-center inline-flex">
+        <li className="w-full h-auto justify-center items-center inline-flex">
           <div className="w-full h-full relative flex-col justify-start items-start flex gap-2">
             <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">Добавьте фотографию</div>
-            <ImagesInput images={photoList} setImages={setPhotoList} />
+            <ImagesInput images={lotPhotos} editLot setImages={setLotPhotos} />
             <div className="flex justify-between w-full">
               <div className="text-zinc-500 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">Максимальный размер файла 10МБ</div>
               <div className="flex items-start justify-start">
@@ -386,7 +466,7 @@ export const EditLotPage: FC = () => {
               </div>
             </div>
           </div>
-        </li> */}
+        </li>
       </ul>
       <div className="w-full h-[0px] border border-zinc-300"></div>
       <ul className="w-full max-w-[535px] flex flex-col gap-6">
@@ -396,7 +476,12 @@ export const EditLotPage: FC = () => {
             <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
               Область<span className="text-red-500 text-sm font-normal leading-[16.80px] tracking-tight">*</span>
             </div>
-            <SelectInput optionsList={oblastList} setSelectedValue={(event) => changeLotFields('region', event as string)} defaultOption="Не выбрано" />
+            <SelectInput
+              optionsList={oblastList}
+              selectedOption={lotData.region}
+              setSelectedValue={(event) => changeLotFields('region', event as string)}
+              defaultOption="Не выбрано"
+            />
           </div>
         </li>
         <li className="w-full h-auto justify-center items-center inline-flex">
