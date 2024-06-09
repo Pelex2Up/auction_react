@@ -130,8 +130,6 @@ export const EditLotPage: FC = () => {
     }
   }, [fetchLot, lotData, lotId, lotPureData])
 
-  console.log(lotPhotos)
-
   const handleChangeOption = (option: string, event: ChangeEvent<HTMLInputElement>) => {
     if (option === 'type') {
       setTypeOption(event.target.value)

@@ -8,6 +8,28 @@ type ImagesInputT = {
 }
 
 export const ImagesInput: FC<ImagesInputT> = ({ images, setImages, editLot }) => {
+  const deleteStorageImage = (order: number) => {
+    const pureImageState = [
+      {
+        image: null,
+        id: order // Используем id инпута как идентификатор
+      }
+    ]
+
+    setImages((prevImages: any) => {
+      const updatedImages = [...prevImages]
+      pureImageState.forEach((newImage) => {
+        const existingIndex = updatedImages.findIndex((image) => image.id === newImage.id)
+        if (existingIndex !== -1) {
+          updatedImages[existingIndex] = newImage
+        } else {
+          updatedImages.push(newImage)
+        }
+      })
+      return updatedImages
+    })
+  }
+
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       if (!editLot) {
@@ -21,7 +43,6 @@ export const ImagesInput: FC<ImagesInputT> = ({ images, setImages, editLot }) =>
           const updatedImages = [...prevImages]
           newImages.forEach((newImage) => {
             const existingIndex = updatedImages.findIndex((image) => image.id === newImage.id)
-            console.log(existingIndex)
             if (existingIndex !== -1) {
               updatedImages[existingIndex] = newImage
             } else {
@@ -59,12 +80,20 @@ export const ImagesInput: FC<ImagesInputT> = ({ images, setImages, editLot }) =>
       <div className="justify-start items-start gap-[20px] lg:gap-[87px] flex-col lg:flex-row inline-flex">
         <div className="w-[110px] h-[110px] relative cursor-pointer">
           {images && images[0].image ? (
-            <img
-              src={typeof images[0].image === 'object' ? URL.createObjectURL(images[0].image) : images[0].image}
-              alt="image-upload"
-              data-input-id={images[0].id}
-              className="object-contain w-full h-full"
-            />
+            <>
+              <img
+                src={typeof images[0].image === 'object' ? URL.createObjectURL(images[0].image) : images[0].image}
+                alt="image-upload"
+                data-input-id={images[0].id}
+                className="object-contain w-full h-full"
+              />
+              <button
+                className="absolute top-0 right-0 w-4 h-4 border rounded-sm shadow-md bg-slate-200 text-slate-500 flex items-center hover:text-slate-400 hover:bg-slate-100 transition-all duration-200 justify-center font-bold"
+                onClick={() => deleteStorageImage(1)}
+              >
+                <p className="text-xs text-center ">x</p>
+              </button>
+            </>
           ) : (
             <div className="w-full h-full relative border flex items-center justify-center bg-white shadow-md border-dashed border-black rounded cursor-pointer">
               <ImagePlaceholder />
@@ -74,11 +103,19 @@ export const ImagesInput: FC<ImagesInputT> = ({ images, setImages, editLot }) =>
         </div>
         <div className="w-[110px] h-[110px] relative cursor-pointer">
           {images && images[1] && images[1].image ? (
-            <img
-              className="object-contain w-full h-full"
-              src={typeof images[1].image === 'object' ? URL.createObjectURL(images[1].image) : images[1].image}
-              alt="image-upload"
-            />
+            <>
+              <img
+                className="object-contain w-full h-full"
+                src={typeof images[1].image === 'object' ? URL.createObjectURL(images[1].image) : images[1].image}
+                alt="image-upload"
+              />
+              <button
+                className="absolute top-0 right-0 w-4 h-4 border rounded-sm shadow-md bg-slate-200 text-slate-500 flex items-center hover:text-slate-400 hover:bg-slate-100 transition-all duration-200 justify-center font-bold"
+                onClick={() => deleteStorageImage(2)}
+              >
+                <p className="text-xs text-center ">x</p>
+              </button>
+            </>
           ) : (
             <div className="w-full h-full relative border flex items-center justify-center bg-white shadow-md border-dashed border-black rounded cursor-pointer">
               <ImagePlaceholder />
@@ -88,11 +125,19 @@ export const ImagesInput: FC<ImagesInputT> = ({ images, setImages, editLot }) =>
         </div>
         <div className="w-[110px] h-[110px] relative cursor-pointer">
           {images && images[2] && images[2].image ? (
-            <img
-              className="object-contain w-full h-full"
-              src={typeof images[2].image === 'object' ? URL.createObjectURL(images[2].image) : images[2].image}
-              alt="image-upload"
-            />
+            <>
+              <img
+                className="object-contain w-full h-full"
+                src={typeof images[2].image === 'object' ? URL.createObjectURL(images[2].image) : images[2].image}
+                alt="image-upload"
+              />
+              <button
+                className="absolute top-0 right-0 w-4 h-4 border rounded-sm shadow-md bg-slate-200 text-slate-500 flex items-center hover:text-slate-400 hover:bg-slate-100 transition-all duration-200 justify-center font-bold"
+                onClick={() => deleteStorageImage(3)}
+              >
+                <p className="text-xs text-center ">x</p>
+              </button>
+            </>
           ) : (
             <div className="w-full h-full relative border flex items-center justify-center bg-white shadow-md border-dashed border-black rounded cursor-pointer">
               <ImagePlaceholder />
@@ -102,11 +147,19 @@ export const ImagesInput: FC<ImagesInputT> = ({ images, setImages, editLot }) =>
         </div>
         <div className="w-[110px] h-[110px] relative cursor-pointer">
           {images && images[3] && images[3].image ? (
-            <img
-              className="object-contain w-full h-full"
-              src={typeof images[3].image === 'object' ? URL.createObjectURL(images[3].image) : images[3].image}
-              alt="image-upload"
-            />
+            <>
+              <img
+                className="object-contain w-full h-full"
+                src={typeof images[3].image === 'object' ? URL.createObjectURL(images[3].image) : images[3].image}
+                alt="image-upload"
+              />
+              <button
+                className="absolute top-0 right-0 w-4 h-4 border rounded-sm shadow-md bg-slate-200 text-slate-500 flex items-center hover:text-slate-400 hover:bg-slate-100 transition-all duration-200 justify-center font-bold"
+                onClick={() => deleteStorageImage(4)}
+              >
+                <p className="text-xs text-center ">x</p>
+              </button>
+            </>
           ) : (
             <div className="w-full h-full relative border flex items-center justify-center bg-white shadow-md border-dashed border-black rounded cursor-pointer">
               <ImagePlaceholder />
@@ -116,11 +169,19 @@ export const ImagesInput: FC<ImagesInputT> = ({ images, setImages, editLot }) =>
         </div>
         <div className="w-[110px] h-[110px] relative cursor-pointer">
           {images && images[4] && images[4].image ? (
-            <img
-              className="object-contain w-full h-full"
-              src={typeof images[4].image === 'object' ? URL.createObjectURL(images[4].image) : images[4].image}
-              alt="image-upload"
-            />
+            <>
+              <img
+                className="object-contain w-full h-full"
+                src={typeof images[4].image === 'object' ? URL.createObjectURL(images[4].image) : images[4].image}
+                alt="image-upload"
+              />
+              <button
+                className="absolute top-0 right-0 w-4 h-4 border rounded-sm shadow-md bg-slate-200 text-slate-500 flex items-center hover:text-slate-400 hover:bg-slate-100 transition-all duration-200 justify-center font-bold"
+                onClick={() => deleteStorageImage(5)}
+              >
+                <p className="text-xs text-center ">x</p>
+              </button>
+            </>
           ) : (
             <div className="w-full h-full relative border flex items-center justify-center bg-white shadow-md border-dashed border-black rounded cursor-pointer">
               <ImagePlaceholder />
@@ -130,11 +191,19 @@ export const ImagesInput: FC<ImagesInputT> = ({ images, setImages, editLot }) =>
         </div>
         <div className="w-[110px] h-[110px] relative cursor-pointer">
           {images && images[5] && images[5].image ? (
-            <img
-              className="object-contain w-full h-full"
-              src={typeof images[5].image === 'object' ? URL.createObjectURL(images[5].image) : images[5].image}
-              alt="image-upload"
-            />
+            <>
+              <img
+                className="object-contain w-full h-full"
+                src={typeof images[5].image === 'object' ? URL.createObjectURL(images[5].image) : images[5].image}
+                alt="image-upload"
+              />
+              <button
+                className="absolute top-0 right-0 w-4 h-4 border rounded-sm shadow-md bg-slate-200 text-slate-500 flex items-center hover:text-slate-400 hover:bg-slate-100 transition-all duration-200 justify-center font-bold"
+                onClick={() => deleteStorageImage(6)}
+              >
+                <p className="text-xs text-center ">x</p>
+              </button>
+            </>
           ) : (
             <div className="w-full h-full relative border flex items-center justify-center bg-white shadow-md border-dashed border-black rounded cursor-pointer">
               <ImagePlaceholder />

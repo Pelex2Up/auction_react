@@ -14,6 +14,7 @@ import styles from './MakeLot.module.scss'
 import { useCreateLotMutation, useFetchCategoriesQuery, useSendPhotoMutation } from '../../../api/lotService'
 import { Loader } from '../../../components/Loader'
 import CreateLotSuccess from './SuccessCreated'
+import { ICategory } from '../../../types/commonTypes'
 
 export const tarriffGroup = [
   {
@@ -139,7 +140,7 @@ export const CreateLotPage: FC = () => {
   const { data: categories } = useFetchCategoriesQuery()
   const { user } = useAppSelector(selectUser)
   const [tarriffOption, setTarriffOption] = useState<string>('default')
-  const [typeOption, setTypeOption] = useState<string>('SELL')
+  const [typeOption, setTypeOption] = useState<string>('BUY')
   const [lotTypeOption, setLotTypeOption] = useState<string>('auction')
   const [lotName, setLotName] = useState<string>('')
   const [lotDescription, setLotDescription] = useState<string>('')
@@ -169,11 +170,29 @@ export const CreateLotPage: FC = () => {
   const [createdSuccessfuly, setCreatedSuccessfuly] = useState<boolean>(false)
   const [category, setCategory] = useState<string>('')
   const [city, setCity] = useState<string>('')
+  const [subCategoriesList, setSubCategoriesList] = useState<ICategory[]>([])
+  const [subCategory, setSubCategory] = useState<string>('')
+  const [region, setRegion] = useState<string>('')
+  const [unit, setUnit] = useState<string>('PIECE')
 
   const countries = defaultCountries.filter((country) => {
     const { iso2 } = parseCountry(country)
     return ['by', 'ru'].includes(iso2)
   })
+
+  useEffect(() => {
+    if (categories && categories.length > 0) {
+      if (category) {
+        const currentCategory = categories.find((cat) => String(cat.id) === category || cat.title === category)
+        if (currentCategory?.children && currentCategory.children.length > 0) {
+          setSubCategoriesList(currentCategory.children)
+        } else {
+          setSubCategoriesList([])
+          setSubCategory('')
+        }
+      }
+    }
+  }, [categories, category, setCategory, setSubCategory, subCategory])
 
   useEffect(() => {
     const filesCount = photoList.filter((item) => item.image !== null).length
@@ -233,9 +252,22 @@ export const CreateLotPage: FC = () => {
       formdata.append('description', lotDescription)
       formdata.append('is_auction', lotTypeOption === 'auction' ? 'true' : 'false')
       formdata.append('price', price)
-      formdata.append('auction_end_date', auctionEndDate.toISOString())
+      if (lotTypeOption === 'auction') {
+        formdata.append('auction_end_date', auctionEndDate.toISOString())
+      }
       formdata.append('city', city)
-      formdata.append('category', category)
+      formdata.append('count', count)
+      formdata.append('region', region)
+      formdata.append('username', username)
+      formdata.append('unit', unit)
+      if (!subCategory) {
+        const cat = categories?.find((cat) => cat.title === category || String(cat.id) === category)
+        formdata.append('category', String(cat?.id))
+      } else {
+        const subCat = categories?.find((cat) => cat.children.find((subCat) => String(subCat.id) === subCategory || subCat.title === subCategory))
+        const selectedSubCategory = subCat?.children?.find((sc) => String(sc.id) === subCategory || sc.title === subCategory)
+        formdata.append('category', String(selectedSubCategory?.id))
+      }
       photoList.map((photo) => photo.image !== null && formdata.append('photos_input', photo.image))
       await sendForm(formdata)
         .unwrap()
@@ -250,20 +282,21 @@ export const CreateLotPage: FC = () => {
       <ul className="w-full flex flex-col gap-8">
         <li className="text-zinc-900 text-2xl font-extrabold leading-[28.80px]">Подача объявления</li>
         <li className="inline-flex items-start gap-8 flex-col md:flex-row">
-          <span className="text-zinc-900 text-lg font-medium leading-snug tracking-tight">Тариф</span>
+          <span className="text-zinc-900 text-lg font-medium leading-snug tracking-tight">Ваш тариф</span>
           <div className="justify-start items-start xl:items-center gap-6 flex flex-col xl:flex-row xl:inline-flex">
-            {tarriffGroup.map((option) => (
+            {user?.subscription ? (
               <RadioButton
-                key={option.label + option.value}
+                key={user.subscription.tariff.name}
                 name="tariff"
-                id={option.value}
-                value={option.value}
-                text={option.label}
-                onChange={(event) => handleChangeOption('tariff', event)}
-                checked={tarriffOption === option.value}
+                id={user.subscription.tariff.name}
+                value={user.subscription.tariff.name}
+                text={user.subscription.tariff.name}
+                checked
                 textStyle={{ style: { fontSize: 14 } }}
               />
-            ))}
+            ) : (
+              <p>Нет оплаченного тарифа</p>
+            )}
           </div>
         </li>
         <li className="inline-flex items-start gap-8 flex-col md:flex-row">
@@ -323,6 +356,21 @@ export const CreateLotPage: FC = () => {
             <SelectInput optionsList={categories || []} setSelectedValue={(event) => setCategory(event as string)} defaultOption="Выберите категорию" />
           </div>
         </li>
+        {subCategoriesList && subCategoriesList.length > 0 && (
+          <li className="w-full h-auto justify-center items-center inline-flex">
+            <div className="w-full h-full relative flex-col justify-start items-start flex gap-2">
+              <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
+                Выбор подкатегории<span className="text-red-500 text-sm font-normal leading-[16.80px] tracking-tight">*</span>
+              </div>
+              <SelectInput
+                optionsList={subCategoriesList || []}
+                setSelectedValue={(event) => setSubCategory(event as string)}
+                selectedOption={subCategory}
+                defaultOption={subCategory.length > 0 ? subCategory : 'Выберите подкатегорию'}
+              />
+            </div>
+          </li>
+        )}
         <li className="w-full h-auto justify-center items-center inline-flex">
           <div className="w-full h-full relative flex-col justify-start items-start flex gap-2">
             <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
@@ -349,7 +397,12 @@ export const CreateLotPage: FC = () => {
             <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
               Единица измерения<span className="text-red-500 text-sm font-normal leading-[16.80px] tracking-tight">*</span>
             </div>
-            <SelectInput optionsList={countList} defaultOption="Выберите единицу измерения" />
+            <SelectInput
+              optionsList={countList}
+              selectedOption={unit}
+              setSelectedValue={(event) => setUnit(event as string)}
+              defaultOption="Выберите единицу измерения"
+            />
           </div>
         </li>
         <li className="w-full max-w-[294px] h-auto justify-center items-center inline-flex">
@@ -388,36 +441,38 @@ export const CreateLotPage: FC = () => {
             />
           </div>
         </li>
-        <li className="w-full max-w-[294px] h-auto justify-center items-center inline-flex">
-          <div className="w-full h-full relative flex-col justify-start items-start flex gap-2">
-            <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
-              Дата окончания аукциона<span className="text-red-500 text-sm font-normal leading-[16.80px] tracking-tight">*</span>
+        {lotTypeOption === 'auction' && (
+          <li className="w-full max-w-[294px] h-auto justify-center items-center inline-flex">
+            <div className="w-full h-full relative flex-col justify-start items-start flex gap-2">
+              <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
+                Дата окончания аукциона<span className="text-red-500 text-sm font-normal leading-[16.80px] tracking-tight">*</span>
+              </div>
+              <div className="w-full flex gap-[10px]">
+                <SelectInput
+                  key={'selectDay'}
+                  optionsList={daysList}
+                  selectedOption={date.day}
+                  setSelectedValue={(event) => setDate({ ...date, day: event as string })}
+                  defaultOption="дд"
+                />
+                <SelectInput
+                  key={'selectMonth'}
+                  selectedOption={date.month}
+                  optionsList={monthsList}
+                  setSelectedValue={(event) => setDate({ ...date, month: event as string })}
+                  defaultOption="мм"
+                />
+                <SelectInput
+                  key={'selectYear'}
+                  selectedOption={date.year}
+                  optionsList={yearsList}
+                  setSelectedValue={(event) => setDate({ ...date, year: event as string })}
+                  defaultOption="гг"
+                />
+              </div>
             </div>
-            <div className="w-full flex gap-[10px]">
-              <SelectInput
-                key={'selectDay'}
-                optionsList={daysList}
-                selectedOption={date.day}
-                setSelectedValue={(event) => setDate({ ...date, day: event as string })}
-                defaultOption="дд"
-              />
-              <SelectInput
-                key={'selectMonth'}
-                selectedOption={date.month}
-                optionsList={monthsList}
-                setSelectedValue={(event) => setDate({ ...date, month: event as string })}
-                defaultOption="мм"
-              />
-              <SelectInput
-                key={'selectYear'}
-                selectedOption={date.year}
-                optionsList={yearsList}
-                setSelectedValue={(event) => setDate({ ...date, year: event as string })}
-                defaultOption="гг"
-              />
-            </div>
-          </div>
-        </li>
+          </li>
+        )}
         <li className="inline-flex items-start gap-8 flex-col md:flex-row">
           <span className="text-zinc-900 text-base font-normal leading-snug tracking-tight">Состояние</span>
           <div className="justify-start items-start xl:items-center gap-6 flex flex-col xl:flex-row xl:inline-flex">
@@ -466,7 +521,7 @@ export const CreateLotPage: FC = () => {
             <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
               Область<span className="text-red-500 text-sm font-normal leading-[16.80px] tracking-tight">*</span>
             </div>
-            <SelectInput optionsList={oblastList} setSelectedValue={(event) => setCity(event as string)} defaultOption="Не выбрано" />
+            <SelectInput optionsList={oblastList} setSelectedValue={(event) => setRegion(event as string)} defaultOption="Не выбрано" />
           </div>
         </li>
         <li className="w-full h-auto justify-center items-center inline-flex">
@@ -475,7 +530,15 @@ export const CreateLotPage: FC = () => {
               Город / Район
               <span className="text-red-500 text-sm font-normal leading-[16.80px] tracking-tight">*</span>
             </div>
-            <SelectInput optionsList={oblastList} setSelectedValue={(event) => setCity(event as string)} defaultOption="Не выбрано" />
+            <Input
+              maxLength={60}
+              required
+              multiline={false}
+              className="w-full"
+              value={city}
+              onChange={(event) => setCity(event.target.value)}
+              placeholder="Введите город"
+            />
           </div>
         </li>
       </ul>
