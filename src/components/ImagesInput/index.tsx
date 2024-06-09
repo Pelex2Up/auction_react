@@ -89,7 +89,7 @@ export const ImagesInput: FC<ImagesInputT> = ({ images, setImages, editLot }) =>
               />
               <button
                 className="absolute top-0 right-0 w-4 h-4 border rounded-sm shadow-md bg-slate-200 text-slate-500 flex items-center hover:text-slate-400 hover:bg-slate-100 transition-all duration-200 justify-center font-bold"
-                onClick={() => deleteStorageImage(1)}
+                onClick={() => (!editLot ? deleteStorageImage(1) : console.log(''))}
               >
                 <p className="text-xs text-center ">x</p>
               </button>
@@ -111,7 +111,7 @@ export const ImagesInput: FC<ImagesInputT> = ({ images, setImages, editLot }) =>
               />
               <button
                 className="absolute top-0 right-0 w-4 h-4 border rounded-sm shadow-md bg-slate-200 text-slate-500 flex items-center hover:text-slate-400 hover:bg-slate-100 transition-all duration-200 justify-center font-bold"
-                onClick={() => deleteStorageImage(2)}
+                onClick={() => (!editLot ? deleteStorageImage(2) : console.log(''))}
               >
                 <p className="text-xs text-center ">x</p>
               </button>
@@ -133,7 +133,7 @@ export const ImagesInput: FC<ImagesInputT> = ({ images, setImages, editLot }) =>
               />
               <button
                 className="absolute top-0 right-0 w-4 h-4 border rounded-sm shadow-md bg-slate-200 text-slate-500 flex items-center hover:text-slate-400 hover:bg-slate-100 transition-all duration-200 justify-center font-bold"
-                onClick={() => deleteStorageImage(3)}
+                onClick={() => (!editLot ? deleteStorageImage(3) : console.log(''))}
               >
                 <p className="text-xs text-center ">x</p>
               </button>
@@ -155,7 +155,7 @@ export const ImagesInput: FC<ImagesInputT> = ({ images, setImages, editLot }) =>
               />
               <button
                 className="absolute top-0 right-0 w-4 h-4 border rounded-sm shadow-md bg-slate-200 text-slate-500 flex items-center hover:text-slate-400 hover:bg-slate-100 transition-all duration-200 justify-center font-bold"
-                onClick={() => deleteStorageImage(4)}
+                onClick={() => (!editLot ? deleteStorageImage(4) : console.log(''))}
               >
                 <p className="text-xs text-center ">x</p>
               </button>
@@ -177,7 +177,7 @@ export const ImagesInput: FC<ImagesInputT> = ({ images, setImages, editLot }) =>
               />
               <button
                 className="absolute top-0 right-0 w-4 h-4 border rounded-sm shadow-md bg-slate-200 text-slate-500 flex items-center hover:text-slate-400 hover:bg-slate-100 transition-all duration-200 justify-center font-bold"
-                onClick={() => deleteStorageImage(5)}
+                onClick={() => (!editLot ? deleteStorageImage(5) : console.log(''))}
               >
                 <p className="text-xs text-center ">x</p>
               </button>
@@ -199,7 +199,7 @@ export const ImagesInput: FC<ImagesInputT> = ({ images, setImages, editLot }) =>
               />
               <button
                 className="absolute top-0 right-0 w-4 h-4 border rounded-sm shadow-md bg-slate-200 text-slate-500 flex items-center hover:text-slate-400 hover:bg-slate-100 transition-all duration-200 justify-center font-bold"
-                onClick={() => deleteStorageImage(6)}
+                onClick={() => (!editLot ? deleteStorageImage(6) : console.log(''))}
               >
                 <p className="text-xs text-center ">x</p>
               </button>
