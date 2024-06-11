@@ -44,6 +44,12 @@ export const lotService = createApi({
         body: data.lotData
       })
     }),
+    deletePhoto: builder.mutation<any, { advertisement: number; photoId: number }>({
+      query: (args) => ({
+        url: `/auction/advertisements/${args.advertisement}/delete-photo/${args.photoId}/`,
+        method: 'DELETE'
+      })
+    }),
     fetchCategories: builder.query<ICategory[], void>({
       query: () => '/auction/categories/'
     })
@@ -57,5 +63,6 @@ export const {
   useFetchUserLotsQuery,
   useDeleteUserLotMutation,
   useFetchCategoriesQuery,
-  useFetchLotDataMutation
+  useFetchLotDataMutation,
+  useDeletePhotoMutation
 } = lotService

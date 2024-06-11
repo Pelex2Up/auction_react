@@ -55,7 +55,7 @@ export const FixedPriceLotComponent: FC<ILotComp> = ({ lot, deleteLot, isDeletin
       <div className="w-full flex flex-col gap-2">
         <div className="w-full flex flex-col gap-1">
           <div className="w-full flex justify-between">
-            <DefaultLink text={lot.title} className={styles.link} />
+            <DefaultLink text={lot.title} className={styles.link} href={generatePath(LotPathE.LotDetail, { lotId: String(lot.id) })} />
 
             <div className="flex gap-2">
               <Tooltip title="Редактировать">

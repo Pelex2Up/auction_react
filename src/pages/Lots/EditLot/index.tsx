@@ -450,7 +450,7 @@ export const EditLotPage: FC = () => {
         <li className="w-full h-auto justify-center items-center inline-flex">
           <div className="w-full h-full relative flex-col justify-start items-start flex gap-2">
             <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">Добавьте фотографию</div>
-            <ImagesInput images={lotPhotos} editLot setImages={setLotPhotos} />
+            <ImagesInput images={lotPhotos} editLot setImages={setLotPhotos} lotData={lotData}/>
             <div className="flex justify-between w-full">
               <div className="text-zinc-500 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">Максимальный размер файла 10МБ</div>
               <div className="flex items-start justify-start">

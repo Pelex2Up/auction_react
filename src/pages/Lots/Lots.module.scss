@@ -1,0 +1,32 @@
+.details {
+  padding: 0; /* Убираем отступы */
+  width: 425px;
+}
+
+.details li {
+  align-items: baseline; /* Выравниваем текст */
+  display: flex; /* Включаем флексы */
+  margin-bottom: 0.5em; /* Отступ снизу */
+}
+
+.details li::before {
+  content: ''; /* Выводим линию */
+  border-bottom: 1px dashed #ccc; /* Параметры линии */
+  flex-grow: 1; /* Линия занимает всё доступное пространство */
+  order: 2; /* Выводим вторым */
+  margin: 0 5px; /* Расстояние от текста */
+}
+
+.details .value {
+  order: 3; /* Выводим третьим */
+}
+
+.arrow {
+  fill: none;
+  width: 16px;
+  height: 16px;
+  
+  path {
+    stroke: #008001;
+  }
+}

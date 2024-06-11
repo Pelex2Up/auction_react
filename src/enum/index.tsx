@@ -11,7 +11,7 @@ export enum PathE {
 }
 
 export enum LotPathE {
-  LotDetail = '/advertisement/:id',
+  LotDetail = '/advertisement/:lotId',
   CreateLot = '/create-lot',
   EditLot = '/advertisement/:id/editing'
 }

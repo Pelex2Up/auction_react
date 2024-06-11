@@ -1,13 +1,20 @@
 import { FC } from 'react'
 import { ImagePlaceholder } from '../../assets/svg/imagePlaceholder'
+import { useDeletePhotoMutation } from '../../api/lotService'
+import { LotT } from '../../types/lotTypes'
 
 type ImagesInputT = {
-  images: { image: File | string | null; id: number }[] | undefined
+  images: { image: File | string | null; id: number; advertisement?: number; order?: number }[] | undefined
   setImages: (value: any) => void
   editLot: boolean
+  lotData?: LotT
 }
 
-export const ImagesInput: FC<ImagesInputT> = ({ images, setImages, editLot }) => {
+export const ImagesInput: FC<ImagesInputT> = ({ images, setImages, editLot, lotData }) => {
+  const [deletePhoto] = useDeletePhotoMutation()
+
+  console.log(images)
+
   const deleteStorageImage = (order: number) => {
     const pureImageState = [
       {
@@ -28,6 +35,30 @@ export const ImagesInput: FC<ImagesInputT> = ({ images, setImages, editLot }) =>
       })
       return updatedImages
     })
+  }
+
+  const handleDeleteImage = (order: number) => {
+    if (lotData && images && images[order] && typeof images[order].image === 'string') {
+      deletePhoto({ advertisement: lotData.id, photoId: images[order].id })
+    } else if (lotData && images && images[order] && typeof images[order].image === 'object') {
+      const pureImageState = [
+        {
+          image: null,
+          order: order // Используем id инпута как идентификатор
+        }
+      ]
+
+      setImages((prevImages: any) => {
+        const updatedImages = [...prevImages]
+        pureImageState.forEach((newImage) => {
+          const existingIndex = updatedImages.findIndex((image) => image.order === newImage.order)
+          if (existingIndex !== -1) {
+            updatedImages[order] = newImage
+          }
+        })
+        return updatedImages
+      })
+    }
   }
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -88,8 +119,9 @@ export const ImagesInput: FC<ImagesInputT> = ({ images, setImages, editLot }) =>
                 className="object-contain w-full h-full"
               />
               <button
+                type="button"
                 className="absolute top-0 right-0 w-4 h-4 border rounded-sm shadow-md bg-slate-200 text-slate-500 flex items-center hover:text-slate-400 hover:bg-slate-100 transition-all duration-200 justify-center font-bold"
-                onClick={() => (!editLot ? deleteStorageImage(1) : console.log(''))}
+                onClick={() => (!editLot ? deleteStorageImage(1) : handleDeleteImage(0))}
               >
                 <p className="text-xs text-center ">x</p>
               </button>
@@ -110,8 +142,9 @@ export const ImagesInput: FC<ImagesInputT> = ({ images, setImages, editLot }) =>
                 alt="image-upload"
               />
               <button
+                type="button"
                 className="absolute top-0 right-0 w-4 h-4 border rounded-sm shadow-md bg-slate-200 text-slate-500 flex items-center hover:text-slate-400 hover:bg-slate-100 transition-all duration-200 justify-center font-bold"
-                onClick={() => (!editLot ? deleteStorageImage(2) : console.log(''))}
+                onClick={() => (!editLot ? deleteStorageImage(2) : handleDeleteImage(1))}
               >
                 <p className="text-xs text-center ">x</p>
               </button>
@@ -132,8 +165,9 @@ export const ImagesInput: FC<ImagesInputT> = ({ images, setImages, editLot }) =>
                 alt="image-upload"
               />
               <button
+                type="button"
                 className="absolute top-0 right-0 w-4 h-4 border rounded-sm shadow-md bg-slate-200 text-slate-500 flex items-center hover:text-slate-400 hover:bg-slate-100 transition-all duration-200 justify-center font-bold"
-                onClick={() => (!editLot ? deleteStorageImage(3) : console.log(''))}
+                onClick={() => (!editLot ? deleteStorageImage(3) : handleDeleteImage(2))}
               >
                 <p className="text-xs text-center ">x</p>
               </button>
@@ -154,8 +188,9 @@ export const ImagesInput: FC<ImagesInputT> = ({ images, setImages, editLot }) =>
                 alt="image-upload"
               />
               <button
+                type="button"
                 className="absolute top-0 right-0 w-4 h-4 border rounded-sm shadow-md bg-slate-200 text-slate-500 flex items-center hover:text-slate-400 hover:bg-slate-100 transition-all duration-200 justify-center font-bold"
-                onClick={() => (!editLot ? deleteStorageImage(4) : console.log(''))}
+                onClick={() => (!editLot ? deleteStorageImage(4) : handleDeleteImage(3))}
               >
                 <p className="text-xs text-center ">x</p>
               </button>
@@ -176,8 +211,9 @@ export const ImagesInput: FC<ImagesInputT> = ({ images, setImages, editLot }) =>
                 alt="image-upload"
               />
               <button
+                type="button"
                 className="absolute top-0 right-0 w-4 h-4 border rounded-sm shadow-md bg-slate-200 text-slate-500 flex items-center hover:text-slate-400 hover:bg-slate-100 transition-all duration-200 justify-center font-bold"
-                onClick={() => (!editLot ? deleteStorageImage(5) : console.log(''))}
+                onClick={() => (!editLot ? deleteStorageImage(5) : handleDeleteImage(4))}
               >
                 <p className="text-xs text-center ">x</p>
               </button>
@@ -198,8 +234,9 @@ export const ImagesInput: FC<ImagesInputT> = ({ images, setImages, editLot }) =>
                 alt="image-upload"
               />
               <button
+                type="button"
                 className="absolute top-0 right-0 w-4 h-4 border rounded-sm shadow-md bg-slate-200 text-slate-500 flex items-center hover:text-slate-400 hover:bg-slate-100 transition-all duration-200 justify-center font-bold"
-                onClick={() => (!editLot ? deleteStorageImage(6) : console.log(''))}
+                onClick={() => (!editLot ? deleteStorageImage(6) : handleDeleteImage(5))}
               >
                 <p className="text-xs text-center ">x</p>
               </button>
