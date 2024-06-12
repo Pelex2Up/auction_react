@@ -18,6 +18,7 @@ import { TarriffPlans } from './pages/MainPages/TarriffPlans'
 import { UsageRules } from './pages/MainPages/Rules'
 import { MyLots } from './pages/ProfilePages/MyLots'
 import { EditLotPage } from './pages/Lots/EditLot'
+import { MyTariffPage } from './pages/ProfilePages/MyTariff'
 
 const RootComponent: React.FC = () => {
   return (
@@ -36,6 +37,7 @@ const RootComponent: React.FC = () => {
           <Route path={PathE.Profile} element={<ProfilePage />}>
             <Route index element={<MainProfile />} />
             <Route path={ProfilePathE.MyLots} element={<MyLots />} />
+            <Route path={ProfilePathE.MyTariff} element={<MyTariffPage />} />
           </Route>
           <Route path={PathE.TarriffPlans} element={<TarriffPlans />} />
           <Route path={PathE.Rules} element={<UsageRules />} />

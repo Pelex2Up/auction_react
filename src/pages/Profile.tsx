@@ -104,6 +104,49 @@ export const ProfilePage: FC = () => {
             />
           </svg>
         </MenuButton>
+        <MenuButton
+          text="Мой тариф"
+          className={path.pathname === ProfilePathE.MyTariff ? styles.selected : ''}
+          onClick={() => {
+            navigate(generatePath(ProfilePathE.MyTariff))
+          }}
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M22.2863 11.8974C22.2702 13.6822 21.7604 15.4277 20.8134 16.9405C19.8663 18.4534 18.519 19.6746 16.9206 20.4688L12.0006 23.1431L7.08057 20.5717C5.46661 19.7696 4.10895 18.5324 3.16083 16.9997C2.21272 15.4669 1.71188 13.6997 1.71486 11.8974V2.57171C1.71486 2.11705 1.89547 1.68102 2.21696 1.35952C2.53845 1.03803 2.97449 0.857422 3.42914 0.857422H20.572C21.0267 0.857422 21.4627 1.03803 21.7842 1.35952C22.1057 1.68102 22.2863 2.11705 22.2863 2.57171V11.8974Z"
+              stroke="black"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <g clipPath="url(#clip0_3125_16358)">
+              <path
+                d="M13.7087 11.7484C15.8389 11.7484 17.5658 10.9425 17.5658 9.94844C17.5658 8.95432 15.8389 8.14844 13.7087 8.14844C11.5785 8.14844 9.85156 8.95432 9.85156 9.94844C9.85156 10.9425 11.5785 11.7484 13.7087 11.7484Z"
+                stroke="black"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M9.85156 9.94922V15.3492C9.85156 16.3392 11.5658 17.1492 13.7087 17.1492C15.8516 17.1492 17.5658 16.3392 17.5658 15.3492V9.94922"
+                stroke="black"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M17.5686 12.6493C17.5686 13.6393 15.8544 14.4493 13.7115 14.4493C11.5686 14.4493 9.85435 13.6393 9.85435 12.6493M13.6258 6.3493C12.6242 5.70029 11.4583 5.38641 10.2829 5.4493C8.14864 5.4493 6.42578 6.2593 6.42578 7.2493C6.42578 7.7803 6.92292 8.2573 7.7115 8.5993"
+                stroke="#1D1E22"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path d="M7.7115 14C6.92292 13.658 6.42578 13.181 6.42578 12.65V7.25" stroke="black" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M7.7115 11.2992C6.92292 10.9572 6.42578 10.4802 6.42578 9.94922" stroke="black" strokeLinecap="round" strokeLinejoin="round" />
+            </g>
+            <defs>
+              <clipPath id="clip0_3125_16358">
+                <rect width="12" height="14" fill="white" transform="translate(6 5)" />
+              </clipPath>
+            </defs>
+          </svg>
+        </MenuButton>
         <div className="my-2 w-full relative h-[0px] border border-zinc-300" />
         <MenuButton text="Выход" onClick={() => logout()}>
           {isLoading ? (

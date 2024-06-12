@@ -17,5 +17,6 @@ export enum LotPathE {
 }
 
 export enum ProfilePathE {
-  MyLots = '/profile/my-lots'
+  MyLots = '/profile/my-lots',
+  MyTariff = '/profile/my-tariff'
 }

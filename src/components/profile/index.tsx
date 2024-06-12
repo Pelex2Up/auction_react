@@ -168,7 +168,7 @@ export default function ProfileHeader({ ...props }: { username: string; avatar: 
                 text="Мой тариф"
                 onClick={() => {
                   setShow(!show)
-                  navigate(generatePath(PathE.TarriffPlans))
+                  navigate(generatePath(ProfilePathE.MyTariff))
                 }}
               >
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
