@@ -22,11 +22,11 @@ const LotDescription: FunctionComponent<FrameComponent4Type> = ({ className = ''
     <section
       className={`self-stretch flex flex-row items-start justify-end pt-[0rem] pb-[1.5rem] box-border max-w-full text-left text-[1.125rem] text-main-black font-text-2 mq825:pl-[1.938rem] mq825:pr-[1.875rem] mq825:box-border ${className}`}
     >
-      <div className="flex-1 flex flex-col items-start justify-start pt-[2.5rem] px-[1.5rem] pb-[4.187rem] box-border relative gap-[2rem] max-w-full mq825:gap-[1rem] mq825:pt-[1.625rem] mq825:pb-[2.75rem] mq825:box-border">
+      <div className="flex-1 flex flex-col items-start justify-start pt-[2.5rem] px-[1.5rem] pb-[4.187rem] box-border relative gap-[2rem] w-full max-w-full mq825:gap-[1rem] mq825:pt-[1.625rem] mq825:pb-[2.75rem] mq825:box-border">
         <div className="w-full h-full absolute !m-[0] top-[0rem] right-[0rem] bottom-[0rem] left-[0rem] shadow-[0px_2px_1px_rgba(23,_23,_23,_0.04),_0px_8px_16px_rgba(23,_23,_23,_0.12)] rounded bg-whitesmoke-100" />
         <div className="w-full flex flex-col items-start justify-start gap-[0.5rem] max-w-full z-[1]">
           <div className="w-full relative tracking-[0.01em] leading-[1.375rem] font-medium inline-block">Описание</div>
-          <div className="self-stretch text-zinc-500 relative text-[1rem] tracking-[0.01em] leading-[120%] text-dark-grey inline-block">
+          <div className="self-stretch w-full text-zinc-500 relative text-[1rem] tracking-[0.01em] leading-[120%] text-dark-grey inline-block">
             {showDescription ? lotData.description : shortenedText}
           </div>
           <button
@@ -44,8 +44,8 @@ const LotDescription: FunctionComponent<FrameComponent4Type> = ({ className = ''
           </button>
         </div>
         <div className="w-[28rem] h-[1.438rem] relative hidden max-w-full z-[2]" />
-        <div className="w-[28.313rem] flex flex-col items-start justify-start pt-[0rem] px-[0rem] pb-[0.5rem] box-border gap-[0.5rem] max-w-full z-[2]">
-          <div className="w-[9.438rem] relative tracking-[0.01em] leading-[1.375rem] font-medium inline-block">Характеристики</div>
+        <div className="w-full lg:w-[28.313rem] flex flex-col items-start justify-start pt-[0rem] px-[0rem] pb-[0.5rem] box-border gap-[0.5rem] max-w-full z-[2]">
+          <div className="relative tracking-[0.01em] leading-[1.375rem] font-medium inline-block">Характеристики</div>
           <div className="self-stretch flex flex-col items-start justify-start gap-[0.75rem] max-w-full text-[1rem] text-dark-grey">
             <div className="self-stretch flex flex-col items-start justify-start gap-[0.5rem]">
               <ul className={styles.details}>
@@ -75,15 +75,15 @@ const LotDescription: FunctionComponent<FrameComponent4Type> = ({ className = ''
             </div>
           </div>
         </div>
-        <div className="w-[24.188rem] h-[6.938rem] flex flex-col items-start justify-start pt-[0rem] px-[0rem] pb-[3.875rem] box-border gap-[1rem] max-w-full z-[1]">
+        <div className="w-full h-auto flex flex-col items-start justify-start pt-[0rem] px-[0rem] box-border gap-[1rem] max-w-full z-[1]">
           <div className="self-stretch flex flex-col items-start justify-start gap-[0.5rem] shrink-0 [debug_commit:bf4bc93]">
-            <div className="w-[6.813rem] relative tracking-[0.01em] leading-[1.375rem] font-medium inline-block">О продавце</div>
+            <div className="relative tracking-[0.01em] leading-[1.375rem] font-medium inline-block">О продавце</div>
             <div className="self-stretch relative text-[1rem] tracking-[0.01em] leading-[120%] text-dark-grey">{lotData.profile.name}</div>
           </div>
-          <div className="w-[17.75rem] flex flex-col items-start justify-start gap-[0.5rem] shrink-0 [debug_commit:bf4bc93] text-[1rem] text-dark-grey">
+          <div className="w-full flex flex-col items-start justify-start gap-[0.5rem] shrink-0 [debug_commit:bf4bc93] text-[1rem] text-dark-grey">
             <div className="relative tracking-[0.01em] leading-[120%] text-main-black inline-block min-w-[5rem]">Контакты:</div>
             <div className="self-stretch relative tracking-[0.01em] leading-[120%]">Электронная почта: {'qqq@qq.ru'}</div>
-            <div className="w-[14.313rem] relative tracking-[0.01em] leading-[120%] inline-block">Телефон: {lotData.profile.phone_number}</div>
+            <div className="relative tracking-[0.01em] leading-[120%] inline-block">Телефон: {lotData.profile.phone_number}</div>
           </div>
         </div>
       </div>

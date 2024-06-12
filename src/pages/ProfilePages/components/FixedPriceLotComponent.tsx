@@ -22,9 +22,9 @@ export const FixedPriceLotComponent: FC<ILotComp> = ({ lot, deleteLot, isDeletin
 
   return (
     <div className="w-full h-auto py-6 pl-0 pr-6 gap-6 flex shadow bg-white">
-      <div className="w-full max-w-[259px] h-full relative cursor-pointer">
+      <div className="w-full max-w-[150px] lg:max-w-[259px] h-full relative cursor-pointer">
         {lot.photos.length > 0 ? (
-          <img className="w-full h-[187px] rounded object-cover" src={lot.photos[0].image} />
+          <img className="w-full h-[100px] lg:h-[187px] rounded object-cover" src={lot.photos[0].image} />
         ) : (
           <div className="w-full h-[187px] pl-[9px] pr-2 flex-col justify-center items-center gap-4 inline-flex">
             <div className="w-[65px] h-[65px] pl-[21px] pr-[23px] pt-[15px] pb-3.5 bg-green-800 rounded justify-center items-center inline-flex">
@@ -54,10 +54,10 @@ export const FixedPriceLotComponent: FC<ILotComp> = ({ lot, deleteLot, isDeletin
       </div>
       <div className="w-full flex flex-col gap-2">
         <div className="w-full flex flex-col gap-1">
-          <div className="w-full flex justify-between">
+          <div className="w-full flex lg:flex-row flex-col-reverse justify-between gap-4">
             <DefaultLink text={lot.title} className={styles.link} href={generatePath(LotPathE.LotDetail, { lotId: String(lot.id) })} />
 
-            <div className="flex gap-2">
+            <div className="flex gap-2 self-end">
               <Tooltip title="Редактировать">
                 <button className={styles.buttons} onClick={() => navigate(generatePath(LotPathE.EditLot, { id: String(lot.id) }))}>
                   <EditSVG />

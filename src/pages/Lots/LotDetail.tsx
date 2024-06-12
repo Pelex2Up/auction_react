@@ -20,7 +20,7 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
 
   return (
     <div
-      className={`w-[75.375rem] flex flex-row items-start justify-start gap-[8.5rem] max-w-full text-left text-[0.875rem] text-main-black font-text-2 mq825:gap-[2.125rem] mq450:gap-[1.063rem] mq1125:flex-wrap mq1400:gap-[4.25rem] ${className}`}
+      className={`w-[75.375rem] flex flex-col lg:flex-row items-start justify-start gap-4 lg:gap-[8.5rem] max-w-full text-left text-[0.875rem] text-main-black font-text-2 mq825:gap-[2.125rem] mq450:gap-[1.063rem] mq1125:flex-wrap mq1400:gap-[4.25rem] ${className}`}
     >
       <div className="flex-1 flex flex-col items-start justify-start gap-[2rem] max-w-full mq825:gap-[1rem] mq825:min-w-full">
         <div className="w-[34.063rem] flex flex-row items-start justify-start gap-[0.75rem] max-w-full mq825:flex-wrap">
@@ -36,7 +36,7 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
             </>
           )}
         </div>
-        <div className="self-stretch max-w-[648px] h-[468px] flex flex-col items-start justify-start gap-[1rem]">
+        <div className="self-stretch max-w-[648px] h-[360px] lg:h-[468px] flex flex-col items-start justify-start gap-[1rem]">
           <div className="self-stretch h-full flex flex-col items-start justify-start relative">
             <LotPhotoSlider images={lotData.photos} />
             <button className="cursor-pointer [border:none] p-[0.5rem] bg-white w-[8.938rem] !m-[0] absolute top-[2rem] left-[0rem] rounded-tl-none rounded-tr rounded-br rounded-bl-none overflow-hidden flex flex-row items-start justify-start box-border whitespace-nowrap text-green-600 z-50">
@@ -47,8 +47,8 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
           </div>
         </div>
       </div>
-      <div className="w-[26.375rem] flex flex-col items-start justify-start pt-[3.062rem] px-[0rem] pb-[0rem] box-border min-w-[26.375rem] max-w-full text-[1.5rem] text-green mq825:min-w-full mq450:pt-[2rem] mq450:box-border mq1125:flex-1">
-        <div className="self-stretch flex flex-col items-start justify-start gap-[2rem] max-w-full mq450:gap-[1rem]">
+      <div className="xl:w-[26.375rem] flex flex-col items-start justify-start lg:pt-[3.062rem] px-[0rem] pb-[0rem] box-border xl:min-w-[26.375rem] max-w-full text-[1.5rem] text-green mq825:min-w-full mq450:pt-[2rem] mq450:box-border mq1125:flex-1">
+        <div className="self-stretch flex flex-col items-start justify-start gap-4 lg:gap-[2rem] max-w-full mq450:gap-[1rem]">
           <div className="w-[24.5rem] flex flex-col items-start justify-start gap-[0.375rem] max-w-full">
             <h2 className="m-0 self-stretch relative text-green-600 tracking-[0.01em] leading-[1.813rem] font-normal font-inherit mq450:text-[1.188rem] mq450:leading-[1.438rem]">
               {lotData.title}

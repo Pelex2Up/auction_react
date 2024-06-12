@@ -45,7 +45,7 @@ export const LotPage: FC = () => {
   }
 
   return (
-    <div className="w-full h-full flex flex-col gap-4 xl:px-[60px]">
+    <div className="w-full h-full flex flex-col gap-4 xl:px-[60px] px-4">
       <LotDetail lotData={lotData} category={mainCategory} subCategory={subCategory} />
       <LotDescription lotData={lotData} category={mainCategory} subCategory={subCategory} />
     </div>

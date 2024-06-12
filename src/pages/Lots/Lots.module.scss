@@ -1,6 +1,10 @@
 .details {
   padding: 0; /* Убираем отступы */
   width: 425px;
+
+  @media (max-width: 1024px) {
+    width: 100%;
+  }
 }
 
 .details li {

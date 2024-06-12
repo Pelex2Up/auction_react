@@ -52,8 +52,8 @@ export const MyLots: FC = () => {
 
   return (
     <div className="w-full flex flex-col gap-4 justify-start items-center">
-      <div className="w-full h-[60px] flex items-center justify-between bg-stone-50 shadow-xl px-4">
-        <div className="h-full justify-start items-center gap-[37px] inline-flex">
+      <div className="w-full lg:h-[60px] h-auto flex lg:flex-row flex-col items-center justify-center lg:justify-between bg-stone-50 shadow-xl px-4 lg:py-0 py-2 lg:gap-0 gap-6">
+        <div className="h-full justify-start items-center lg:gap-[37px] gap-4 inline-flex lg:flex-row flex-col">
           <div className="text-green-800 text-base font-medium font-['SF Pro Text'] leading-tight tracking-tight">Сортировать по</div>
           <div className="justify-start items-start gap-6 flex">
             {sortVariants.map((el, index) => (
