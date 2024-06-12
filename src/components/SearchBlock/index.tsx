@@ -8,7 +8,9 @@ export const SearchBlock: FC = () => {
     <div className="flex flex-col w-full h-full xl:h-[643px] xl:justify-center xl:items-start gap-[25px] xl:flex-row items-center justify-start xl:px-[60px]">
       <div className="xl:w-[50%] w-full h-full xl:h-[643px] relative flex-col justify-start items-center flex gap-6">
         <div className="text-zinc-900 text-2xl font-medium font-['SF Pro Text'] leading-[28.80px] tracking-tight">Обьявления о продаже</div>
-        <SearchInput />
+        <div className="w-[337px]">
+          <SearchInput />
+        </div>
         <div className="w-full justify-center items-start gap-2 inline-flex flex-wrap px-2">
           {alphabet.map((el, index) => (
             <span
@@ -120,16 +122,18 @@ export const SearchBlock: FC = () => {
                 <ManyOptionsCategory array={['Мониторы', 'Системные блоки', 'Сетевое оборудование']} />
               </div>
               <div className="flex-col w-[195px] justify-start items-start gap-3 flex">
-                  <TitleCategory text="Офисная техника" />
-                  <ManyOptionsCategory array={['Мониторы', 'Системные блоки', 'Сетевое оборудование']} />
-                </div>
+                <TitleCategory text="Офисная техника" />
+                <ManyOptionsCategory array={['Мониторы', 'Системные блоки', 'Сетевое оборудование']} />
+              </div>
             </div>
           </div>
         </div>
       </div>
       <div className="xl:w-[50%] w-full h-full xl:h-[643px] relative flex-col justify-start items-center flex gap-6">
         <div className="text-zinc-900 text-2xl font-medium font-['SF Pro Text'] leading-[28.80px] tracking-tight">Обьявления о покупке</div>
-        <SearchInput />
+        <div className="w-[337px]">
+          <SearchInput />
+        </div>
         <div className="w-full justify-center items-start gap-2 inline-flex flex-wrap px-2">
           {alphabet.map((el, index) => (
             <span
@@ -241,9 +245,9 @@ export const SearchBlock: FC = () => {
                 <ManyOptionsCategory array={['Мониторы', 'Системные блоки', 'Сетевое оборудование']} />
               </div>
               <div className="flex-col w-[195px] justify-start items-start gap-3 flex">
-                  <TitleCategory text="Офисная техника" />
-                  <ManyOptionsCategory array={['Мониторы', 'Системные блоки', 'Сетевое оборудование']} />
-                </div>
+                <TitleCategory text="Офисная техника" />
+                <ManyOptionsCategory array={['Мониторы', 'Системные блоки', 'Сетевое оборудование']} />
+              </div>
             </div>
           </div>
         </div>

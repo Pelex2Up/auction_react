@@ -2,8 +2,8 @@ import { FC } from "react";
 
 export const SearchInput: FC = () => {
   return (
-    <div className="w-[337px] h-10 shadow justify-start items-start inline-flex">
-      <div className="w-[261px] h-10 px-4 py-3.5 bg-white rounded-tl rounded-bl flex-col justify-center items-center gap-2.5 inline-flex">
+    <div className="w-full h-10 shadow justify-start items-start inline-flex">
+      <div className="w-full h-10 px-4 py-3.5 bg-white rounded-tl rounded-bl flex-col justify-center items-center gap-2.5 inline-flex">
         <div className="self-stretch justify-start items-center gap-3 inline-flex">
           <div className="w-6 h-6 p-px justify-center items-center flex">
             <div className="w-[22px] h-[22px] relative">
