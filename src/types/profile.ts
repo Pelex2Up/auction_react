@@ -10,6 +10,7 @@ export interface IProfile {
   is_verified: boolean
   is_active: boolean
   is_blocked: boolean
+  is_completed: boolean
   groups: []
   user_permissions: []
   subscription: ISubscription

@@ -51,8 +51,9 @@ export default function Header() {
     if (isSuccess) {
       dispatch(logoutState())
       closeSideMenu()
+      navigate(generatePath(PathE.Home))
     }
-  }, [dispatch, isSuccess])
+  }, [dispatch, isSuccess, navigate])
 
   const openModal = (variant: string) => {
     setVariant(variant)
@@ -112,7 +113,7 @@ export default function Header() {
               text="Подать объявление"
               variant={user ? 'secondary' : 'primary'}
               onClick={() => {
-                auth ? navigate(generatePath(LotPathE.CreateLot)) : openModal(Modal.EmptyProfile)
+                auth && user?.is_completed ? navigate(generatePath(LotPathE.CreateLot)) : openModal(Modal.EmptyProfile)
               }}
             >
               <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -313,6 +314,21 @@ export default function Header() {
                   </MenuButton>
                 </li>
               </div>
+              <Button
+                className={styles.sideBarButton}
+                style={{ marginTop: '1rem' }}
+                text="Подать объявление"
+                variant={user ? 'secondary' : 'primary'}
+                onClick={() => {
+                  closeSideMenu()
+                  openModal(user.is_completed ? Modal.CreateLot : Modal.EmptyProfile)
+                }}
+              >
+                <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M11 1V21V1ZM1 10.9385H21H1Z" fill="white" />
+                  <path d="M11 1V21M1 10.9385H21" stroke={user ? 'green' : 'white'} strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </Button>
             </ul>
           ) : (
             <div className="flex flex-col gap-4">
@@ -331,7 +347,10 @@ export default function Header() {
                 className={styles.sideBarButton}
                 text="Подать объявление"
                 variant={user ? 'secondary' : 'primary'}
-                onClick={() => openModal(Modal.EmptyProfile)}
+                onClick={() => {
+                  openModal(Modal.EmptyProfile)
+                  closeSideMenu()
+                }}
               >
                 <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M11 1V21V1ZM1 10.9385H21H1Z" fill="white" />

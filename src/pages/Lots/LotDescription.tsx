@@ -14,7 +14,7 @@ export type FrameComponent4Type = {
 const LotDescription: FunctionComponent<FrameComponent4Type> = ({ className = '', lotData, category: mainCategory, subCategory }) => {
   const [showDescription, setShowDescription] = useState<boolean>(false)
   const date = new Date(lotData.created)
-  const MAX_LENGTH = 400
+  const MAX_LENGTH = 200
 
   const shortenedText = lotData.description.length > MAX_LENGTH ? `${lotData.description.slice(0, MAX_LENGTH)}...` : lotData.description
 

@@ -7,13 +7,15 @@ import 'react-toastify/dist/ReactToastify.css'
 
 export const RootLayout: FC = () => {
   return (
-    <div className="w-screen min-h-screen flex relative flex-col gap-[20px]">
-      <Suspense fallback={<></>}>
-        <Header />
-      </Suspense>
-      <Outlet />
-      <ToastContainer position="bottom-right" hideProgressBar/>
-      <Footer />
-    </div>
+    <section className="w-screen flex justify-center">
+      <div className="w-full max-w-[1720px] min-h-screen flex relative flex-col gap-[20px]">
+        <Suspense fallback={<></>}>
+          <Header />
+        </Suspense>
+        <Outlet />
+        <ToastContainer position="bottom-right" hideProgressBar />
+        <Footer />
+      </div>
+    </section>
   )
 }

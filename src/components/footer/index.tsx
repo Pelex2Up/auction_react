@@ -8,7 +8,7 @@ import { PathE } from '../../enum'
 
 export default function Footer() {
   return (
-    <div className="w-screen xl:px-[50px] px-[20px] py-6 flex flex-col gap-[24px] bg-[#F6F6F6] relative">
+    <div className="w-full xl:px-[50px] px-[20px] py-6 flex flex-col gap-[24px] bg-[#F6F6F6] relative">
       <img src={BGImage} className="absolute xl:top-[33px] right-[20px] top-[250px] xl:right-[50px] xl:h-[250px] xl:w-[250px] w-[150px] h-[150px]" alt="shop" />
       <img
         src={ShopImage}
