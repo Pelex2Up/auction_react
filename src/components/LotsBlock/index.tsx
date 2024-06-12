@@ -63,10 +63,18 @@ export const LotsBlock: FC = () => {
           slidesPerView={'auto'}
           modules={[Pagination]}
           pagination={{ clickable: true }}
+          centeredSlides={true}
+          centeredSlidesBounds
+          centerInsufficientSlides
+          style={{ height: 'auto', alignItems: 'center' }}
           breakpoints={{
+            300: {
+              slidesPerView: 1,
+              spaceBetween: 10
+            },
             668: {
               slidesPerView: 2,
-              spaceBetween: 20
+              spaceBetween: 10
             },
             1024: {
               slidesPerView: 3,
@@ -75,22 +83,26 @@ export const LotsBlock: FC = () => {
             1300: {
               slidesPerView: 4,
               spaceBetween: 20
+            },
+            1520: {
+              slidesPerView: 5,
+              spaceBetween: 20
             }
           }}
         >
-          <SwiperSlide className="flex justify-center">
+          <SwiperSlide style={{ display: 'flex', justifyContent: 'center' }}>
             <AuctionCard />
           </SwiperSlide>
-          <SwiperSlide className="flex justify-center">
+          <SwiperSlide style={{ display: 'flex', justifyContent: 'center' }}>
             <FixedCard />
           </SwiperSlide>
-          <SwiperSlide className="flex justify-center">
+          <SwiperSlide style={{ display: 'flex', justifyContent: 'center' }}>
             <SmallCard />
           </SwiperSlide>
-          <SwiperSlide className="flex justify-center">
+          <SwiperSlide style={{ display: 'flex', justifyContent: 'center' }}>
             <AuctionCard />
           </SwiperSlide>
-          <SwiperSlide className="flex justify-center">
+          <SwiperSlide style={{ display: 'flex', justifyContent: 'center' }}>
             <SmallCard />
           </SwiperSlide>
         </Swiper>

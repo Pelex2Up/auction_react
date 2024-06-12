@@ -68,9 +68,9 @@ export const MyLots: FC = () => {
             ))}
           </div>
         </div>
-        <div className="h-full justify-start items-center gap-4 inline-flex">
+        <div className="h-full justify-start items-center gap-4 inline-flex cursor-pointer" onClick={handleChangeOrder}>
           <div className="text-zinc-500 text-base font-normal font-['SF Pro Text'] leading-tight tracking-tight">Новые объявления</div>
-          <button className="w-6 h-6 justify-center items-center flex" onClick={handleChangeOrder}>
+          <button className="w-6 h-6 justify-center items-center flex">
             <SortSVG />
           </button>
         </div>
