@@ -1,14 +1,14 @@
 import { FC } from 'react'
-import { selectUser, useAppSelector } from '../../store/hooks'
 import { Loader } from '../../components/Loader'
 import notify from '../../assets/images/notification.png'
 import DefaultLink from '../../components/common/DefaultLink'
 import { PathE } from '../../enum'
+import { useFetchProfileQuery } from '../../api/userService'
 
 export const MyTariffPage: FC = () => {
-  const { user } = useAppSelector(selectUser)
+  const { data: user, isFetching, isSuccess } = useFetchProfileQuery()
 
-  if (!user) {
+  if (!user || isFetching || !isSuccess) {
     return (
       <div className="w-full lg:px-[60px] px-4 flex flex-col items-center justify-center gap-6">
         <Loader />
@@ -18,7 +18,7 @@ export const MyTariffPage: FC = () => {
 
   return (
     <div className="w-full px-4 flex flex-col gap-6">
-      {user?.subscription.tariff ? (
+      {user.subscription.tariff ? (
         <>
           <div className="text-zinc-900 text-2xl font-medium font-['SF Pro Text'] leading-[28.80px] tracking-tight">Мой тариф</div>
           <div className="w-full max-w-[379px] h-[150px] relative bg-[#EFF6F3] shadow">

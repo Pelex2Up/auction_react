@@ -1,4 +1,4 @@
-import { IProfile } from '../types/profile'
+import { IProfile, ISubscription } from '../types/profile'
 import { baseQuery } from './baseApi'
 import { createApi } from '@reduxjs/toolkit/query/react'
 
@@ -23,8 +23,12 @@ export const userService = createApi({
         method: 'PATCH',
         body: newProfileData
       })
+    }),
+    fetchSubsctiption: builder.query<ISubscription, void>({
+      query: () => '/subscription/subscriptions/'
     })
   })
 })
 
-export const { useFetchProfileQuery, useLazyFetchProfileQuery, useChangePasswordMutation, useUpdateProfileDataMutation } = userService
+export const { useFetchProfileQuery, useLazyFetchProfileQuery, useChangePasswordMutation, useUpdateProfileDataMutation, useFetchSubsctiptionQuery } =
+  userService

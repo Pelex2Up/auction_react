@@ -140,7 +140,9 @@ export default function Header() {
         </div>
         <div className="xl:w-full xl:h-[54px] xl:justify-between xl:items-center xl:inline-flex hidden">
           <div className="grow shrink basis-0 self-stretch justify-between items-center inline-flex">
-            <img src={HammerLogo} className="w-[293px] h-[54px]" alt="logo" />
+            <a href={PathE.Home}>
+              <img src={HammerLogo} className="w-[293px] h-[54px]" alt="logo" />
+            </a>
             <div className="inline-flex gap-4 w-1/2">
               <Button text={'Все объявления'} className="min-w-[168px]" variant="secondary">
                 <IconBurgerSVG />
