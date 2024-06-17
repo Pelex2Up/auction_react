@@ -19,6 +19,13 @@ import { countList, daysList, handleKeyPress, lotTypeGroup, monthsList, oblastLi
 import { ICategory } from '../../../types/commonTypes'
 import { LotPathE, PathE, ProfilePathE } from '../../../enum'
 
+export type LotImageT = {
+  image: File | string | null
+  order: number
+  id: number
+  advertisement?: number
+}
+
 export const EditLotPage: FC = () => {
   const { id: lotId } = useParams()
   const { user } = useAppSelector(selectUser)
@@ -34,7 +41,29 @@ export const EditLotPage: FC = () => {
   const [subCategoriesList, setSubCategoriesList] = useState<ICategory[]>([])
   const [subCategory, setSubCategory] = useState<string>('')
   const [imagesCount, setImagesCount] = useState<number>(0)
-  const [lotPhotos, setLotPhotos] = useState<{ image: File | string | null; order?: number; id: number; advertisement?: number }[]>()
+  const [lotPhotos, setLotPhotos] = useState<LotImageT[]>()
+
+  const fillMissingOrders = useCallback(
+    (objects: LotImageT[]): LotImageT[] => {
+      const sortedObjects = [...objects].sort((a, b) => a.order - b.order);
+      const missingOrders = [];
+  
+      for (let i = 1; i <= 6; i++) {
+        if (!sortedObjects.some((obj) => obj.order === i)) {
+          missingOrders.push({ order: i, image: null, id: i, advertisement: lotData?.id });
+        }
+      }
+  
+      return [...sortedObjects, ...missingOrders].sort((a, b) => a.order - b.order);
+    },
+    [lotData?.id]
+  );
+  
+  useEffect(() => {
+    if (lotData && lotPhotos && lotPhotos.length < 6) {
+      setLotPhotos(fillMissingOrders(lotPhotos));
+    }
+  }, [fillMissingOrders, lotData, lotPhotos]);
 
   useEffect(() => {
     if (categories && categories.length > 0) {
@@ -226,8 +255,8 @@ export const EditLotPage: FC = () => {
         <li className="text-zinc-900 text-2xl font-extrabold leading-[28.80px]">Редактирование объявления</li>
         <li className="inline-flex items-start gap-8 flex-col md:flex-row">
           <span className="text-zinc-900 text-lg font-medium leading-snug tracking-tight">Ваш тариф</span>
-          <div className="justify-start items-start xl:items-center gap-6 flex flex-col xl:flex-row xl:inline-flex">
-            {user?.subscription ? (
+          <div className="justify-start h-full items-start xl:items-center gap-6 flex flex-col xl:flex-row xl:inline-flex">
+            {user?.subscription && user.subscription.tariff ? (
               <RadioButton
                 key={user.subscription.tariff.name}
                 name="tariff"
@@ -238,7 +267,7 @@ export const EditLotPage: FC = () => {
                 textStyle={{ style: { fontSize: 14 } }}
               />
             ) : (
-              <p>Нет оплаченного тарифа</p>
+              <p className="flex h-full items-center text-base leading-snug">Нет оплаченного тарифа</p>
             )}
           </div>
         </li>
@@ -450,7 +479,7 @@ export const EditLotPage: FC = () => {
         <li className="w-full h-auto justify-center items-center inline-flex">
           <div className="w-full h-full relative flex-col justify-start items-start flex gap-2">
             <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">Добавьте фотографию</div>
-            <ImagesInput images={lotPhotos} editLot setImages={setLotPhotos} lotData={lotData}/>
+            <ImagesInput images={lotPhotos} editLot setImages={setLotPhotos} lotData={lotData} />
             <div className="flex justify-between w-full">
               <div className="text-zinc-500 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">Максимальный размер файла 10МБ</div>
               <div className="flex items-start justify-start">

@@ -81,9 +81,13 @@ const LotDescription: FunctionComponent<FrameComponent4Type> = ({ className = ''
             <div className="self-stretch relative text-[1rem] tracking-[0.01em] leading-[120%] text-dark-grey">{lotData.profile.name}</div>
           </div>
           <div className="w-full flex flex-col items-start justify-start gap-[0.5rem] shrink-0 [debug_commit:bf4bc93] text-[1rem] text-dark-grey">
-            <div className="relative tracking-[0.01em] leading-[120%] text-main-black inline-block min-w-[5rem]">Контакты:</div>
-            <div className="self-stretch relative tracking-[0.01em] leading-[120%]">Электронная почта: {'qqq@qq.ru'}</div>
-            <div className="relative tracking-[0.01em] leading-[120%] inline-block">Телефон: {lotData.profile.phone_number}</div>
+            <div className="relative tracking-[0.01em] leading-[120%] text-main-black inline-block min-w-[5rem] font-medium">Контакты:</div>
+            <div className="self-stretch relative tracking-[0.01em] leading-[120%]">
+              Электронная почта: <a href={`mailto:${lotData.profile.email}?subject=Вопрос`}>{lotData.profile.email}</a>
+            </div>
+            <div className="relative tracking-[0.01em] leading-[120%] inline-block">
+              Телефон: <a href={`tel:${lotData.profile.phone_number}`} type='tel'>{lotData.profile.phone_number}</a>
+            </div>
           </div>
         </div>
       </div>

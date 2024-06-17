@@ -116,7 +116,7 @@ export default function Header() {
               text="Подать объявление"
               variant={user ? 'secondary' : 'primary'}
               onClick={() => {
-                auth && user?.is_completed ? navigate(generatePath(LotPathE.CreateLot)) : openModal(Modal.EmptyProfile)
+                auth && user?.profile.is_completed ? navigate(generatePath(LotPathE.CreateLot)) : openModal(Modal.EmptyProfile)
               }}
             >
               <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -141,8 +141,8 @@ export default function Header() {
         <div className="xl:w-full xl:h-[54px] xl:justify-between xl:items-center xl:inline-flex hidden">
           <div className="grow shrink basis-0 self-stretch justify-between items-center inline-flex">
             <img src={HammerLogo} className="w-[293px] h-[54px]" alt="logo" />
-            <div className='inline-flex gap-4 w-1/2'>
-              <Button text={'Все объявления'} className='min-w-[168px]' variant="secondary">
+            <div className="inline-flex gap-4 w-1/2">
+              <Button text={'Все объявления'} className="min-w-[168px]" variant="secondary">
                 <IconBurgerSVG />
               </Button>
               <SearchInput />
@@ -390,7 +390,7 @@ export default function Header() {
                 variant={user ? 'secondary' : 'primary'}
                 onClick={() => {
                   closeSideMenu()
-                  openModal(user.is_completed ? Modal.CreateLot : Modal.EmptyProfile)
+                  user.profile.is_completed ? navigate(generatePath(LotPathE.CreateLot)) : openModal(Modal.EmptyProfile)
                 }}
               >
                 <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">

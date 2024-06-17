@@ -28,11 +28,15 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
             Главная
           </a>
           <span className="relative tracking-[0.04em] leading-[1.063rem] inline-block mq825:w-full mq825:h-[0.313rem]">/</span>
-          <a href='#' className={`${!subCategory && 'text-green-600'} relative tracking-[0.04em] leading-[1.063rem] inline-block`}>{category}</a>
+          <a href="#" className={`${!subCategory && 'text-green-600'} relative tracking-[0.04em] leading-[1.063rem] inline-block`}>
+            {category}
+          </a>
           {subCategory && (
             <>
               <span className="relative tracking-[0.04em] leading-[1.063rem] inline-block mq825:w-full mq825:h-[0.313rem]">/</span>
-              <a href='#' className="text-green-600 relative tracking-[0.04em] leading-[1.063rem] inline-block">{subCategory}</a>
+              <a href="#" className="text-green-600 relative tracking-[0.04em] leading-[1.063rem] inline-block">
+                {subCategory}
+              </a>
             </>
           )}
         </div>
@@ -73,10 +77,10 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
                     3 500 BYN
                   </div>
                 </div>
-                <div className="self-stretch flex flex-col items-start justify-start gap-[0.75rem]">
-                  <div className="relative text-zinc-500 tracking-[0.01em] leading-[1.063rem] inline-block min-w-[5.125rem] z-[1]">Количество</div>
-                  <div className="self-stretch flex flex-col items-start justify-start gap-[0.5rem] text-[1.125rem] text-main-black">
-                    {lotData.count && (
+                {lotData.count && (
+                  <div className="self-stretch flex flex-col items-start justify-start gap-[0.75rem]">
+                    <div className="relative text-zinc-500 tracking-[0.01em] leading-[1.063rem] inline-block min-w-[5.125rem] z-[1]">Количество</div>
+                    <div className="self-stretch flex flex-col items-start justify-start gap-[0.5rem] text-[1.125rem] text-main-black">
                       <div className="self-stretch flex flex-row items-start justify-start gap-[0.5rem] z-[1]">
                         <div className="flex-1 flex flex-row items-start justify-between rounded-lg border-[1px] border-solid border-grey box-border py-[0rem] pr-[0.062rem] pl-[0rem] relative gap-[1.25rem]">
                           <button
@@ -101,19 +105,22 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
                           </div>
                         </div>
                       </div>
-                    )}
-                    <div className="w-[7.313rem] text-zinc-500 relative text-[0.875rem] tracking-[0.01em] leading-[1.063rem] text-dark-grey inline-block z-[1]">
-                      Подано 2 заявки
+
+                      <div className="w-[7.313rem] text-zinc-500 relative text-[0.875rem] tracking-[0.01em] leading-[1.063rem] text-dark-grey inline-block z-[1]">
+                        Подано 2 заявки
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
               <button className="h-[1.5rem] w-[1.5rem] relative overflow-hidden shrink-0 z-[1]">
                 <ShopperSVG />
               </button>
             </div>
             <div className="self-stretch w-full flex flex-row items-start justify-start gap-[1.125rem] z-[1] mq450:flex-wrap">
-              <Button variant="secondary" className="w-full" text="Написать продавцу" />
+              <a href={`mailto:${lotData.profile.email}?subject=Вопрос`} type='email' className='w-full'>
+                <Button variant="secondary" className="w-full" text="Написать продавцу" />
+              </a>
               <Button variant="primary" className="w-full" text="Купить" />
             </div>
           </div>

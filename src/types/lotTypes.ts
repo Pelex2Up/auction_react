@@ -4,6 +4,7 @@ export interface IPhotoResponse {
   advertisement: number
   id: number
   image: string
+  order: number
 }
 
 export type LotT = {

@@ -10,7 +10,6 @@ export interface IProfile {
   is_verified: boolean
   is_active: boolean
   is_blocked: boolean
-  is_completed: boolean
   groups: []
   user_permissions: []
   subscription: ISubscription
@@ -23,6 +22,8 @@ export interface IProfileDetails {
   name: string
   unp: string
   phone_number: string
+  is_completed: boolean
+  email?: string
 }
 
 export interface ISubscription {

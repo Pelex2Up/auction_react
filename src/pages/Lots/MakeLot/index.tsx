@@ -152,13 +152,13 @@ export const CreateLotPage: FC = () => {
     year: String(dateNow.getFullYear())
   })
   const [productState, setProductState] = useState<string>('NEW')
-  const [photoList, setPhotoList] = useState<{ image: File | null; id: number }[]>([
-    { image: null, id: 1 },
-    { image: null, id: 2 },
-    { image: null, id: 3 },
-    { image: null, id: 4 },
-    { image: null, id: 5 },
-    { image: null, id: 6 }
+  const [photoList, setPhotoList] = useState<{ image: File | null; id: number; order: number }[]>([
+    { image: null, id: 1, order: 1 },
+    { image: null, id: 2, order: 2 },
+    { image: null, id: 3, order: 3 },
+    { image: null, id: 4, order: 4 },
+    { image: null, id: 5, order: 5 },
+    { image: null, id: 6, order: 6 }
   ])
   const [imagesCount, setImagesCount] = useState<number>(0)
   const [selectedProfileType, setSelectedProfileType] = useState<string>('')
@@ -239,7 +239,7 @@ export const CreateLotPage: FC = () => {
     const auctionEndDate = new Date(`${date.month}.${date.day}.${date.year}`)
     const formdata = new FormData()
     if (user) {
-      formdata.append('user', String(user.id))
+      formdata.append('user', String(user.profile.id))
     }
     if (!city) {
       toast('Пожалуйста, укажите город', { type: 'warning' })
@@ -272,6 +272,7 @@ export const CreateLotPage: FC = () => {
       await sendForm(formdata)
         .unwrap()
         .then(() => setCreatedSuccessfuly(true))
+        .catch(() => toast('Произошла непредвиденная ошибка', { type: 'error' }))
     }
   }
 
@@ -283,8 +284,8 @@ export const CreateLotPage: FC = () => {
         <li className="text-zinc-900 text-2xl font-extrabold leading-[28.80px]">Подача объявления</li>
         <li className="inline-flex items-start gap-8 flex-col md:flex-row">
           <span className="text-zinc-900 text-lg font-medium leading-snug tracking-tight">Ваш тариф</span>
-          <div className="justify-start items-start xl:items-center gap-6 flex flex-col xl:flex-row xl:inline-flex">
-            {user?.subscription ? (
+          <div className="justify-start h-full items-start xl:items-center gap-6 flex flex-col xl:flex-row xl:inline-flex">
+            {user?.subscription && user.subscription.tariff ? (
               <RadioButton
                 key={user.subscription.tariff.name}
                 name="tariff"
@@ -295,7 +296,7 @@ export const CreateLotPage: FC = () => {
                 textStyle={{ style: { fontSize: 14 } }}
               />
             ) : (
-              <p>Нет оплаченного тарифа</p>
+              <p className="flex h-full items-center text-base leading-snug">Нет оплаченного тарифа</p>
             )}
           </div>
         </li>

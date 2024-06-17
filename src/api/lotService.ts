@@ -39,7 +39,7 @@ export const lotService = createApi({
     }),
     sendPhoto: builder.mutation<any, { id: number; lotData: FormData }>({
       query: (data) => ({
-        url: `/auction/advertisements/${data.id}/add-photo/`,
+        url: `/auction/advertisements/${data.id}/upload-photo/`,
         method: 'POST',
         body: data.lotData
       })
