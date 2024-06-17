@@ -43,8 +43,8 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
         <div className="self-stretch max-w-[648px] h-[360px] lg:h-[468px] flex flex-col items-start justify-start gap-[1rem]">
           <div className="self-stretch h-full flex flex-col items-start justify-start relative">
             <LotPhotoSlider images={lotData.photos} />
-            <button className="cursor-pointer [border:none] p-[0.5rem] bg-white w-[8.938rem] !m-[0] absolute top-[2rem] left-[0rem] rounded-tl-none rounded-tr rounded-br rounded-bl-none overflow-hidden flex flex-row items-start justify-start box-border whitespace-nowrap text-green-600 z-50">
-              <div className="flex-1 relative text-[0.75rem] tracking-[0.01em] leading-[120%] font-text-2 text-green text-left">
+            <button className="cursor-pointer [border:none] p-[0.5rem] bg-white w-max min-w-[6.925rem] !m-[0] absolute top-[2rem] left-[0rem] rounded-tl-none rounded-tr rounded-br rounded-bl-none overflow-hidden flex flex-row items-start justify-start box-border whitespace-nowrap text-green-600 z-50">
+              <div className="relative text-[0.75rem] tracking-[0.01em] leading-[120%] font-text-2 text-green text-left">
                 {lotData.is_auction ? 'Аукцион' : 'Фиксированная цена'}
               </div>
             </button>
@@ -118,7 +118,7 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
               </button>
             </div>
             <div className="self-stretch w-full flex flex-row items-start justify-start gap-[1.125rem] z-[1] mq450:flex-wrap">
-              <a href={`mailto:${lotData.profile.email}?subject=Вопрос`} type='email' className='w-full'>
+              <a href={`mailto:${lotData.profile.email}?subject=Вопрос`} type="email" className="w-full">
                 <Button variant="secondary" className="w-full" text="Написать продавцу" />
               </a>
               <Button variant="primary" className="w-full" text="Купить" />

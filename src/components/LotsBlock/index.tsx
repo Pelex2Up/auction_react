@@ -7,6 +7,7 @@ import 'swiper/scss/pagination'
 import AuctionCard from '../cards/auction'
 import { FixedCard } from '../cards/fixed'
 import { SmallCard } from '../cards/smallCard'
+import './styles.css'
 
 export const LotsBlock: FC = () => {
   const lotsListSwiperRef = useRef<SwiperRef>(null)
@@ -63,9 +64,6 @@ export const LotsBlock: FC = () => {
           slidesPerView={'auto'}
           modules={[Pagination]}
           pagination={{ clickable: true }}
-          centeredSlides={true}
-          centeredSlidesBounds
-          centerInsufficientSlides
           style={{ height: 'auto', alignItems: 'center' }}
           breakpoints={{
             300: {

@@ -3,7 +3,7 @@ import { CheckSuccessSVG } from './config/checkSuccess'
 
 export const TarriffPlanCard: FC = () => {
   return (
-    <div className="w-[933px] h-[261px] justify-start items-start gap-[54px] inline-flex">
+    <div className="lg:w-[933px] lg:h-[261px] h-full w-full lg:justify-start lg:items-start lg:flex-row justify-center items-center gap-[54px] flex flex-col lg:inline-flex">
       <div className="w-[275px] pb-8 bg-white rounded-lg shadow flex-col justify-center items-center gap-8 inline-flex">
         <div className="self-stretch h-[21px] bg-gray-100 rounded-tl-lg rounded-tr-lg" />
         <div className="self-stretch h-44 px-8 flex-col justify-start items-center gap-[118px] flex">
