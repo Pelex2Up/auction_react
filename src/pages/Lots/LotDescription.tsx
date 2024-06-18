@@ -3,15 +3,17 @@ import { ArrowDown } from '../../assets/svg/arrowDown'
 import { LotT } from '../../types/lotTypes'
 import styles from './Lots.module.scss'
 import { useFetchCategoriesQuery } from '../../api/lotService'
+import { ICategory } from '../../types/commonTypes'
 
 export type FrameComponent4Type = {
   className?: string
   lotData: LotT
-  category: string
-  subCategory: string
+  category: ICategory
+  subCategory: ICategory | undefined
+  lowerCat: ICategory | undefined
 }
 
-const LotDescription: FunctionComponent<FrameComponent4Type> = ({ className = '', lotData, category: mainCategory, subCategory }) => {
+const LotDescription: FunctionComponent<FrameComponent4Type> = ({ className = '', lotData, category: mainCategory, subCategory, lowerCat }) => {
   const [showDescription, setShowDescription] = useState<boolean>(false)
   const date = new Date(lotData.created)
   const MAX_LENGTH = 200
@@ -51,12 +53,12 @@ const LotDescription: FunctionComponent<FrameComponent4Type> = ({ className = ''
               <ul className={styles.details}>
                 <li>
                   Тип
-                  <span className={styles.value}>{mainCategory}</span>
+                  <span className={styles.value}>{mainCategory.title}</span>
                 </li>
                 {subCategory && (
                   <li>
                     Вид
-                    <span className={styles.value}>{subCategory}</span>
+                    <span className={styles.value}>{subCategory.title}</span>
                   </li>
                 )}
                 <li>
@@ -86,7 +88,10 @@ const LotDescription: FunctionComponent<FrameComponent4Type> = ({ className = ''
               Электронная почта: <a href={`mailto:${lotData.profile.email}?subject=Вопрос`}>{lotData.profile.email}</a>
             </div>
             <div className="relative tracking-[0.01em] leading-[120%] inline-block">
-              Телефон: <a href={`tel:${lotData.profile.phone_number}`} type='tel'>{lotData.profile.phone_number}</a>
+              Телефон:{' '}
+              <a href={`tel:${lotData.profile.phone_number}`} type="tel">
+                {lotData.profile.phone_number}
+              </a>
             </div>
           </div>
         </div>

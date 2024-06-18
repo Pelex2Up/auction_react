@@ -10,14 +10,14 @@ import { logoutState } from './users/slice'
 
 export const rtkQueryErrorLogger: Middleware = (api: MiddlewareAPI) => (next) => (action) => {
   if (isRejectedWithValue(action)) {
-    const error = action.payload as object
-    if ('status' in error && error.status === 403) {
+    const error = action.payload as any
+    if (error && 'status' in error && error.status === 403) {
       toast(`Истекла сессия авторизации, пожалуйста войдите заново`, {
         type: 'error',
         autoClose: 10000
       })
       api.dispatch(logoutState())
-    } else if ('originalStatus' in error && error.originalStatus === 502) {
+    } else if (error && 'originalStatus' in error && error.originalStatus === 502) {
       toast('Ведутся технические работы на сервере', { type: 'warning' })
     }
   }

@@ -52,6 +52,9 @@ export const lotService = createApi({
     }),
     fetchCategories: builder.query<ICategory[], void>({
       query: () => '/auction/categories/'
+    }),
+    getCategory: builder.mutation<ICategory, number | string>({
+      query: (id) => ({ url: `/auction/categories/${id}`, method: 'GET' })
     })
   })
 })
@@ -64,5 +67,6 @@ export const {
   useDeleteUserLotMutation,
   useFetchCategoriesQuery,
   useFetchLotDataMutation,
-  useDeletePhotoMutation
+  useDeletePhotoMutation,
+  useGetCategoryMutation
 } = lotService

@@ -7,15 +7,17 @@ import { Button } from '../../components/common/buttons'
 import { ShopperSVG } from '../../assets/svg/shopperSVG'
 import { PlusIconSVG } from '../../assets/svg/plusIconSVG'
 import { MinusIconSVG } from '../../assets/svg/minusIconSVG'
+import { ICategory } from '../../types/commonTypes'
 
 export type ContentWrapperType = {
   className?: string
   lotData: LotT
-  category: string
-  subCategory: string
+  category: ICategory
+  subCategory: ICategory | undefined
+  lowerCat: ICategory | undefined
 }
 
-const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, subCategory }) => {
+const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, subCategory, lowerCat }) => {
   const [count, setCount] = useState<number>(1)
 
   return (
@@ -29,13 +31,21 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
           </a>
           <span className="relative tracking-[0.04em] leading-[1.063rem] inline-block mq825:w-full mq825:h-[0.313rem]">/</span>
           <a href="#" className={`${!subCategory && 'text-green-600'} relative tracking-[0.04em] leading-[1.063rem] inline-block`}>
-            {category}
+            {category.title}
           </a>
           {subCategory && (
             <>
               <span className="relative tracking-[0.04em] leading-[1.063rem] inline-block mq825:w-full mq825:h-[0.313rem]">/</span>
+              <a href="#" className={`${!lowerCat && 'text-green-600'} relative tracking-[0.04em] leading-[1.063rem] inline-block`}>
+                {subCategory.title}
+              </a>
+            </>
+          )}
+          {lowerCat && (
+            <>
+              <span className="relative tracking-[0.04em] leading-[1.063rem] inline-block mq825:w-full mq825:h-[0.313rem]">/</span>
               <a href="#" className="text-green-600 relative tracking-[0.04em] leading-[1.063rem] inline-block">
-                {subCategory}
+                {lowerCat.title}
               </a>
             </>
           )}

@@ -1,6 +1,6 @@
 import { FC, useEffect, useState, ChangeEvent, FormEvent, useCallback } from 'react'
 import { generatePath, useNavigate, useParams } from 'react-router-dom'
-import { useFetchCategoriesQuery, useFetchLotDataMutation, useUpdateLotMutation } from '../../../api/lotService'
+import { useFetchCategoriesQuery, useFetchLotDataMutation, useGetCategoryMutation, useUpdateLotMutation } from '../../../api/lotService'
 import { LotT } from '../../../types/lotTypes'
 import { Loader } from '../../../components/Loader'
 import { RadioButton } from '../../../components/common/RadioButton'
@@ -42,28 +42,39 @@ export const EditLotPage: FC = () => {
   const [subCategory, setSubCategory] = useState<string>('')
   const [imagesCount, setImagesCount] = useState<number>(0)
   const [lotPhotos, setLotPhotos] = useState<LotImageT[]>()
+  const [lowerCatList, setLowerCatList] = useState<ICategory[]>()
+  const [lowerCat, setLowerCat] = useState<string>('')
+  const [getCatData] = useGetCategoryMutation()
 
   const fillMissingOrders = useCallback(
     (objects: LotImageT[]): LotImageT[] => {
-      const sortedObjects = [...objects].sort((a, b) => a.order - b.order);
-      const missingOrders = [];
-  
+      const sortedObjects = [...objects].sort((a, b) => a.order - b.order)
+      const missingOrders = []
+
       for (let i = 1; i <= 6; i++) {
         if (!sortedObjects.some((obj) => obj.order === i)) {
-          missingOrders.push({ order: i, image: null, id: i, advertisement: lotData?.id });
+          missingOrders.push({ order: i, image: null, id: i, advertisement: lotData?.id })
         }
       }
-  
-      return [...sortedObjects, ...missingOrders].sort((a, b) => a.order - b.order);
+
+      return [...sortedObjects, ...missingOrders].sort((a, b) => a.order - b.order)
     },
     [lotData?.id]
-  );
-  
+  )
+
+  useEffect(() => {
+    if (subCategory) {
+      getCatData(subCategory)
+        .unwrap()
+        .then((data) => setLowerCatList(data.children))
+    }
+  }, [getCatData, subCategory])
+
   useEffect(() => {
     if (lotData && lotPhotos && lotPhotos.length < 6) {
-      setLotPhotos(fillMissingOrders(lotPhotos));
+      setLotPhotos(fillMissingOrders(lotPhotos))
     }
-  }, [fillMissingOrders, lotData, lotPhotos]);
+  }, [fillMissingOrders, lotData, lotPhotos])
 
   useEffect(() => {
     if (categories && categories.length > 0) {
@@ -74,6 +85,7 @@ export const EditLotPage: FC = () => {
         } else {
           setSubCategoriesList([])
           setSubCategory('')
+          setLowerCat('')
         }
       } else if (lotData && categories) {
         const cat = categories.find((cat) => cat.id === lotData.category)
@@ -90,6 +102,7 @@ export const EditLotPage: FC = () => {
             }
           } else {
             setSubCategory('')
+            setLowerCat('')
           }
         }
       }
@@ -182,13 +195,16 @@ export const EditLotPage: FC = () => {
       if (typeOption !== lotPureData.ad_type) {
         formdata.append('ad_type', typeOption)
       }
-      if (!subCategory) {
-        const cat = categories.find((cat) => cat.title === category || String(cat.id) === category)
+      if (lowerCat && lowerCat.length > 0) {
+        const cat = lowerCatList?.find((cat) => cat.title === lowerCat || String(cat.id) === lowerCat)
         formdata.append('category', String(cat?.id))
-      } else {
-        const subCat = categories.find((cat) => cat.children.find((subCat) => String(subCat.id) === subCategory || subCat.title === subCategory))
+      } else if (subCategory && subCategory.length > 0) {
+        const subCat = categories?.find((cat) => cat.children.find((subCat) => String(subCat.id) === subCategory || subCat.title === subCategory))
         const selectedSubCategory = subCat?.children?.find((sc) => String(sc.id) === subCategory || sc.title === subCategory)
         formdata.append('category', String(selectedSubCategory?.id))
+      } else {
+        const cat = categories?.find((cat) => cat.title === category || String(cat.id) === category)
+        formdata.append('category', String(cat?.id))
       }
       if (lotTypeOption !== 'auction' && lotPureData.is_auction) {
         formdata.append('is_auction', 'true')
@@ -351,6 +367,21 @@ export const EditLotPage: FC = () => {
                 setSelectedValue={(event) => setSubCategory(event as string)}
                 selectedOption={subCategory}
                 defaultOption={subCategory.length > 0 ? subCategory : 'Выберите подкатегорию'}
+              />
+            </div>
+          </li>
+        )}
+        {lowerCatList && lowerCatList.length > 0 && (
+          <li className="w-full h-auto justify-center items-center inline-flex">
+            <div className="w-full h-full relative flex-col justify-start items-start flex gap-2">
+              <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
+                Выбор подкатегории<span className="text-red-500 text-sm font-normal leading-[16.80px] tracking-tight">*</span>
+              </div>
+              <SelectInput
+                optionsList={lowerCatList || []}
+                setSelectedValue={(event) => setLowerCat(event as string)}
+                selectedOption={lowerCat}
+                defaultOption={lowerCat.length > 0 ? lowerCat : 'Выберите подкатегорию'}
               />
             </div>
           </li>

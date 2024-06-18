@@ -11,10 +11,11 @@ import Checkbox from '../../../components/common/checkbox'
 import DefaultLink from '../../../components/common/DefaultLink'
 import { PhoneInput, defaultCountries, parseCountry } from 'react-international-phone'
 import styles from './MakeLot.module.scss'
-import { useCreateLotMutation, useFetchCategoriesQuery } from '../../../api/lotService'
+import { useCreateLotMutation, useFetchCategoriesQuery, useGetCategoryMutation } from '../../../api/lotService'
 import { Loader } from '../../../components/Loader'
 import CreateLotSuccess from './SuccessCreated'
 import { ICategory } from '../../../types/commonTypes'
+import { useFetchProfileQuery } from '../../../api/userService'
 
 export const tarriffGroup = [
   {
@@ -138,7 +139,7 @@ export const handleKeyPress: React.KeyboardEventHandler<HTMLInputElement> & Reac
 export const CreateLotPage: FC = () => {
   const dateNow = new Date()
   const { data: categories } = useFetchCategoriesQuery()
-  const { user } = useAppSelector(selectUser)
+  const { data: user, isFetching, isSuccess } = useFetchProfileQuery()
   const [tarriffOption, setTarriffOption] = useState<string>('default')
   const [typeOption, setTypeOption] = useState<string>('BUY')
   const [lotTypeOption, setLotTypeOption] = useState<string>('auction')
@@ -174,11 +175,26 @@ export const CreateLotPage: FC = () => {
   const [subCategory, setSubCategory] = useState<string>('')
   const [region, setRegion] = useState<string>('')
   const [unit, setUnit] = useState<string>('PIECE')
+  const [lowerCatList, setLowerCatList] = useState<ICategory[]>()
+  const [lowerCat, setLowerCat] = useState<string>('')
+  const [getCatData] = useGetCategoryMutation()
+
+  console.log('category:', category)
+  console.log('subCat: ', subCategory)
+  console.log('lowerCat: ', lowerCat)
 
   const countries = defaultCountries.filter((country) => {
     const { iso2 } = parseCountry(country)
     return ['by', 'ru'].includes(iso2)
   })
+
+  useEffect(() => {
+    if (subCategory) {
+      getCatData(subCategory)
+        .unwrap()
+        .then((data) => setLowerCatList(data.children))
+    }
+  }, [getCatData, subCategory])
 
   useEffect(() => {
     if (categories && categories.length > 0) {
@@ -189,6 +205,7 @@ export const CreateLotPage: FC = () => {
         } else {
           setSubCategoriesList([])
           setSubCategory('')
+          setLowerCat('')
         }
       }
     }
@@ -260,13 +277,16 @@ export const CreateLotPage: FC = () => {
       formdata.append('region', region)
       formdata.append('username', username)
       formdata.append('unit', unit)
-      if (!subCategory) {
-        const cat = categories?.find((cat) => cat.title === category || String(cat.id) === category)
+      if (lowerCat && lowerCat.length > 0) {
+        const cat = lowerCatList?.find((cat) => cat.title === lowerCat || String(cat.id) === lowerCat)
         formdata.append('category', String(cat?.id))
-      } else {
+      } else if (subCategory && subCategory.length > 0) {
         const subCat = categories?.find((cat) => cat.children.find((subCat) => String(subCat.id) === subCategory || subCat.title === subCategory))
         const selectedSubCategory = subCat?.children?.find((sc) => String(sc.id) === subCategory || sc.title === subCategory)
         formdata.append('category', String(selectedSubCategory?.id))
+      } else {
+        const cat = categories?.find((cat) => cat.title === category || String(cat.id) === category)
+        formdata.append('category', String(cat?.id))
       }
       photoList.map((photo) => photo.image !== null && formdata.append('photos_input', photo.image))
       await sendForm(formdata)
@@ -293,6 +313,7 @@ export const CreateLotPage: FC = () => {
                 value={user.subscription.tariff.name}
                 text={user.subscription.tariff.name}
                 checked
+                onChange={() => console.log()}
                 textStyle={{ style: { fontSize: 14 } }}
               />
             ) : (
@@ -354,7 +375,15 @@ export const CreateLotPage: FC = () => {
             <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
               Выбор категории<span className="text-red-500 text-sm font-normal leading-[16.80px] tracking-tight">*</span>
             </div>
-            <SelectInput optionsList={categories || []} setSelectedValue={(event) => setCategory(event as string)} defaultOption="Выберите категорию" />
+            <SelectInput
+              optionsList={categories || []}
+              setSelectedValue={(event) => {
+                setCategory(event as string)
+                setSubCategory('')
+                setLowerCat('')
+              }}
+              defaultOption="Выберите категорию"
+            />
           </div>
         </li>
         {subCategoriesList && subCategoriesList.length > 0 && (
@@ -365,9 +394,27 @@ export const CreateLotPage: FC = () => {
               </div>
               <SelectInput
                 optionsList={subCategoriesList || []}
-                setSelectedValue={(event) => setSubCategory(event as string)}
+                setSelectedValue={(event) => {
+                  setSubCategory(event as string)
+                  setLowerCat('')
+                }}
                 selectedOption={subCategory}
                 defaultOption={subCategory.length > 0 ? subCategory : 'Выберите подкатегорию'}
+              />
+            </div>
+          </li>
+        )}
+        {lowerCatList && lowerCatList.length > 0 && (
+          <li className="w-full h-auto justify-center items-center inline-flex">
+            <div className="w-full h-full relative flex-col justify-start items-start flex gap-2">
+              <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
+                Выбор подкатегории<span className="text-red-500 text-sm font-normal leading-[16.80px] tracking-tight">*</span>
+              </div>
+              <SelectInput
+                optionsList={lowerCatList || []}
+                setSelectedValue={(event) => setLowerCat(event as string)}
+                selectedOption={lowerCat}
+                defaultOption={lowerCat.length > 0 ? lowerCat : 'Выберите подкатегорию'}
               />
             </div>
           </li>
@@ -398,12 +445,7 @@ export const CreateLotPage: FC = () => {
             <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
               Единица измерения<span className="text-red-500 text-sm font-normal leading-[16.80px] tracking-tight">*</span>
             </div>
-            <SelectInput
-              optionsList={countList}
-              selectedOption={unit}
-              setSelectedValue={(event) => setUnit(event as string)}
-              defaultOption="Выберите единицу измерения"
-            />
+            <SelectInput optionsList={countList} selectedOption={unit} setSelectedValue={(event) => setUnit(event as string)} />
           </div>
         </li>
         <li className="w-full max-w-[294px] h-auto justify-center items-center inline-flex">
@@ -582,7 +624,7 @@ export const CreateLotPage: FC = () => {
             </div>
             <div className="w-full inline-flex gap-[10px] items-center">
               <div className="w-full max-w-[535px]">
-                <Input multiline={false} className="w-full max-w-[535px]" value={user?.profile.name} disabled />
+                <Input multiline={false} className="w-full max-w-[535px]" value={user?.profile.name ?? ''} disabled />
               </div>
               <QuestionSVG onClick={toggleToast} className="cursor-pointer" />
             </div>
@@ -594,7 +636,7 @@ export const CreateLotPage: FC = () => {
               <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">УНП</div>
               <div className="w-full inline-flex gap-[10px] items-center">
                 <div className="w-full max-w-[535px]">
-                  <Input multiline={false} className="w-full max-w-[535px]" value={user?.profile.unp} disabled />
+                  <Input multiline={false} className="w-full max-w-[535px]" value={user?.profile.unp ?? ''} disabled />
                 </div>
                 <QuestionSVG onClick={toggleToast} className="cursor-pointer" />
               </div>
@@ -606,7 +648,7 @@ export const CreateLotPage: FC = () => {
             <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">Электронная почта</div>
             <div className="w-full inline-flex gap-[10px] items-center">
               <div className="w-full max-w-[535px]">
-                <Input multiline={false} className="w-full max-w-[535px]" value={user?.email} disabled />
+                <Input multiline={false} className="w-full max-w-[535px]" value={user?.email ?? ''} disabled />
               </div>
               <QuestionSVG onClick={toggleToast} className="cursor-pointer" />
             </div>
@@ -617,7 +659,7 @@ export const CreateLotPage: FC = () => {
             <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">Номер телефона</div>
             <div className="w-full inline-flex gap-[10px] items-center">
               <div className="w-full max-w-[535px]">
-                <Input multiline={false} className="w-full max-w-[535px]" value={user?.profile.phone_number} disabled />
+                <Input multiline={false} className="w-full max-w-[535px]" value={user?.profile.phone_number ?? ''} disabled />
               </div>
               <QuestionSVG onClick={toggleToast} className="cursor-pointer" />
             </div>
