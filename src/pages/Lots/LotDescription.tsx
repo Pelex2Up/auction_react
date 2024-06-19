@@ -1,8 +1,7 @@
-import { FunctionComponent, useEffect, useState } from 'react'
+import { FunctionComponent, useState } from 'react'
 import { ArrowDown } from '../../assets/svg/arrowDown'
 import { LotT } from '../../types/lotTypes'
 import styles from './Lots.module.scss'
-import { useFetchCategoriesQuery } from '../../api/lotService'
 import { ICategory } from '../../types/commonTypes'
 
 export type FrameComponent4Type = {

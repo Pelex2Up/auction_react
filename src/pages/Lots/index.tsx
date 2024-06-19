@@ -43,7 +43,7 @@ export const LotPage: FC = () => {
         .unwrap()
         .then((data) => setSubCategory(data))
     }
-  }, [getCatData, lowerCat])
+  }, [getCatData, lowerCat, subCategory])
 
   useEffect(() => {
     if (subCategory) {

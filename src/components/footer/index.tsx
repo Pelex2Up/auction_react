@@ -1,4 +1,4 @@
-import Logo from '../../assets/logo/logo.svg'
+import Logo from '../../assets/logo/logo.png'
 import ShopImage from '../../assets/images/footerImage.png'
 import BGImage from '../../assets/images/footerBg.png'
 import styles from './footer.module.scss'
@@ -17,7 +17,7 @@ export default function Footer() {
       />
 
       <div className="flex w-full">
-        <img src={Logo} alt="logo" />
+        <img src={Logo} width="189" height="54" alt="logo" />
       </div>
       <div className="flex xl:flex-row flex-col justify-between items-start xl:w-[80%] h-auto w-full gap-[20px]">
         <div className="flex flex-col gap-[6px] xl:max-w-[284px] w-full">

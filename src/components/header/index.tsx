@@ -7,7 +7,7 @@ import Portal from '../Modal/Portal'
 import { LoginModal } from '../Modal/Login'
 import ProfileHeader from '../profile'
 import userImage from '../../assets/icons/newUser.svg'
-import Logo from '../../assets/logo/logo.svg'
+import Logo from '../../assets/logo/logo.png'
 import HammerLogo from '../../assets/logo/headerHammerLogo.png'
 import { LotPathE, PathE, ProfilePathE } from '../../enum/index'
 import { generatePath, useNavigate } from 'react-router-dom'
@@ -210,6 +210,8 @@ export default function Header() {
         <img
           src={Logo}
           alt="Logo"
+          width="189"
+          height="54"
           onClick={() => {
             navigate(generatePath(PathE.Home))
             closeSideMenu()

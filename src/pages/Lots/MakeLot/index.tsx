@@ -3,7 +3,6 @@ import { RadioButton } from '../../../components/common/RadioButton'
 import Input from '../../../components/common/Input'
 import { SelectInput } from '../../../components/common/SelectInput/SelectInput'
 import { ImagesInput } from '../../../components/ImagesInput'
-import { selectUser, useAppSelector } from '../../../store/hooks'
 import { QuestionSVG } from '../../../assets/svg/questionSVG'
 import { toast } from 'react-toastify'
 import { AddPhoneButton, Button } from '../../../components/common/buttons'
@@ -179,10 +178,6 @@ export const CreateLotPage: FC = () => {
   const [lowerCat, setLowerCat] = useState<string>('')
   const [getCatData] = useGetCategoryMutation()
 
-  console.log('category:', category)
-  console.log('subCat: ', subCategory)
-  console.log('lowerCat: ', lowerCat)
-
   const countries = defaultCountries.filter((country) => {
     const { iso2 } = parseCountry(country)
     return ['by', 'ru'].includes(iso2)
@@ -253,7 +248,7 @@ export const CreateLotPage: FC = () => {
 
   const handleSubmitForm = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    const auctionEndDate = new Date(`${date.month}.${date.day}.${date.year}`)
+    const auctionEndDate = new Date(parseInt(date.year), parseInt(date.month) - 1, parseInt(date.day), 12, 0, 0)
     const formdata = new FormData()
     if (user) {
       formdata.append('user', String(user.profile.id))
@@ -269,7 +264,7 @@ export const CreateLotPage: FC = () => {
       formdata.append('description', lotDescription)
       formdata.append('is_auction', lotTypeOption === 'auction' ? 'true' : 'false')
       formdata.append('price', price)
-      if (lotTypeOption === 'auction') {
+      if (lotTypeOption === 'auction' && auctionEndDate) {
         formdata.append('auction_end_date', auctionEndDate.toISOString())
       }
       formdata.append('city', city)
@@ -472,7 +467,7 @@ export const CreateLotPage: FC = () => {
               Стоимость за единицу (BYN)<span className="text-red-500 text-sm font-normal leading-[16.80px] tracking-tight">*</span>
             </div>
             <Input
-              maxLength={15}
+              maxLength={8}
               multiline={false}
               placeholder="Введите стоимость"
               className="w-full"

@@ -17,7 +17,7 @@ import { PhoneInput, defaultCountries, parseCountry } from 'react-international-
 import styles from './MakeLot.module.scss'
 import { countList, daysList, handleKeyPress, lotTypeGroup, monthsList, oblastList, productStateOptions, radioGroup, typeGroup, yearsList } from '../MakeLot'
 import { ICategory } from '../../../types/commonTypes'
-import { LotPathE, PathE, ProfilePathE } from '../../../enum'
+import { ProfilePathE } from '../../../enum'
 
 export type LotImageT = {
   image: File | string | null
