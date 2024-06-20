@@ -1,0 +1,96 @@
+.wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  position: relative;
+  @media only screen and (min-width: 320px) and (max-width: 375px) {
+    height: auto;
+  }
+  @media only screen and (min-width: 375px) and (max-width: 480px) {
+    width: 100%;
+  }
+}
+.container {
+  width: 100%;
+  height: 100%;
+  display: block;
+  position: relative;
+  color: #646f74;
+  font-size: 11px;
+  font-weight: 500;
+  @media only screen and (min-width: 320px) and (max-width: 375px) {
+    width: 99%;
+  }
+  @media only screen and (min-width: 375px) and (max-width: 480px) {
+    display: flex;
+  }
+
+  &_btn {
+    position: relative;
+    border: 1px solid rgb(217, 217, 217);
+    background: transparent;
+    border-radius: 5px;
+    width: 100%;
+    height: 100%;
+    line-height: 16.8px;
+    padding: 5px 10px;
+    text-align: left;
+    color: #90979c;
+    font-weight: 400;
+    font-size: 14px;
+    @media only screen and (min-width: 320px) and (max-width: 375px) {
+      width: 100%;
+      padding: 5px 10px;
+    }
+    @media only screen and (min-width: 375px) and (max-width: 480px) {
+      width: 100%;
+      padding: 5px 10px;
+    }
+  }
+
+  & svg {
+    position: absolute;
+    top: 7px;
+    right: 15px;
+    @media only screen and (min-width: 320px) and (max-width: 375px) {
+      // top: 65%;
+    }
+    @media only screen and (min-width: 375px) and (max-width: 480px) {
+      // top: 65%;
+    }
+  }
+
+  & li {
+    cursor: pointer;
+    padding: 11px;
+  }
+
+  & li:hover {
+    background: #f6f5f5;
+  }
+}
+button:hover {
+  cursor: pointer;
+}
+.options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  border: 1px solid #e5e7eb;
+  border-radius: 7px;
+  width: 100%;
+  background: #ffffff;
+  display: none;
+  list-style: none;
+  margin-top: 5px;
+  overflow: scroll;
+  font-size: 14px;
+  font-weight: 400;
+  z-index: 20;
+  max-height: 300px;
+}
+.show {
+  display: block;
+  overflow: auto;
+}

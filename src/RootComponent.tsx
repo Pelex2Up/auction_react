@@ -4,7 +4,7 @@ import { Home } from './pages/HomePage'
 import NotFoundPage from './pages/NotFoundPage'
 import './styles/main.scss'
 import { RootLayout } from './components/Layout'
-import { LotPathE, PathE, ProfilePathE } from './enum'
+import { CatalogPathE, LotPathE, PathE, ProfilePathE } from './enum'
 import RegistrationSuccess from './pages/RegistrationSuccess'
 import RegistrationToken from './pages/RegistrationToken'
 import { ProfilePage } from './pages/Profile'
@@ -19,6 +19,7 @@ import { UsageRules } from './pages/MainPages/Rules'
 import { MyLots } from './pages/ProfilePages/MyLots'
 import { EditLotPage } from './pages/Lots/EditLot'
 import { MyTariffPage } from './pages/ProfilePages/MyTariff'
+import { LotCatalogPage } from './pages/LotCatalogPage/LotCatalogPage'
 
 const RootComponent: React.FC = () => {
   return (
@@ -42,6 +43,7 @@ const RootComponent: React.FC = () => {
           <Route path={PathE.TarriffPlans} element={<TarriffPlans />} />
           <Route path={PathE.Rules} element={<UsageRules />} />
           <Route path={LotPathE.LotDetail} element={<LotPage />} />
+          <Route path={CatalogPathE.Catalog} element={<LotCatalogPage />} />
         </Route>
       </Routes>
     </Router>

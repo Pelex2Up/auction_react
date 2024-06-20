@@ -1,3 +1,4 @@
+import { CatalogResponseT } from '../types/ResponseTypes'
 import { ICategory } from '../types/commonTypes'
 import { LotT } from '../types/lotTypes'
 import { baseQuery } from './baseApi'
@@ -55,6 +56,12 @@ export const lotService = createApi({
     }),
     getCategory: builder.mutation<ICategory, number | string>({
       query: (id) => ({ url: `/auction/categories/${id}`, method: 'GET' })
+    }),
+    searchAdvertisement: builder.mutation<CatalogResponseT, string>({
+      query: (url) => ({
+        url: `/auction/advert-search/${url}`,
+        method: 'GET'
+      })
     })
   })
 })
@@ -68,5 +75,6 @@ export const {
   useFetchCategoriesQuery,
   useFetchLotDataMutation,
   useDeletePhotoMutation,
-  useGetCategoryMutation
+  useGetCategoryMutation,
+  useSearchAdvertisementMutation
 } = lotService

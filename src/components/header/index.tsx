@@ -9,7 +9,7 @@ import ProfileHeader from '../profile'
 import userImage from '../../assets/icons/newUser.svg'
 import Logo from '../../assets/logo/logo.png'
 import HammerLogo from '../../assets/logo/headerHammerLogo.png'
-import { LotPathE, PathE, ProfilePathE } from '../../enum/index'
+import { CatalogPathE, LotPathE, PathE, ProfilePathE } from '../../enum/index'
 import { generatePath, useNavigate } from 'react-router-dom'
 import { selectUser, useAppDispatch, useAppSelector } from '../../store/hooks'
 import { Loader } from '../Loader'
@@ -78,8 +78,8 @@ export default function Header() {
         <div className={styles.wrapper_topHeader}>
           <div className={styles.wrapper_topHeader_leftContent}>
             <DefaultLink text="Главная" href={PathE.Home} />
-            <DefaultLink text="Объявления о покупке" />
-            <DefaultLink text="Объявления о продаже" />
+            <DefaultLink text="Объявления о покупке" href={generatePath(CatalogPathE.Catalog + '/?ad_type=BUY')} />
+            <DefaultLink text="Объявления о продаже" href={generatePath(CatalogPathE.Catalog + '/?ad_type=SELL')} />
             <DefaultLink text="Правила участия" href={PathE.Rules} />
             <DefaultLink text="Тарифы" href={PathE.TarriffPlans} />
             <DefaultLink text="Реклама" />

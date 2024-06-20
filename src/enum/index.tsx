@@ -20,3 +20,7 @@ export enum ProfilePathE {
   MyLots = '/profile/my-lots',
   MyTariff = '/profile/my-tariff'
 }
+
+export enum CatalogPathE {
+  Catalog = '/advertisements-catalog'
+}
