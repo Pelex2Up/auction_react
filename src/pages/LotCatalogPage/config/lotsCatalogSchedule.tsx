@@ -35,21 +35,23 @@ export const LotsCatalogSchedule: FC<ICatalogTable> = ({ lotsData }) => {
         </thead>
         <tbody>
           {lotsData.map((lot, index) => (
-            <tr
-              className="border-b text-center border-zinc-300 cursor-pointer"
-              onClick={() => navigate(generatePath(LotPathE.LotDetail, { lotId: String(lot.id) }))}
-              key={index + lot.id}
-            >
+            <tr className="border-b text-center border-zinc-300" key={index + lot.id}>
               <td className="p-1 border border-zinc-300 text-zinc-500 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">
                 {index + 1}
               </td>
               <td className="p-1 border border-zinc-300">
                 <Checkbox />
               </td>
-              <td className="p-1 border border-zinc-300 text-green-700 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">
+              <td
+                className="p-1 border border-zinc-300 text-green-700 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight cursor-pointer"
+                onClick={() => navigate(generatePath(LotPathE.LotDetail, { lotId: String(lot.id) }))}
+              >
                 {lot.title}
               </td>
-              <td className="p-1 border border-zinc-300 text-zinc-500 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">
+              <td
+                className="p-1 border border-zinc-300 text-zinc-500 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight cursor-pointer"
+                onClick={() => navigate(generatePath(LotPathE.LotDetail, { lotId: String(lot.id) }))}
+              >
                 {lot.description.length > MAX_LENGTH ? `${lot.description.slice(0, MAX_LENGTH)}...` : lot.description}
               </td>
               <td className="p-1 border border-zinc-300 text-zinc-500 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">{`${
@@ -67,7 +69,7 @@ export const LotsCatalogSchedule: FC<ICatalogTable> = ({ lotsData }) => {
               <td className="p-1 border border-zinc-300 text-zinc-500 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">
                 {lot.is_auction ? 'Аукцион' : 'Фиксированная цена'}
               </td>
-              <td className="p-1 border border-zinc-300">
+              <td className="p-1 border border-zinc-300 cursor-pointer" onClick={() => navigate(generatePath(LotPathE.LotDetail, { lotId: String(lot.id) }))}>
                 {lot.photos.length > 0 && lot.photos[0].image ? (
                   <img src={lot.photos[0].image} className="max-h-[49px] max-w-[79px] w-full h-full" alt="lot-image" />
                 ) : (
