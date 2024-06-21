@@ -15,7 +15,7 @@ export const LotCatalogPage: FC = () => {
   const { data: categories, isFetching } = useFetchCategoriesQuery()
   // const searchParams = new URLSearchParams(location.search)
   const [searchParams, setSearchParams] = useSearchParams(location.search)
-  const [getPageData, { data, isSuccess, isLoading }] = useSearchAdvertisementMutation()
+  const [getPageData, { data, isSuccess, isLoading, isError }] = useSearchAdvertisementMutation()
   const [catalogData, setCatalogData] = useState<CatalogResponseT>()
   const category = searchParams.get('category')
 
@@ -34,7 +34,7 @@ export const LotCatalogPage: FC = () => {
   }, [data, isSuccess])
 
   useEffect(() => {
-    if (!isLoading && location && !catalogData) {
+    if (!isLoading && location && !catalogData && !isError) {
       getPageData(`?${searchParams}`)
         .unwrap()
         .then((data) => setCatalogData(data))
@@ -46,7 +46,7 @@ export const LotCatalogPage: FC = () => {
     [getPageData]
   )
 
-  if (!catalogData || isFetching) {
+  if (!catalogData || isFetching || isError) {
     return (
       <div className="w-full h-full flex items-center justify-center">
         <Loader />
