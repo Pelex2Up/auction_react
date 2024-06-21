@@ -5,8 +5,6 @@ import { LotsCatalogSchedule } from './config/lotsCatalogSchedule'
 import { FiltersCatalog } from './config/filtersCatalog'
 import { useFetchCategoriesQuery, useSearchAdvertisementMutation } from '../../api/lotService'
 import { Loader } from '../../components/Loader'
-import { Button } from '../../components/common/buttons'
-import Input from '../../components/common/Input'
 import { useDispatch } from 'react-redux'
 import { debounce } from 'lodash'
 import { CatalogResponseT } from '../../types/ResponseTypes'
@@ -20,26 +18,24 @@ export const LotCatalogPage: FC = () => {
   const [getPageData, { data, isSuccess, isLoading }] = useSearchAdvertisementMutation()
   const [catalogData, setCatalogData] = useState<CatalogResponseT>()
   const category = searchParams.get('category')
-  const ordering = searchParams.get('ordering')
-  const ad_type = searchParams.get('ad_type')
-  const price_min = searchParams.get('price_min')
-  const price_max = searchParams.get('price_max')
-  const page = searchParams.get('page')
-  const old_price_reduced = searchParams.get('old_price_reduced')
-  const region = searchParams.get('region')
-  const condition = searchParams.get('condition')
-  const is_auction = searchParams.get('is_auction')
 
-  const updateUrl = (newParams: any) => {
+  const updateUrl = async (newParams: any) => {
     const currentParams = Object.fromEntries(searchParams)
     const updatedParams = { ...currentParams, ...newParams }
-    setSearchParams(updatedParams)
-    debouncedUpdateData(location.search)
+    await setSearchParams(updatedParams)
+    const newUrl = new URLSearchParams(updatedParams)
+    await debouncedUpdateData(`?${newUrl.toString()}`)
   }
 
   useEffect(() => {
+    if (isSuccess && data) {
+      setCatalogData(data)
+    }
+  }, [data, isSuccess])
+
+  useEffect(() => {
     if (!isLoading && location && !catalogData) {
-      getPageData(location.search ?? '')
+      getPageData(`?${searchParams}`)
         .unwrap()
         .then((data) => setCatalogData(data))
     }
@@ -60,9 +56,9 @@ export const LotCatalogPage: FC = () => {
 
   return (
     <div className="flex-col xl:flex-row flex gap-8 px-4 xl:px-[60px]">
-      <SideBarCatalog categories={categories ?? []} lotsData={catalogData} currentCategory={category}/>
+      <SideBarCatalog categories={categories ?? []} lotsData={catalogData} currentCategory={category} searchParams={searchParams} updateUrl={updateUrl} />
       <div className="w-full flex-col flex gap-4">
-        <FiltersCatalog data={catalogData} />
+        <FiltersCatalog data={catalogData} searchParams={searchParams} updateUrl={updateUrl} />
         <LotsCatalogSchedule lotsData={catalogData.results} />
       </div>
     </div>

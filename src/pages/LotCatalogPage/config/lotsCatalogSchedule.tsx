@@ -3,6 +3,8 @@ import { LotT } from '../../../types/lotTypes'
 import Checkbox from '../../../components/common/checkbox'
 import { ShopperSVG } from '../../../assets/svg/shopperSVG'
 import placeholderImage from '../../../assets/images/imagePlaceholderTable.png'
+import { generatePath, useNavigate } from 'react-router-dom'
+import { LotPathE } from '../../../enum'
 
 interface ICatalogTable {
   lotsData: LotT[]
@@ -10,6 +12,8 @@ interface ICatalogTable {
 
 export const LotsCatalogSchedule: FC<ICatalogTable> = ({ lotsData }) => {
   const MAX_LENGTH = 60
+
+  const navigate = useNavigate()
 
   return (
     <div className="overflow-x-auto">
@@ -31,7 +35,11 @@ export const LotsCatalogSchedule: FC<ICatalogTable> = ({ lotsData }) => {
         </thead>
         <tbody>
           {lotsData.map((lot, index) => (
-            <tr className="border-b text-center border-zinc-300" key={index + lot.id}>
+            <tr
+              className="border-b text-center border-zinc-300 cursor-pointer"
+              onClick={() => navigate(generatePath(LotPathE.LotDetail, { lotId: String(lot.id) }))}
+              key={index + lot.id}
+            >
               <td className="p-1 border border-zinc-300 text-zinc-500 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">
                 {index + 1}
               </td>

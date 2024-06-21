@@ -5,23 +5,25 @@ import { CatalogResponseT } from '../../../types/ResponseTypes'
 
 const sortList = [
   { label: 'Без сортировки', value: '' },
-  { label: 'Цене (убывание)', value: '' },
-  { label: 'Названию (А-Я)', value: '' },
-  { label: 'Дате добавления', value: '' }
+  { label: 'Цене (убывание)', value: '-price' },
+  { label: 'Названию (А-Я)', value: 'title' },
+  { label: 'Дате добавления', value: '-start_date' }
 ]
 
 interface IFilterCatalog {
   data: CatalogResponseT
+  searchParams: URLSearchParams
+  updateUrl: (newParams: any) => void
 }
 
-export const FiltersCatalog: FC<IFilterCatalog> = ({ data }) => {
+export const FiltersCatalog: FC<IFilterCatalog> = ({ data, searchParams, updateUrl }) => {
   return (
     <div className="flex w-full flex-col gap-4">
       <div className="w-full h-[60px] bg-[#F8F8F8] shadow flex justify-between items-center gap-4 p-6">
         <div className="flex items-center gap-2">
           <span className="text-green-700 text-base font-medium font-['SF Pro Text'] leading-tight tracking-tight">Сортировать по</span>
           <div className="w-[199px] h-[36px] flex items-center">
-            <SelectInputFilters optionsList={sortList} />
+            <SelectInputFilters optionsList={sortList} defaultOption="Без сортировки" setSelectedValue={(event) => updateUrl({ ordering: event as string })} />
           </div>
         </div>
         <div className="w-auto h-7 justify-start items-center gap-2 inline-flex">
