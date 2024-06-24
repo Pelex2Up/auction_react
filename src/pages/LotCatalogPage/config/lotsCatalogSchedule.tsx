@@ -35,7 +35,7 @@ export const LotsCatalogSchedule: FC<ICatalogTable> = ({ lotsData }) => {
         </thead>
         <tbody>
           {lotsData.map((lot, index) => (
-            <tr className="border-b text-center border-zinc-300" key={index + lot.id}>
+            <tr className="border-b text-center border-zinc-300" key={lot.id}>
               <td className="p-1 border border-zinc-300 text-zinc-500 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">
                 {index + 1}
               </td>

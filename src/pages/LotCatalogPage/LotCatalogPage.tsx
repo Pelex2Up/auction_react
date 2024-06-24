@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useState } from 'react'
+import { FC, useCallback, useEffect, useRef, useState } from 'react'
 import { useLocation, useSearchParams } from 'react-router-dom'
 import { SideBarCatalog } from './config/sideBarCatalog'
 import { LotsCatalogSchedule } from './config/lotsCatalogSchedule'
@@ -8,6 +8,7 @@ import { Loader } from '../../components/Loader'
 import { useDispatch } from 'react-redux'
 import { debounce } from 'lodash'
 import { CatalogResponseT } from '../../types/ResponseTypes'
+import { Pagination } from '@mui/material'
 
 export const LotCatalogPage: FC = () => {
   const location = useLocation()
@@ -18,14 +19,28 @@ export const LotCatalogPage: FC = () => {
   const [getPageData, { data, isSuccess, isLoading, isError }] = useSearchAdvertisementMutation()
   const [catalogData, setCatalogData] = useState<CatalogResponseT>()
   const category = searchParams.get('category')
+  const prevSearchParams = useRef(searchParams)
+
+  function filterObjectByValues(obj: Record<string, any>): Record<string, any> {
+    return Object.fromEntries(Object.entries(obj).filter(([_, value]) => String(value).length > 0))
+  }
 
   const updateUrl = async (newParams: any) => {
     const currentParams = Object.fromEntries(searchParams)
     const updatedParams = { ...currentParams, ...newParams }
     await setSearchParams(updatedParams)
-    const newUrl = new URLSearchParams(updatedParams)
+    const filteredParams = filterObjectByValues(updatedParams)
+    const newUrl = new URLSearchParams(filteredParams)
     await debouncedUpdateData(`?${newUrl.toString()}`)
   }
+
+  const getPageDataMemo = useCallback((params: string) => getPageData(params).unwrap(), [getPageData])
+
+  useEffect(() => {
+    if (!isLoading && location && !catalogData && !isError) {
+      getPageDataMemo(`?${searchParams}`).then((data) => setCatalogData(data))
+    }
+  }, [catalogData, isLoading, getPageDataMemo, searchParams])
 
   useEffect(() => {
     if (isSuccess && data) {
@@ -33,13 +48,14 @@ export const LotCatalogPage: FC = () => {
     }
   }, [data, isSuccess])
 
-  useEffect(() => {
-    if (!isLoading && location && !catalogData && !isError) {
-      getPageData(`?${searchParams}`)
-        .unwrap()
-        .then((data) => setCatalogData(data))
-    }
-  }, [catalogData, isLoading, getPageData, location.search])
+  // useEffect(() => {
+  //   if (!isLoading && location && !catalogData && !isError && searchParams !== prevSearchParams.current) {
+  //     prevSearchParams.current = searchParams
+  //     getPageData(`?${searchParams}`)
+  //       .unwrap()
+  //       .then((data) => setCatalogData(data))
+  //   }
+  // }, [catalogData, isLoading, getPageData, searchParams])
 
   const debouncedUpdateData = useCallback(
     debounce((params) => getPageData(params), 500),
@@ -60,6 +76,16 @@ export const LotCatalogPage: FC = () => {
       <div className="w-full flex-col flex gap-4">
         <FiltersCatalog data={catalogData} searchParams={searchParams} updateUrl={updateUrl} />
         <LotsCatalogSchedule lotsData={catalogData.results} />
+        {/* {parseInt(searchParams.get('page') as string) > 1 && ( */}
+        <div className="w-full flex items-center justify-center mt-6">
+          <Pagination
+            count={Math.ceil(catalogData.count / 22)}
+            size="small"
+            page={parseInt(searchParams.get('page') as string)}
+            onChange={(event, value) => updateUrl({ page: value })}
+          />
+        </div>
+        {/* )} */}
       </div>
     </div>
   )

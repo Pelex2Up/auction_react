@@ -78,8 +78,8 @@ export default function Header() {
         <div className={styles.wrapper_topHeader}>
           <div className={styles.wrapper_topHeader_leftContent}>
             <DefaultLink text="Главная" href={PathE.Home} />
-            <DefaultLink text="Объявления о покупке" href={generatePath(CatalogPathE.Catalog + '/?ad_type=BUY')} />
-            <DefaultLink text="Объявления о продаже" href={generatePath(CatalogPathE.Catalog + '/?ad_type=SELL')} />
+            <DefaultLink text="Объявления о покупке" href={generatePath(CatalogPathE.Catalog + '/?ad_type=BUY&page=1')} />
+            <DefaultLink text="Объявления о продаже" href={generatePath(CatalogPathE.Catalog + '/?ad_type=SELL&page=1')} />
             <DefaultLink text="Правила участия" href={PathE.Rules} />
             <DefaultLink text="Тарифы" href={PathE.TarriffPlans} />
             <DefaultLink text="Реклама" />
