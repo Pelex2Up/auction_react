@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { Button } from '../../../components/common/buttons'
 import { ICategory } from '../../../types/commonTypes'
 import { CatalogCategoriesSelector } from '../../../components/common/CatalogCategoriesSelector'
@@ -8,6 +8,9 @@ import { AdTypeFilter } from './filterComponents/adType'
 import { LocationFilter } from './filterComponents/LocationFilter'
 import { CatalogResponseT } from '../../../types/ResponseTypes'
 import { LowerPriceFilter } from './filterComponents/lowerPriceFilter'
+import styles from './filterComponents/componentsStyles.module.scss'
+import { useGetCategoryMutation } from '../../../api/lotService'
+import { SelectInputFilters } from '../../../components/common/SelectInputFilters/SelectInput'
 
 interface ISideBarCatalog {
   categories: ICategory[]
@@ -18,11 +21,27 @@ interface ISideBarCatalog {
 }
 
 export const SideBarCatalog: FC<ISideBarCatalog> = ({ categories, currentCategory, lotsData, searchParams, updateUrl }) => {
+  const [getCategoryData, { data: categoryData, isSuccess }] = useGetCategoryMutation()
+  const [previousCategory, setPreviousCategory] = useState<string | null>(null)
+
+  useEffect(() => {
+    if ((currentCategory && currentCategory !== previousCategory) || (categoryData && !categoryData)) {
+      getCategoryData(currentCategory as string)
+      setPreviousCategory(currentCategory)
+    }
+  }, [isSuccess, currentCategory, previousCategory, getCategoryData])
+
   return (
     <ul className="min-w-[312px] w-[312px] h-min hidden xl:flex flex-col gap-4 px-6 py-8 bg-[#F6F6F6] shadow-xl">
-      {categories.map((cat, index) => (
-        <CatalogCategoriesSelector key={index} category={cat} />
-      ))}
+      <SelectInputFilters
+        className={styles.selectInputWrapper}
+        optionsList={categories || []}
+        selectedOption={searchParams.get('main_category') ? (searchParams.get('main_category') as string) : ''}
+        setSelectedValue={(event) => updateUrl({ main_category: event })}
+        defaultOption="Выберите раздел"
+      />
+      {categoryData &&
+        categoryData.children.map((cat, index) => <CatalogCategoriesSelector key={index} category={cat} searchParams={searchParams} updateUrl={updateUrl} />)}
       <li className="text-zinc-900 text-2xl font-medium font-['SF Pro Text'] leading-[28.80px] tracking-tight">Фильтр</li>
       <PriceFilter searchParams={searchParams} updateUrl={updateUrl} />
       <ConditionFilter searchParams={searchParams} updateUrl={updateUrl} />

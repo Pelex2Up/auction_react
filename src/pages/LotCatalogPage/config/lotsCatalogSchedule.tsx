@@ -69,11 +69,17 @@ export const LotsCatalogSchedule: FC<ICatalogTable> = ({ lotsData }) => {
               <td className="p-1 border border-zinc-300 text-zinc-500 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">
                 {lot.is_auction ? 'Аукцион' : 'Фиксированная цена'}
               </td>
-              <td className="p-1 border border-zinc-300 cursor-pointer" onClick={() => navigate(generatePath(LotPathE.LotDetail, { lotId: String(lot.id) }))}>
+              <td
+                className="p-1 border border-zinc-300 cursor-pointer"
+                style={{ verticalAlign: 'middle' }}
+                onClick={() => navigate(generatePath(LotPathE.LotDetail, { lotId: String(lot.id) }))}
+              >
                 {lot.photos.length > 0 && lot.photos[0].image ? (
-                  <img src={lot.photos[0].image} className="max-h-[49px] max-w-[79px] w-full h-full" alt="lot-image" />
+                  <img src={lot.photos[0].image} className="max-h-[49px] max-w-[79px] rounded-sm w-full h-full object-contain" alt="lot-image" />
                 ) : (
-                  <img src={placeholderImage} alt="lot-image-placeholder" />
+                  <div className="max-h-[49px] max-w-[79px] flex items-center justify-center shadow-sm p-2 rounded-sm w-full h-full">
+                    <img src={placeholderImage} className="w-[24px] h-[24px]" alt="lot-image-placeholder" />
+                  </div>
                 )}
               </td>
               <td className="p-1 border border-zinc-300">

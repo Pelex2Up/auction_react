@@ -5,21 +5,17 @@ import { LotsCatalogSchedule } from './config/lotsCatalogSchedule'
 import { FiltersCatalog } from './config/filtersCatalog'
 import { useFetchCategoriesQuery, useSearchAdvertisementMutation } from '../../api/lotService'
 import { Loader } from '../../components/Loader'
-import { useDispatch } from 'react-redux'
 import { debounce } from 'lodash'
 import { CatalogResponseT } from '../../types/ResponseTypes'
 import { Pagination } from '@mui/material'
 
 export const LotCatalogPage: FC = () => {
   const location = useLocation()
-  const dispatch = useDispatch()
   const { data: categories, isFetching } = useFetchCategoriesQuery()
-  // const searchParams = new URLSearchParams(location.search)
   const [searchParams, setSearchParams] = useSearchParams(location.search)
   const [getPageData, { data, isSuccess, isLoading, isError }] = useSearchAdvertisementMutation()
   const [catalogData, setCatalogData] = useState<CatalogResponseT>()
-  const category = searchParams.get('category')
-  const prevSearchParams = useRef(searchParams)
+  const category = searchParams.get('main_category')
 
   function filterObjectByValues(obj: Record<string, any>): Record<string, any> {
     return Object.fromEntries(Object.entries(obj).filter(([_, value]) => String(value).length > 0))
@@ -47,15 +43,6 @@ export const LotCatalogPage: FC = () => {
       setCatalogData(data)
     }
   }, [data, isSuccess])
-
-  // useEffect(() => {
-  //   if (!isLoading && location && !catalogData && !isError && searchParams !== prevSearchParams.current) {
-  //     prevSearchParams.current = searchParams
-  //     getPageData(`?${searchParams}`)
-  //       .unwrap()
-  //       .then((data) => setCatalogData(data))
-  //   }
-  // }, [catalogData, isLoading, getPageData, searchParams])
 
   const debouncedUpdateData = useCallback(
     debounce((params) => getPageData(params), 500),
