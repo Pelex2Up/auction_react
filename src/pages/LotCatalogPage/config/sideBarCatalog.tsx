@@ -32,14 +32,16 @@ export const SideBarCatalog: FC<ISideBarCatalog> = ({ categories, currentCategor
   }, [isSuccess, currentCategory, previousCategory, getCategoryData])
 
   return (
-    <ul className="min-w-[312px] w-[312px] h-min hidden xl:flex flex-col gap-4 px-6 py-8 bg-[#F6F6F6] shadow-xl">
-      <SelectInputFilters
-        className={styles.selectInputWrapper}
-        optionsList={categories || []}
-        selectedOption={searchParams.get('main_category') ? (searchParams.get('main_category') as string) : ''}
-        setSelectedValue={(event) => updateUrl({ main_category: event })}
-        defaultOption="Выберите раздел"
-      />
+    <ul className="w-full h-full xl:min-w-[312px] xl:w-[312px] xl:h-min flex flex-col gap-4 px-6 py-8 bg-[#F6F6F6] shadow-xl">
+      <div className='w-full h-full'>
+        <SelectInputFilters
+          className={styles.selectInputWrapper}
+          optionsList={categories || []}
+          selectedOption={searchParams.get('main_category') ? (searchParams.get('main_category') as string) : ''}
+          setSelectedValue={(event) => updateUrl({ main_category: event, category: '' })}
+          defaultOption="Выберите раздел"
+        />
+      </div>
       {categoryData &&
         categoryData.children.map((cat, index) => <CatalogCategoriesSelector key={index} category={cat} searchParams={searchParams} updateUrl={updateUrl} />)}
       <li className="text-zinc-900 text-2xl font-medium font-['SF Pro Text'] leading-[28.80px] tracking-tight">Фильтр</li>
