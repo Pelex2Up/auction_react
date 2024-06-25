@@ -1,6 +1,6 @@
 import { FC } from 'react'
 
-type SVGType = React.SVGAttributes<SVGSVGElement>
+export type SVGType = React.SVGAttributes<SVGSVGElement>
 
 export const ArrowDown: FC<SVGType> = ({ ...props }) => {
   return (

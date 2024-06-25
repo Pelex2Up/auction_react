@@ -33,7 +33,7 @@ export const SideBarCatalog: FC<ISideBarCatalog> = ({ categories, currentCategor
 
   return (
     <ul className="w-full h-full xl:min-w-[312px] xl:w-[312px] xl:h-min flex flex-col gap-4 px-6 py-8 bg-[#F6F6F6] shadow-xl">
-      <div className='w-full h-full'>
+      <div className="w-full h-full">
         <SelectInputFilters
           className={styles.selectInputWrapper}
           optionsList={categories || []}
@@ -55,7 +55,19 @@ export const SideBarCatalog: FC<ISideBarCatalog> = ({ categories, currentCategor
         text="Сбросить фильтры"
         className="w-full"
         variant="secondary"
-        onClick={() => updateUrl({ ad_type: '', price_min: '', price_max: '', condition: '', is_auction: '', region: '', city: '', old_price_reduced: '' })}
+        onClick={() =>
+          updateUrl({
+            ad_type: '',
+            price_min: '',
+            price_max: '',
+            condition: '',
+            is_auction: '',
+            region: '',
+            city: '',
+            old_price_reduced: '',
+            main_category: ''
+          })
+        }
       />
     </ul>
   )

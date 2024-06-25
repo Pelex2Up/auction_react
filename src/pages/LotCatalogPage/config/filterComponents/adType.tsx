@@ -1,10 +1,17 @@
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import Checkbox from '../../../../components/common/checkbox'
 import { IFilter } from './price'
 
 export const AdTypeFilter: FC<IFilter> = ({ searchParams, updateUrl }) => {
   const [checkedSell, setCheckedSell] = useState<boolean>(searchParams.get('ad_type') === 'SELL')
   const [checkedBuy, setCheckedBuy] = useState<boolean>(searchParams.get('ad_type') === 'BUY')
+
+  useEffect(() => {
+    if (!searchParams.get('ad_type')) {
+      setCheckedBuy(false)
+      setCheckedSell(false)
+    }
+  }, [searchParams])
 
   return (
     <li className="w-full flex-col justify-start items-start gap-3 inline-flex">
@@ -62,7 +69,7 @@ export const AdTypeFilter: FC<IFilter> = ({ searchParams, updateUrl }) => {
         )}
         <Checkbox
           label="Все"
-          checked={searchParams.get('ad_type') === '' && !checkedBuy && !checkedSell}
+          checked={(!checkedBuy && !checkedSell) || !searchParams.get('ad_type')}
           onChange={() => {
             updateUrl({ ad_type: '', is_auction: '' })
             setCheckedSell(false)

@@ -27,6 +27,7 @@ export const LotCatalogPage: FC = () => {
     await setSearchParams(updatedParams)
     const filteredParams = filterObjectByValues(updatedParams)
     const newUrl = new URLSearchParams(filteredParams)
+    await setSearchParams(filteredParams)
     await debouncedUpdateData(`?${newUrl.toString()}`)
   }
 

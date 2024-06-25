@@ -2,6 +2,8 @@ import { FC } from 'react'
 import { SelectInputFilters } from '../../../components/common/SelectInputFilters/SelectInput'
 import { ArrowDown } from '../../../assets/svg/arrowDown'
 import { CatalogResponseT } from '../../../types/ResponseTypes'
+import { CloseIcon } from '../../../assets/svg/closeIcon'
+import { CloseIconPath } from './assets/CloseIconPath'
 
 const sortList = [
   { label: 'Без сортировки', value: '' },
@@ -50,6 +52,101 @@ export const FiltersCatalog: FC<IFilterCatalog> = ({ data, searchParams, updateU
             <ArrowDown />
           </button>
         </div>
+      </div>
+      <div className="flex flex-wrap gap-4">
+        {searchParams.get('price_min') && (
+          <div className="w-max h-7 px-[13px] py-[5px] rounded border border-zinc-300 justify-between items-center gap-1.5 inline-flex">
+            <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-none">цена от {searchParams.get('price_min')}</div>
+            <button onClick={() => updateUrl({ price_min: '' })} className="cursor-pointer">
+              <CloseIconPath height={4} width={4} />
+            </button>
+          </div>
+        )}
+        {searchParams.get('price_max') && (
+          <div className="w-max h-7 px-[13px] py-[5px] rounded border border-zinc-300 justify-between items-center gap-1.5 inline-flex">
+            <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-none">цена до {searchParams.get('price_max')}</div>
+            <button onClick={() => updateUrl({ price_max: '' })} className="cursor-pointer">
+              <CloseIconPath height={4} width={4} />
+            </button>
+          </div>
+        )}
+        {searchParams.get('condition') && (
+          <div className="w-max h-7 px-[13px] py-[5px] rounded border border-zinc-300 justify-between items-center gap-1.5 inline-flex">
+            <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-none">
+              состояние: {searchParams.get('condition') === 'NEW' ? 'новое' : 'Б/У'}
+            </div>
+            <button onClick={() => updateUrl({ condition: '' })} className="cursor-pointer">
+              <CloseIconPath height={4} width={4} />
+            </button>
+          </div>
+        )}
+        {searchParams.get('ad_type') && (
+          <div className="w-max h-7 px-[13px] py-[5px] rounded border border-zinc-300 justify-between items-center gap-1.5 inline-flex">
+            <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-none">
+              тип объявления: {searchParams.get('ad_type') === 'BUY' ? 'покупка' : 'продажа'}
+            </div>
+            <button onClick={() => updateUrl({ ad_type: '' })} className="cursor-pointer">
+              <CloseIconPath height={4} width={4} />
+            </button>
+          </div>
+        )}
+        {searchParams.get('is_auction') && (
+          <div className="w-max h-7 px-[13px] py-[5px] rounded border border-zinc-300 justify-between items-center gap-1.5 inline-flex">
+            <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-none">
+              тип покупки: {searchParams.get('is_auction') === 'true' ? 'аукцион' : 'фиксированная цена'}
+            </div>
+            <button onClick={() => updateUrl({ is_auction: '' })} className="cursor-pointer">
+              <CloseIconPath height={4} width={4} />
+            </button>
+          </div>
+        )}
+        {searchParams.get('region') && (
+          <div className="w-max h-7 px-[13px] py-[5px] rounded border border-zinc-300 justify-between items-center gap-1.5 inline-flex">
+            <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-none">область: {searchParams.get('region')}</div>
+            <button onClick={() => updateUrl({ region: '' })} className="cursor-pointer">
+              <CloseIconPath height={4} width={4} />
+            </button>
+          </div>
+        )}
+        {searchParams.get('city') && (
+          <div className="w-max h-7 px-[13px] py-[5px] rounded border border-zinc-300 justify-between items-center gap-1.5 inline-flex">
+            <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-none">город: {searchParams.get('city')}</div>
+            <button onClick={() => updateUrl({ city: '' })} className="cursor-pointer">
+              <CloseIconPath height={4} width={4} />
+            </button>
+          </div>
+        )}
+        {searchParams.get('old_price_reduced') && searchParams.get('old_price_reduced') === 'true' && (
+          <div className="w-max h-7 px-[13px] py-[5px] rounded border border-zinc-300 justify-between items-center gap-1.5 inline-flex">
+            <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-none">сниженная цена</div>
+            <button onClick={() => updateUrl({ old_price_reduced: 'false' })} className="cursor-pointer">
+              <CloseIconPath height={4} width={4} />
+            </button>
+          </div>
+        )}
+        {searchParams.size > 2 && (
+          <div className="w-max h-7 px-[13px] py-[5px] rounded border border-zinc-300 justify-between items-center gap-1.5 inline-flex">
+            <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-none">сбросить фильтр</div>
+            <button
+              onClick={() =>
+                updateUrl({
+                  ad_type: '',
+                  price_min: '',
+                  price_max: '',
+                  condition: '',
+                  is_auction: '',
+                  region: '',
+                  city: '',
+                  old_price_reduced: '',
+                  main_category: ''
+                })
+              }
+              className="cursor-pointer"
+            >
+              <CloseIconPath height={4} width={4} />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )
