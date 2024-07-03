@@ -3,7 +3,6 @@ import Checkbox from '../../../../components/common/checkbox'
 import { IFilter } from './price'
 
 export const ConditionFilter: FC<IFilter> = ({ searchParams, updateUrl }) => {
-  console.log(searchParams.get('condition'))
   return (
     <li className="w-full flex-col justify-start items-start gap-3 inline-flex">
       <div className="text-zinc-900 text-base font-medium font-['SF Pro Text'] leading-[17px]">Состояние</div>

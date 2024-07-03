@@ -1,0 +1,12 @@
+.link {
+  color: #008001;
+  font-size: 16px;
+  font-weight: '400';
+  line-height: 19.2px;
+  letter-spacing: 0.16px;
+  word-wrap: 'break-word';
+
+  &:hover {
+    border-bottom: 1px solid transparent;
+  }
+}

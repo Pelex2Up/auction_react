@@ -32,9 +32,9 @@ export const lotService = createApi({
         body: arg.data
       })
     }),
-    fetchLotData: builder.mutation<LotT, number>({
-      query: (id) => ({
-        url: `/auction/advertisement/${id}`,
+    fetchLotData: builder.mutation<LotT, string>({
+      query: (slug) => ({
+        url: `/auction/advertisement/slug/${slug}`,
         method: 'GET'
       })
     }),
@@ -62,11 +62,31 @@ export const lotService = createApi({
         url: `/auction/advert-search/${url}`,
         method: 'GET'
       })
+    }),
+    purchaseLot: builder.mutation<any, { body: FormData; id: number }>({
+      query: (params) => ({
+        url: `/auction/advertisements/${params.id}/purchase/`,
+        method: 'POST',
+        body: params.body
+      })
+    }),
+    makeBid: builder.mutation<any, number>({
+      query: (id) => {
+        const formdata = new FormData()
+        formdata.append('advertisement', String(id))
+        return {
+          url: '/auction/bid/simple-bid/',
+          method: 'POST',
+          body: formdata
+        }
+      }
     })
   })
 })
 
 export const {
+  useMakeBidMutation,
+  usePurchaseLotMutation,
   useCreateLotMutation,
   useUpdateLotMutation,
   useSendPhotoMutation,

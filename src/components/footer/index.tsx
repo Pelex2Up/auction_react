@@ -5,8 +5,10 @@ import styles from './footer.module.scss'
 import { Button } from '../common/buttons'
 import DefaultLink from '../common/DefaultLink'
 import { PathE } from '../../enum'
+import { selectLangSettings, useAppSelector } from '../../store/hooks'
 
 export default function Footer() {
+  const { language } = useAppSelector(selectLangSettings)
   return (
     <div className="w-full xl:px-[50px] px-[20px] py-6 flex flex-col gap-[24px] bg-[#F6F6F6] relative">
       <img src={BGImage} className="absolute xl:top-[33px] right-[20px] top-[250px] xl:right-[50px] xl:h-[250px] xl:w-[250px] w-[150px] h-[150px]" alt="shop" />
@@ -26,15 +28,15 @@ export default function Footer() {
           <p className="leading-[20px] font-normal text-sm text-[#808080]">Расчетный счет BY58ALFA00100B00011100000000 ЗАО “Альфа-Банк” БИК: ALFABY2X</p>
         </div>
         <div className={`flex flex-col gap-[12px] w-max-content justify-start items-start ${styles.btnGroup}`}>
-          <DefaultLink text="Главная" href={PathE.Home} />
-          <DefaultLink text="Объявления о покупке" />
-          <DefaultLink text="Объявления о продаже" />
-          <DefaultLink text="Правила участия" href={PathE.Rules} />
-          <DefaultLink text="Тарифы" href={PathE.TarriffPlans} />
-          <DefaultLink text="Реклама" />
+          <DefaultLink text={language === 'RU' ? 'Главная' : 'Home'} href={PathE.Home} />
+          <DefaultLink text={language === 'RU' ? 'Объявления о покупке' : 'Buy advertisements'} />
+          <DefaultLink text={language === 'RU' ? 'Объявления о продаже' : 'Advertisements for sale'} />
+          <DefaultLink text={language === 'RU' ? 'Правила участия' : 'Rules of participation'} href={PathE.Rules} />
+          <DefaultLink text={language === 'RU' ? 'Тарифы' : 'Tariffs'} href={PathE.TarriffPlans} />
+          <DefaultLink text={language === 'RU' ? 'Реклама' : 'Advertising'} />
         </div>
         <div className={`flex flex-col gap-[12px] justify-start items-start text-sm leading-[16.8px] tracking-[1%] font-normal w-max-content`}>
-          <span>Контакты</span>
+          <span>{language === 'RU' ? 'Контакты' : 'Contact information'}</span>
           <a href="mailto:stock@gmail.com?subject=Вопрос" className="flex items-center gap-2 text-[#808080] font-normal">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
@@ -70,7 +72,7 @@ export default function Footer() {
             </svg>
             +375 (29) 123 45 67
           </a>
-          <Button variant="secondary" text="Связатся с администратором" />
+          <Button variant="secondary" text={language === 'RU' ? 'Связатся с администратором' : 'Contact administrator'} />
         </div>
       </div>
       <div className="w-full flex xl:flex-row flex-col-reverse gap-2 xl:justify-between justify-center items-start xl:h-[24px] xl:mt-10">
@@ -87,8 +89,8 @@ export default function Footer() {
           </svg>
           2024, ООО Стоковая Биржа
         </p>
-        <a className="text-sm font-normal text-[#808080] cursor-pointer no-underline">Политика конфиденциальности</a>
-        <a className="text-sm font-normal text-[#808080] cursor-pointer no-underline">Политика конфиденциальности</a>
+        <a className="text-sm font-normal text-[#808080] cursor-pointer no-underline">{language === 'RU' ? 'Пользовательское соглашение' : 'User agreement'}</a>
+        <a className="text-sm font-normal text-[#808080] cursor-pointer no-underline">{language === 'RU' ? 'Политика конфиденциальности' : 'Privacy policy'}</a>
         <div className="w-[251px]"></div>
       </div>
     </div>

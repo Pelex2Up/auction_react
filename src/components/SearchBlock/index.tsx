@@ -1,25 +1,39 @@
 import { FC } from 'react'
 import SearchInput from '../common/SearchInput'
 import { ManyOptionsCategory, TitleCategory } from './TitleCategory'
+import { selectLangSettings, useAppSelector } from '../../store/hooks'
 
 export const SearchBlock: FC = () => {
-  const alphabet = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя'.split('')
+  const { language } = useAppSelector(selectLangSettings)
+  const alphabetRu = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя'.split('')
+  const alphabetEng = 'abcdefghigklmnopqrstuvwxyz'.split('')
   return (
     <div className="flex flex-col w-full h-full xl:h-[643px] xl:justify-center xl:items-start gap-[25px] xl:flex-row items-center justify-start xl:px-[60px]">
       <div className="xl:w-[50%] w-full h-full xl:h-[643px] relative flex-col justify-start items-center flex gap-6">
-        <div className="text-zinc-900 text-2xl font-medium font-['SF Pro Text'] leading-[28.80px] tracking-tight">Обьявления о продаже</div>
+        <div className="text-zinc-900 text-2xl font-medium font-['SF Pro Text'] leading-[28.80px] tracking-tight">
+          {language === 'RU' ? 'Обьявления о продаже' : 'Advertisements for sale'}
+        </div>
         <div className="w-[337px]">
           <SearchInput />
         </div>
         <div className="w-full justify-center items-start gap-2 inline-flex flex-wrap px-2">
-          {alphabet.map((el, index) => (
-            <span
-              className="capitalize text-center text-zinc-900 text-base font-medium font-['SF Pro Text'] leading-tight tracking-tight cursor-pointer"
-              key={index}
-            >
-              {el}
-            </span>
-          ))}
+          {language === 'RU'
+            ? alphabetRu.map((el, index) => (
+                <span
+                  className="capitalize text-center text-zinc-900 text-base font-medium font-['SF Pro Text'] leading-tight tracking-tight cursor-pointer"
+                  key={index}
+                >
+                  {el}
+                </span>
+              ))
+            : alphabetEng.map((el, index) => (
+                <span
+                  className="capitalize text-center text-zinc-900 text-base font-medium font-['SF Pro Text'] leading-tight tracking-tight cursor-pointer"
+                  key={index}
+                >
+                  {el}
+                </span>
+              ))}
         </div>
         <div className="w-full h-[472px] gap-5 shadow-md px-6 py-8 flex flex-row relative lg:overflow-hidden overflow-x-scroll overflow-y-hidden">
           <div className="flex-col justify-start items-start gap-6 inline-flex">
@@ -130,19 +144,30 @@ export const SearchBlock: FC = () => {
         </div>
       </div>
       <div className="xl:w-[50%] w-full h-full xl:h-[643px] relative flex-col justify-start items-center flex gap-6">
-        <div className="text-zinc-900 text-2xl font-medium font-['SF Pro Text'] leading-[28.80px] tracking-tight">Обьявления о покупке</div>
+        <div className="text-zinc-900 text-2xl font-medium font-['SF Pro Text'] leading-[28.80px] tracking-tight">
+          {language === 'RU' ? 'Обьявления о покупке' : 'Buy advertisements'}
+        </div>
         <div className="w-[337px]">
           <SearchInput />
         </div>
         <div className="w-full justify-center items-start gap-2 inline-flex flex-wrap px-2">
-          {alphabet.map((el, index) => (
-            <span
-              className="capitalize text-center text-zinc-900 text-base font-medium font-['SF Pro Text'] leading-tight tracking-tight cursor-pointer"
-              key={index + el}
-            >
-              {el}
-            </span>
-          ))}
+          {language === 'RU'
+            ? alphabetRu.map((el, index) => (
+                <span
+                  className="capitalize text-center text-zinc-900 text-base font-medium font-['SF Pro Text'] leading-tight tracking-tight cursor-pointer"
+                  key={index}
+                >
+                  {el}
+                </span>
+              ))
+            : alphabetEng.map((el, index) => (
+                <span
+                  className="capitalize text-center text-zinc-900 text-base font-medium font-['SF Pro Text'] leading-tight tracking-tight cursor-pointer"
+                  key={index}
+                >
+                  {el}
+                </span>
+              ))}
         </div>
         <div className="w-full h-[472px] gap-5 shadow-md px-6 py-8 flex flex-row relative lg:overflow-hidden overflow-x-scroll overflow-y-hidden">
           <div className="flex-col justify-start items-start gap-6 inline-flex">

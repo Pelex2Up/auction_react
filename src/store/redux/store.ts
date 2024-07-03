@@ -30,13 +30,15 @@ export const rootReducer = combineReducers({
   [services.lotService.reducerPath]: services.lotService.reducer,
   [services.courseService.reducerPath]: services.courseService.reducer,
   user: slices.authReduce,
-  course: slices.courseReduce
+  course: slices.courseReduce,
+  history: slices.historyReduce,
+  language: slices.langReduce
 })
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['user', 'course']
+  whitelist: ['user', 'course', 'history', 'language']
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

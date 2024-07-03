@@ -1,57 +1,40 @@
 import { FC, useEffect, useState } from 'react'
 import { EmptyLots } from './components/EmptyLots'
-import { useDeleteUserLotMutation, useFetchUserLotsQuery } from '../../api/lotService'
+import { useFetchMyOrdersQuery } from '../../api/userService'
 import { Loader } from '../../components/Loader'
-import { FixedPriceLotComponent } from './components/FixedPriceLotComponent'
-import { toast } from 'react-toastify'
-import { SortSVG } from '../../assets/svg/sortSVG'
+import { ActionLotsComponent } from './components/ActionLotsComponent'
+import { sortVariants } from './MyLots'
 import { RadioButton } from '../../components/common/RadioButton'
+import { SortSVG } from '../../assets/svg/sortSVG'
 
-export const sortVariants = [
-  { label: 'Все', value: 'all' },
-  { label: 'Покупка', value: 'buy' },
-  { label: 'Продажа', value: 'sell' }
-]
-
-export const MyLots: FC = () => {
+export const MyPurchasesPage: FC = () => {
   const [selectedFilter, setSelectedFilter] = useState<string>('all')
   const [order, setOrder] = useState<boolean>(false)
-  const { data, refetch, isFetching } = useFetchUserLotsQuery({ order: order ? 'asc' : 'desc', type: selectedFilter })
-  const [deleteLot, { isSuccess: deletedSuccess, isLoading: isDeleting, isError }] = useDeleteUserLotMutation()
-
-  useEffect(() => {
-    if (deletedSuccess) {
-      toast('Объявление успешно удалено', { type: 'success' })
-      refetch()
-    }
-  }, [deletedSuccess, refetch])
+  const { data: myOrders, isFetching, isError, refetch } = useFetchMyOrdersQuery({ order: order ? 'asc' : 'desc', type: selectedFilter })
 
   const handleChangeOrder = async () => {
     setOrder((prevOrder) => !prevOrder)
-    await refetch()
   }
 
   const handleChangeFilter = async (filter: string) => {
     setSelectedFilter(filter)
-    await refetch()
   }
 
   useEffect(() => {
-    if (isError) {
-      toast('Произошла непредвиденная ошибка', { type: 'error' })
+    if (order || selectedFilter) {
+      refetch()
     }
-  }, [isError])
+  }, [order, selectedFilter])
 
-  if (!data) {
+  if (!myOrders || isFetching || isError) {
     return (
-      <div className="w-full flex justify-center items-center">
+      <div className="flex w-full items-center justify-center">
         <Loader />
       </div>
     )
   }
-
   return (
-    <div className="w-full flex flex-col gap-4 justify-start items-center">
+    <div className="flex flex-col gap-4 w-full items-center justify-center">
       <div className="w-full lg:h-[60px] h-auto flex lg:flex-row flex-col items-center justify-center lg:justify-between bg-stone-50 shadow-xl px-4 lg:py-0 py-2 lg:gap-0 gap-6">
         <div className="h-full justify-start items-center lg:gap-[37px] gap-4 inline-flex lg:flex-row flex-col">
           <div className="text-green-800 text-base font-medium font-['SF Pro Text'] leading-tight tracking-tight">Сортировать по</div>
@@ -75,11 +58,7 @@ export const MyLots: FC = () => {
           </button>
         </div>
       </div>
-      {data.length && data.length > 0 ? (
-        data.map((lot, index) => <FixedPriceLotComponent isDeleting={isDeleting} deleteLot={deleteLot} key={index + `_${lot.title}`} lot={lot} />)
-      ) : (
-        <EmptyLots />
-      )}
+      {myOrders.length > 0 ? myOrders.map((lot, index) => <ActionLotsComponent lot={lot} key={index} />) : <EmptyLots />}
     </div>
   )
 }

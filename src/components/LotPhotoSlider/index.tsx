@@ -18,9 +18,16 @@ export const LotPhotoSlider: FC<ILotPhotoSlider> = ({ images }) => {
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperState | null>(null)
   return (
     <>
-      <Swiper loop={true} spaceBetween={10} navigation={false} thumbs={{ swiper: thumbsSwiper }} modules={[FreeMode, Navigation, Thumbs]} className="mySwiper2">
-        {images.map((image) => (
-          <SwiperSlide key={image.id}>
+      <Swiper
+        loop={images.length > 1}
+        spaceBetween={10}
+        navigation={false}
+        thumbs={{ swiper: thumbsSwiper }}
+        modules={[FreeMode, Navigation, Thumbs]}
+        className="mySwiper2"
+      >
+        {images.map((image, index) => (
+          <SwiperSlide key={`${image.order}_${image.id}_${index}`}>
             <img src={image.image} />
           </SwiperSlide>
         ))}
@@ -28,7 +35,7 @@ export const LotPhotoSlider: FC<ILotPhotoSlider> = ({ images }) => {
       {images.length > 1 && (
         <Swiper
           onSwiper={(swiper) => setThumbsSwiper(swiper)}
-          loop={true}
+          // loop={true}
           spaceBetween={10}
           slidesPerView={4}
           freeMode={true}
@@ -37,7 +44,7 @@ export const LotPhotoSlider: FC<ILotPhotoSlider> = ({ images }) => {
           className="mySwiper"
         >
           {images.map((image) => (
-            <SwiperSlide key={image.order}>
+            <SwiperSlide key={`${image.id}_${image.order}`}>
               <img src={image.image} />
             </SwiperSlide>
           ))}

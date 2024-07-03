@@ -1,0 +1,7 @@
+.swiper-container {
+  overflow: visible;
+}
+.swiper-pagination {
+  position: absolute;
+  bottom: -25px;
+}

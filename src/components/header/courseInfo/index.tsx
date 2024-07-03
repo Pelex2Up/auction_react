@@ -3,11 +3,12 @@ import { FC, useEffect } from 'react'
 import usaDollar from '../../../assets/icons/usa.svg'
 import euro from '../../../assets/icons/euro.svg'
 import rub from '../../../assets/icons/russia.svg'
-import { selectCourse, useAppDispatch, useAppSelector } from '../../../store/hooks'
+import { selectCourse, selectLangSettings, useAppDispatch, useAppSelector } from '../../../store/hooks'
 import { updateCourse, updateExpiration } from '../../../store/redux/moneyCourse/slice'
 import { useFetchEURMutation, useFetchRUBMutation, useFetchUSDMutation } from '../../../api/courseService'
 
 export const CourseInfo: FC = () => {
+  const { language } = useAppSelector(selectLangSettings)
   const dispatch = useAppDispatch()
   const courses = useAppSelector(selectCourse)
   const [fetchUSD, { data: usdCourse, isLoading: isUSDLoad }] = useFetchUSDMutation()
@@ -50,7 +51,9 @@ export const CourseInfo: FC = () => {
 
   return (
     <div className="flex flex-row gap-8 text-sm items-center">
-      <p>Курс валют НБРБ на {today.toLocaleDateString()}:</p>
+      <p>
+        {`${language === 'RU' ? 'Курс валют НБРБ на ' : 'NBRB exchange rate on '}`} {today.toLocaleDateString()}:
+      </p>
       <div className="flex gap-2 items-center">
         <img src={usaDollar} alt="us-dollar" />
         <p>USD</p>

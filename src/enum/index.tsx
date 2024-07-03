@@ -7,18 +7,22 @@ export enum PathE {
   Rules = '/usage-rules',
   ResetPasswordRequest = '/reset-password/:email',
   ResetPassword = '/url-front-change-password/:token',
-  ResetPasswordSuccess = '/reset-password'
+  ResetPasswordSuccess = '/reset-password',
+  UserCart = '/my-cart',
+  AdsPage = '/commercial-promotions',
+  NotFound = '/not-found-page-404'
 }
 
 export enum LotPathE {
-  LotDetail = '/advertisement/:lotId',
+  LotDetail = '/advertisement/:slug',
   CreateLot = '/create-lot',
-  EditLot = '/advertisement/:id/editing'
+  EditLot = '/advertisement/:slug/editing'
 }
 
 export enum ProfilePathE {
   MyLots = '/profile/my-lots',
-  MyTariff = '/profile/my-tariff'
+  MyTariff = '/profile/my-tariff',
+  MyPurchases = '/profile/my-purchases'
 }
 
 export enum CatalogPathE {

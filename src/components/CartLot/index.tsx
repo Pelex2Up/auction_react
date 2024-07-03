@@ -1,50 +1,72 @@
-import { FC } from 'react'
-import { LotT } from '../../../types/lotTypes'
-import { EditSVG } from '../../../assets/svg/editSVG'
-import { DeleteSVG } from '../../../assets/svg/deleteSVG'
-import styles from './buttonStyles.module.scss'
+import { FC, useEffect, useRef } from 'react'
+import { LotT } from '../../types/lotTypes'
+import { generatePath } from 'react-router-dom'
+import DefaultLink from '../common/DefaultLink'
+import { LotPathE } from '../../enum'
 import { Tooltip } from '@mui/material'
-import DefaultLink from '../../../components/common/DefaultLink'
-import { Loader } from '../../../components/Loader'
-import { generatePath, useNavigate } from 'react-router-dom'
-import { LotPathE } from '../../../enum'
-import { padWithZeros } from '../../../utils/articleNumberConverter'
+import { Loader } from '../Loader'
+import { DeleteSVG } from '../../assets/svg/deleteSVG'
+import styles from '../../pages/ProfilePages/components/buttonStyles.module.scss'
+import { useDeleteLotFromCartMutation } from '../../api/userService'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { Pagination } from 'swiper/modules'
+import type { SwiperRef } from 'swiper/react'
 
-interface ILotComp {
+import 'swiper/css'
+import 'swiper/scss/pagination'
+import { Button } from '../common/buttons'
+import { padWithZeros } from '../../utils/articleNumberConverter'
+
+type CartLotT = {
   lot: LotT
-  deleteLot: (id: number) => void
-  isDeleting: boolean
+  refetch: () => void
 }
 
-export const FixedPriceLotComponent: FC<ILotComp> = ({ lot, deleteLot, isDeleting }) => {
+export const CartLot: FC<CartLotT> = ({ lot, refetch }) => {
   const createdDate = new Date(lot.created)
   const endDate = new Date(lot.auction_end_date)
-  const navigate = useNavigate()
+  const [deleteLot, { isSuccess, isLoading: isDeleting }] = useDeleteLotFromCartMutation()
+  const swiperRef = useRef<SwiperRef>(null)
+
+  useEffect(() => {
+    if (isSuccess) {
+      refetch()
+    }
+  }, [isSuccess])
 
   return (
     <div className="w-full h-auto py-6 pl-0 pr-6 gap-6 flex shadow bg-white">
       <div className="w-full max-w-[150px] lg:max-w-[259px] h-full relative cursor-pointer">
         {lot.photos.length > 0 ? (
           <div className="relative h-[100px] lg:h-[187px]">
-            {lot.status === 'MODERATION' && (
-              <div className="absolute top-0 left-0 z-99 w-full h-full bg-[rgba(113,113,122,0.5)] text-white rounded font-sans text-lg font-bold flex items-center justify-center">
-                на модерации
-              </div>
-            )}
             {lot.status === 'CLOSED' && (
               <div className="absolute top-0 left-0 z-99 w-full h-full bg-[rgba(113,113,122,0.5)] text-red-600 rounded font-sans text-lg font-bold flex items-center justify-center">
                 завершен
               </div>
             )}
-            <img className="w-full h-full rounded object-cover" src={lot.photos[0].image} />
+            <div className="self-stretch h-full flex flex-col items-start justify-start relative">
+              <Swiper
+                ref={swiperRef}
+                slidesPerView={1}
+                modules={[Pagination]}
+                pagination={{ clickable: true }}
+                style={{ height: 'auto', alignItems: 'center', paddingBottom: '35px' }}
+              >
+                {lot.photos.map((photo, index) => (
+                  <SwiperSlide style={{ display: 'flex', justifyContent: 'center', height: '150px' }} key={index}>
+                    <img src={photo.image} alt={`lot-photo-preview-${photo.order}`} />
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+              <button className="cursor-pointer [border:none] p-[0.5rem] bg-white w-max min-w-[4.925rem] !m-[0] absolute top-[1rem] left-[0rem] rounded-tl-none rounded-tr rounded-br rounded-bl-none overflow-hidden flex flex-row items-start justify-start box-border whitespace-nowrap text-green-600 z-50">
+                <div className="relative text-[0.75rem] tracking-[0.01em] leading-[120%] font-text-2 text-green text-left">
+                  {lot.is_auction ? 'Аукцион' : 'Фиксированная цена'}
+                </div>
+              </button>
+            </div>
           </div>
         ) : (
           <div className="w-full h-[187px] pl-[9px] pr-2 flex-col justify-center items-center gap-4 inline-flex relative">
-            {lot.status === 'MODERATION' && (
-              <div className="absolute top-0 left-0 z-99 w-full h-full bg-[rgba(113,113,122,0.5)] text-white rounded font-sans text-lg font-bold flex items-center justify-center">
-                на модерации
-              </div>
-            )}
             {lot.status === 'CLOSED' && (
               <div className="absolute top-0 left-0 z-99 w-full h-full bg-[rgba(113,113,122,0.5)] text-red-600 rounded font-sans text-lg font-bold flex items-center justify-center">
                 завершен
@@ -60,15 +82,6 @@ export const FixedPriceLotComponent: FC<ILotComp> = ({ lot, deleteLot, isDeletin
             } ${lot.profile.name}`}</div>
           </div>
         )}
-        <div className="w-32 h-10 ml-2 mt-2 flex-col justify-start items-start gap-1.5 inline-flex">
-          <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">Аукцион до:</div>
-          <div className="flex-col justify-start items-start gap-1.5 flex">
-            <div className="justify-start items-start gap-1.5 inline-flex">
-              <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">{endDate.toLocaleDateString()}</div>
-              <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">{endDate.toLocaleTimeString()}</div>
-            </div>
-          </div>
-        </div>
         <div className="p-2 left-0 top-[10px] absolute bg-white rounded-tr rounded-br justify-start items-center gap-2.5 inline-flex">
           <div className="text-green-800 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">
             {lot.is_auction ? 'Аукцион' : 'Фиксированная цена'}
@@ -81,17 +94,12 @@ export const FixedPriceLotComponent: FC<ILotComp> = ({ lot, deleteLot, isDeletin
             <DefaultLink text={lot.title} className={styles.link} href={generatePath(LotPathE.LotDetail, { slug: lot.slug })} />
 
             <div className="flex gap-2 self-end">
-              <Tooltip title="Редактировать">
-                <button className={styles.buttons} onClick={() => navigate(generatePath(LotPathE.EditLot, { slug: lot.slug }))}>
-                  <EditSVG />
-                </button>
-              </Tooltip>
               {isDeleting ? (
                 <div className="w-[22px] h-[24px] flex items-center justify-center">
                   <Loader />
                 </div>
               ) : (
-                <Tooltip title="Удалить">
+                <Tooltip title="Удалить из корзины">
                   <button onClick={() => deleteLot(lot.id)}>
                     <DeleteSVG />
                   </button>
@@ -117,6 +125,15 @@ export const FixedPriceLotComponent: FC<ILotComp> = ({ lot, deleteLot, isDeletin
             {`Добавлено ${createdDate.toLocaleDateString()}, ${lot.city ? `${lot.city}` : ''}`}
           </div>
         </div>
+        {lot.is_auction ? (
+          <div className="self-end">
+            <Button text="Сделать ставку" />
+          </div>
+        ) : (
+          <div className="self-end">
+            <Button text="Купить" />
+          </div>
+        )}
       </div>
     </div>
   )

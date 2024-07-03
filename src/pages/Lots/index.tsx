@@ -1,14 +1,20 @@
 import { FC, useEffect, useState } from 'react'
 import LotDetail from './LotDetail'
 import LotDescription from './LotDescription'
-import { useParams } from 'react-router-dom'
+import { generatePath, useNavigate, useParams } from 'react-router-dom'
 import { useFetchCategoriesQuery, useFetchLotDataMutation, useGetCategoryMutation } from '../../api/lotService'
 import { Loader } from '../../components/Loader'
 import { ICategory } from '../../types/commonTypes'
+import { selectHistory, useAppDispatch, useAppSelector } from '../../store/hooks'
+import { updateHistory } from '../../store/redux/lastViewedLots/slice'
+import { PathE } from '../../enum'
 
 export const LotPage: FC = () => {
-  const { lotId } = useParams()
-  const [fetchLot, { data: lotData, isLoading }] = useFetchLotDataMutation()
+  const navigate = useNavigate()
+  const { slug } = useParams()
+  const history = useAppSelector(selectHistory)
+  const dispatch = useAppDispatch()
+  const [fetchLot, { data: lotData, isLoading, isError }] = useFetchLotDataMutation()
   const { data: categories, isSuccess, isFetching } = useFetchCategoriesQuery()
   const [mainCategory, setMainCategory] = useState<ICategory>()
   const [subCategory, setSubCategory] = useState<ICategory>()
@@ -54,10 +60,18 @@ export const LotPage: FC = () => {
   }, [getCatData, subCategory])
 
   useEffect(() => {
-    if (!lotData && lotId && !isLoading) {
-      fetchLot(Number(lotId))
+    if (!lotData && slug && !isLoading && !isError) {
+      fetchLot(slug)
+        .unwrap()
+        .then((data) => dispatch(updateHistory(data.id)))
     }
-  }, [fetchLot, isLoading, lotData, lotId])
+  }, [fetchLot, isLoading, lotData, slug])
+
+  useEffect(() => {
+    if (isError) {
+      navigate(generatePath(PathE.NotFound))
+    }
+  }, [isError])
 
   if (!lotData || !mainCategory) {
     return (
@@ -69,7 +83,7 @@ export const LotPage: FC = () => {
 
   return (
     <div className="w-full h-full flex flex-col gap-4 xl:px-[60px] px-4">
-      <LotDetail lotData={lotData} category={mainCategory} subCategory={subCategory} lowerCat={lowerCat} />
+      <LotDetail lotData={lotData} category={mainCategory} subCategory={subCategory} lowerCat={lowerCat} refetch={fetchLot} />
       <LotDescription lotData={lotData} category={mainCategory} subCategory={subCategory} lowerCat={lowerCat} />
     </div>
   )

@@ -8,6 +8,8 @@ import { Loader } from '../../components/Loader'
 import { debounce } from 'lodash'
 import { CatalogResponseT } from '../../types/ResponseTypes'
 import { Pagination } from '@mui/material'
+import { useAppendLotInCartMutation, useAppendManyLotsInCartMutation } from '../../api/userService'
+import { toast } from 'react-toastify'
 
 export const LotCatalogPage: FC = () => {
   const location = useLocation()
@@ -16,6 +18,8 @@ export const LotCatalogPage: FC = () => {
   const [getPageData, { data, isSuccess, isLoading, isError }] = useSearchAdvertisementMutation()
   const [catalogData, setCatalogData] = useState<CatalogResponseT>()
   const category = searchParams.get('main_category')
+  const [addToCart, { isSuccess: isSuccessCart, isError: isErrorCart, error }] = useAppendLotInCartMutation()
+  const [addManyToCart, { isSuccess: isSuccessCartMany }] = useAppendManyLotsInCartMutation()
 
   function filterObjectByValues(obj: Record<string, any>): Record<string, any> {
     return Object.fromEntries(Object.entries(obj).filter(([_, value]) => String(value).length > 0))
@@ -38,6 +42,26 @@ export const LotCatalogPage: FC = () => {
       getPageDataMemo(`?${searchParams}`).then((data) => setCatalogData(data))
     }
   }, [catalogData, isLoading, getPageDataMemo, searchParams])
+
+  useEffect(() => {
+    if (isSuccessCartMany) {
+      toast('Лоты успешно добавлены в корзину', { type: 'success' })
+      getPageDataMemo(`?${searchParams}`).then((data) => setCatalogData(data))
+    }
+  }, [isSuccessCartMany])
+
+  useEffect(() => {
+    if (isSuccessCart) {
+      toast('Лот успешно добавлен в корзину', { type: 'success' })
+      getPageDataMemo(`?${searchParams}`).then((data) => setCatalogData(data))
+    }
+  }, [isSuccessCart])
+
+  useEffect(() => {
+    if (error && 'status' in error && isErrorCart && error.status === 400) {
+      toast('Вы не можете добавить своё собственное объявление в корзину', { type: 'warning' })
+    }
+  }, [isErrorCart, error])
 
   useEffect(() => {
     if (isSuccess && data) {
@@ -63,7 +87,7 @@ export const LotCatalogPage: FC = () => {
       <SideBarCatalog categories={categories ?? []} lotsData={catalogData} currentCategory={category} searchParams={searchParams} updateUrl={updateUrl} />
       <div className="w-full flex-col flex gap-4">
         <FiltersCatalog data={catalogData} searchParams={searchParams} updateUrl={updateUrl} />
-        <LotsCatalogSchedule lotsData={catalogData.results} />
+        <LotsCatalogSchedule lotsData={catalogData.results} addToCart={addToCart} addManyToCart={addManyToCart} />
         {/* {parseInt(searchParams.get('page') as string) > 1 && ( */}
         <div className="w-full flex items-center justify-center mt-6">
           <Pagination

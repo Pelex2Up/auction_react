@@ -27,7 +27,7 @@ export type LotImageT = {
 }
 
 export const EditLotPage: FC = () => {
-  const { id: lotId } = useParams()
+  const { slug } = useParams()
   const { user } = useAppSelector(selectUser)
   const navigate = useNavigate()
   const [fetchLot, { data: lotPureData, isError }] = useFetchLotDataMutation()
@@ -117,8 +117,8 @@ export const EditLotPage: FC = () => {
   }, [lotPhotos])
 
   useEffect(() => {
-    if (!lotPureData && lotId) {
-      fetchLot(Number(lotId))
+    if (!lotPureData && slug) {
+      fetchLot(slug)
         .unwrap()
         .then((data: LotT) => {
           setLotData(data)
@@ -170,7 +170,7 @@ export const EditLotPage: FC = () => {
         })
         .catch(() => toast('Произошла непредвиденная ошибка', { type: 'error' }))
     }
-  }, [fetchLot, lotData, lotId, lotPureData])
+  }, [fetchLot, lotData, slug, lotPureData])
 
   const handleChangeOption = (option: string, event: ChangeEvent<HTMLInputElement>) => {
     if (option === 'type') {

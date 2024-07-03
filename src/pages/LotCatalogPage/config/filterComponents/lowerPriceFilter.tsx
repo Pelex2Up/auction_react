@@ -15,7 +15,7 @@ export const LowerPriceFilter: FC<IFilter> = ({ searchParams, updateUrl }) => {
             onChange={() => updateUrl({ old_price_reduced: searchParams.get('old_price_reduced') === 'true' ? 'false' : 'true' })}
           />
         }
-        label
+        label={''}
       />
     </li>
   )

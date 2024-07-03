@@ -7,8 +7,10 @@ import type { SwiperRef } from 'swiper/react'
 import { Pagination } from 'swiper/modules'
 import 'swiper/scss'
 import 'swiper/scss/pagination'
+import { selectLangSettings, useAppSelector } from '../../../store/hooks'
 
 export const SliderAds: FC = () => {
+  const { language } = useAppSelector(selectLangSettings)
   const adsListSwiperRef = useRef<SwiperRef>(null)
 
   const nextElementSwiper = () => {
@@ -18,10 +20,10 @@ export const SliderAds: FC = () => {
   }
 
   return (
-    <div className="w-full h-[527px] flex-col justify-center items-start gap-8 inline-flex lg:px-[60px] px-5">
+    <div className="w-full h-[527px] flex-col justify-center items-start gap-8 inline-flex">
       <div className="w-full grow shrink basis-0 flex-col justify-center items-start gap-8 inline-flex">
         <div className="w-32 h-[29px] pr-[23px] justify-start items-center inline-flex">
-          <div className="text-zinc-900 text-2xl font-medium font-['SF Pro Text'] leading-[28.80px] tracking-tight">Реклама</div>
+          <div className="text-zinc-900 text-2xl font-medium font-['SF Pro Text'] leading-[28.80px] tracking-tight">{language === 'RU' ? 'Реклама': 'Ads'}</div>
         </div>
         <div className="w-full self-stretch justify-center items-start overflow-hidden">
           <Swiper
@@ -44,16 +46,16 @@ export const SliderAds: FC = () => {
               }
             }}
           >
-            <SwiperSlide className='flex justify-center'>
+            <SwiperSlide className="flex justify-center">
               <img className="w-[312px] h-[418px] rounded shadow" src={Ad1} alt="" />
             </SwiperSlide>
-            <SwiperSlide className='flex justify-center'>
+            <SwiperSlide className="flex justify-center">
               <img className="w-[312px] h-[418px] rounded shadow" src={Ad2} alt="" />
             </SwiperSlide>
-            <SwiperSlide className='flex justify-center'>
+            <SwiperSlide className="flex justify-center">
               <img className="w-[312px] h-[418px] rounded" src={Ad3} alt="" />
             </SwiperSlide>
-            <SwiperSlide className='flex justify-center'>
+            <SwiperSlide className="flex justify-center">
               <img className="w-[312px] h-[418px] rounded" src={Ad1} alt="" />
             </SwiperSlide>
           </Swiper>

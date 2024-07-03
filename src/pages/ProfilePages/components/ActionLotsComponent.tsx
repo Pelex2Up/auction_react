@@ -1,29 +1,27 @@
 import { FC } from 'react'
 import { LotT } from '../../../types/lotTypes'
-import { EditSVG } from '../../../assets/svg/editSVG'
-import { DeleteSVG } from '../../../assets/svg/deleteSVG'
 import styles from './buttonStyles.module.scss'
-import { Tooltip } from '@mui/material'
 import DefaultLink from '../../../components/common/DefaultLink'
-import { Loader } from '../../../components/Loader'
 import { generatePath, useNavigate } from 'react-router-dom'
 import { LotPathE } from '../../../enum'
 import { padWithZeros } from '../../../utils/articleNumberConverter'
 
 interface ILotComp {
   lot: LotT
-  deleteLot: (id: number) => void
-  isDeleting: boolean
 }
 
-export const FixedPriceLotComponent: FC<ILotComp> = ({ lot, deleteLot, isDeleting }) => {
+export const ActionLotsComponent: FC<ILotComp> = ({ lot }) => {
   const createdDate = new Date(lot.created)
-  const endDate = new Date(lot.auction_end_date)
+  const endDate = new Date(lot.auction_end_date || lot.expires_at)
   const navigate = useNavigate()
+  const currentDate = new Date()
 
   return (
     <div className="w-full h-auto py-6 pl-0 pr-6 gap-6 flex shadow bg-white">
-      <div className="w-full max-w-[150px] lg:max-w-[259px] h-full relative cursor-pointer">
+      <div
+        className="w-full max-w-[150px] lg:max-w-[259px] h-full relative cursor-pointer"
+        onClick={() => navigate(generatePath(LotPathE.LotDetail, { slug: lot.slug }))}
+      >
         {lot.photos.length > 0 ? (
           <div className="relative h-[100px] lg:h-[187px]">
             {lot.status === 'MODERATION' && (
@@ -60,15 +58,17 @@ export const FixedPriceLotComponent: FC<ILotComp> = ({ lot, deleteLot, isDeletin
             } ${lot.profile.name}`}</div>
           </div>
         )}
-        <div className="w-32 h-10 ml-2 mt-2 flex-col justify-start items-start gap-1.5 inline-flex">
-          <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">Аукцион до:</div>
-          <div className="flex-col justify-start items-start gap-1.5 flex">
-            <div className="justify-start items-start gap-1.5 inline-flex">
-              <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">{endDate.toLocaleDateString()}</div>
-              <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">{endDate.toLocaleTimeString()}</div>
+        {lot.is_auction && (
+          <div className="w-32 h-10 ml-2 mt-2 flex-col justify-start items-start gap-1.5 inline-flex">
+            <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">Аукцион до:</div>
+            <div className="flex-col justify-start items-start gap-1.5 flex">
+              <div className="justify-start items-start gap-1.5 inline-flex">
+                <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">{endDate.toLocaleDateString()}</div>
+                <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">{endDate.toLocaleTimeString()}</div>
+              </div>
             </div>
           </div>
-        </div>
+        )}
         <div className="p-2 left-0 top-[10px] absolute bg-white rounded-tr rounded-br justify-start items-center gap-2.5 inline-flex">
           <div className="text-green-800 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">
             {lot.is_auction ? 'Аукцион' : 'Фиксированная цена'}
@@ -79,23 +79,18 @@ export const FixedPriceLotComponent: FC<ILotComp> = ({ lot, deleteLot, isDeletin
         <div className="w-full flex flex-col gap-1">
           <div className="w-full flex lg:flex-row flex-col-reverse justify-between gap-4">
             <DefaultLink text={lot.title} className={styles.link} href={generatePath(LotPathE.LotDetail, { slug: lot.slug })} />
-
-            <div className="flex gap-2 self-end">
-              <Tooltip title="Редактировать">
-                <button className={styles.buttons} onClick={() => navigate(generatePath(LotPathE.EditLot, { slug: lot.slug }))}>
-                  <EditSVG />
-                </button>
-              </Tooltip>
-              {isDeleting ? (
-                <div className="w-[22px] h-[24px] flex items-center justify-center">
-                  <Loader />
+            <div className="w-[84px] h-10 flex-col justify-start items-start gap-1.5 inline-flex">
+              <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">Статус:</div>
+              {endDate > currentDate ? (
+                <div className="justify-start items-center gap-1.5 inline-flex">
+                  <div className="w-2.5 h-2.5 bg-green-700 rounded-full" />
+                  <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">Активный</div>
                 </div>
               ) : (
-                <Tooltip title="Удалить">
-                  <button onClick={() => deleteLot(lot.id)}>
-                    <DeleteSVG />
-                  </button>
-                </Tooltip>
+                <div className="justify-start items-center gap-1.5 inline-flex">
+                  <div className="w-2.5 h-2.5 bg-red-500 rounded-full" />
+                  <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">Завершен</div>
+                </div>
               )}
             </div>
           </div>
@@ -107,11 +102,23 @@ export const FixedPriceLotComponent: FC<ILotComp> = ({ lot, deleteLot, isDeletin
         <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
           Состояние: {lot.condition === 'USED' ? 'Б/У' : 'новое'}
         </div>
-        <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">Стоимость:</div>
-        <div className="flex-col justify-start items-start inline-flex">
-          <div className="text-right text-green-800 text-lg font-bold font-['SF Pro Text'] leading-snug tracking-tight">{lot.price.split('.')[0]} BYN</div>
-        </div>
-
+        {lot.is_auction ? (
+          <div className="flex flex-col gap-1">
+            <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">Текущая цена:</div>
+            <div className="flex-col justify-start items-start inline-flex">
+              <div className="text-right text-green-800 text-lg font-bold font-['SF Pro Text'] leading-snug tracking-tight">
+                {lot.auction_current_price ? lot.auction_current_price.split('.')[0] : lot.price.split('.')[0]} BYN
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-1">
+            <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">Стоимость:</div>
+            <div className="flex-col justify-start items-start inline-flex">
+              <div className="text-right text-green-800 text-lg font-bold font-['SF Pro Text'] leading-snug tracking-tight">{lot.price.split('.')[0]} BYN</div>
+            </div>
+          </div>
+        )}
         <div className="justify-start items-start gap-1.5 inline-flex">
           <div className=" text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
             {`Добавлено ${createdDate.toLocaleDateString()}, ${lot.city ? `${lot.city}` : ''}`}

@@ -109,3 +109,27 @@
   margin-left: 1.5rem;
   width: calc(100% - 3rem);
 }
+
+.lang {
+  justify-content: flex-start;
+  align-items: center;
+  gap: 13px;
+  display: flex;
+  flex-direction: row;
+  cursor: pointer;
+  transition: all ease-in-out 0.2s;
+
+  &:hover {
+    div {
+      div {
+        svg {
+          g {
+            path {
+              stroke: #008001;
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,11 +1,13 @@
-import Person from "../../assets/images/feedbackPerson.png";
-import BG from "../../assets/images/feedbackBG.png";
-import { Input } from "../common/Input";
-import Checkbox from "../common/checkbox";
-import { Button } from "../common/buttons";
-import DefaultLink from "../common/DefaultLink";
+import Person from '../../assets/images/feedbackPerson.png'
+import BG from '../../assets/images/feedbackBG.png'
+import { Input } from '../common/Input'
+import Checkbox from '../common/checkbox'
+import { Button } from '../common/buttons'
+import DefaultLink from '../common/DefaultLink'
+import { selectLangSettings, useAppSelector } from '../../store/hooks'
 
 export default function FeedBack() {
+  const { language } = useAppSelector(selectLangSettings)
   return (
     <div className="w-full mb-[360px] lg:mb-0 relative">
       <img
@@ -13,10 +15,10 @@ export default function FeedBack() {
         height={247}
         width={350}
         style={{
-          objectFit: "scale-down",
-          zIndex: "20",
-          position: "relative",
-          marginLeft: "20px",
+          objectFit: 'scale-down',
+          zIndex: '20',
+          position: 'relative',
+          marginLeft: '20px'
         }}
         alt="feed-back"
       />
@@ -24,65 +26,42 @@ export default function FeedBack() {
         <img
           src={BG}
           style={{
-            objectFit: "cover",
-            position: "absolute",
+            objectFit: 'cover',
+            position: 'absolute',
             height: '100%',
             top: 0,
             bottom: 0,
             left: 0,
-            right: 0,
+            right: 0
           }}
           alt="background"
         />
         <div className="w-full h-full xl:py-[32px] py-[32px] xl:pl-[390px]  xl:pr-[40px] px-4 pt-[250px] relative z-20 flex flex-col gap-[10px]">
           <span className="text-sm leading-[16.8px] font-normal text-[#1D1E22]">
-            Отправьте ваш электронный адрес и мы ответим
+            {language === 'RU' ? 'Отправьте ваш электронный адрес и мы ответим' : 'Send your email and we will respond'}
           </span>
           <div className="grid lg:grid-cols-2 grid-rows-2 w-full gap-[20px]">
             <div className="grid grid-cols-2 w-full gap-[10px]">
-              <Input
-                className="w-full"
-                multiline={false}
-                placeholder="Имя"
-                name="name"
-              />
-              <Input
-                className="w-full"
-                multiline={false}
-                placeholder="Электронная почта"
-                name="email"
-              />
-              <Input
-                multiline
-                rows={2}
-                placeholder="Сообщение"
-                className="col-span-2"
-                name="message"
-                aria-multiline
-              />
+              <Input className="w-full" multiline={false} placeholder={language === 'RU' ? 'Имя' : 'Your Name'} name="name" />
+              <Input className="w-full" multiline={false} placeholder={language === 'RU' ? 'Электронная почта' : 'Email'} name="email" />
+              <Input multiline rows={2} placeholder={language === 'RU' ? 'Сообщение' : 'Message'} className="col-span-2" name="message" aria-multiline />
             </div>
             <div className="flex flex-col gap-[20px]">
               <Checkbox
                 label={
                   <p className="max-w-[230px] text-sm text-[#808080] font-normal">
-                    Я принимаю условия{" "}
-                    <DefaultLink
-                      text="Пользовательского соглашения"
-                      style={{ color: "#008001" }}
-                    />{" "}
-                    и{" "}
-                    <DefaultLink
-                      text="Политику конфиденциальности"
-                      style={{ color: "#008001" }}
-                    />
+                    {language === 'RU' ? `Я принимаю условия` : 'I accept'}{' '}
+                    <DefaultLink text={language === 'RU' ? 'Пользовательского соглашения' : 'User agreement'} style={{ color: '#008001' }} />{' '}
+                    {language === 'RU' ? 'и' : 'and'}{' '}
+                    <DefaultLink text={language === 'RU' ? 'Политику конфиденциальности' : 'Privacy policy'} style={{ color: '#008001' }} />
                   </p>
                 }
               />
-              <Button variant="primary" text="Отправить" />
+              <Button variant="primary" text={language === 'RU' ? 'Отправить' : 'Send message'} />
             </div>
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }

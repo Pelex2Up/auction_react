@@ -11,7 +11,7 @@ import Logo from '../../assets/logo/logo.png'
 import HammerLogo from '../../assets/logo/headerHammerLogo.png'
 import { CatalogPathE, LotPathE, PathE, ProfilePathE } from '../../enum/index'
 import { generatePath, useNavigate } from 'react-router-dom'
-import { selectUser, useAppDispatch, useAppSelector } from '../../store/hooks'
+import { selectLangSettings, selectUser, useAppDispatch, useAppSelector } from '../../store/hooks'
 import { Loader } from '../Loader'
 import { useLogoutMutation } from '../../api/loginService'
 import { logoutState, updateUser } from '../../store/redux/users/slice'
@@ -21,8 +21,11 @@ import { DefaultModal } from '../Modal/DefaultModal'
 import { useLazyFetchProfileQuery } from '../../api/userService'
 import { IconBurgerSVG } from '../../assets/svg/iconBurgerSVG'
 import SearchInput from '../common/SearchInput'
+import { Tooltip } from '@mui/material'
+import { LangChangeBlock } from '../LangChangeBlock'
 
 export default function Header() {
+  const { language } = useAppSelector(selectLangSettings)
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const [show, setShow] = useState<boolean>(false)
@@ -77,23 +80,29 @@ export default function Header() {
       <header className={styles.wrapper}>
         <div className={styles.wrapper_topHeader}>
           <div className={styles.wrapper_topHeader_leftContent}>
-            <DefaultLink text="Главная" href={PathE.Home} />
-            <DefaultLink text="Объявления о покупке" href={generatePath(CatalogPathE.Catalog + '/?ad_type=BUY&page=1')} />
-            <DefaultLink text="Объявления о продаже" href={generatePath(CatalogPathE.Catalog + '/?ad_type=SELL&page=1')} />
-            <DefaultLink text="Правила участия" href={PathE.Rules} />
-            <DefaultLink text="Тарифы" href={PathE.TarriffPlans} />
-            <DefaultLink text="Реклама" />
+            <DefaultLink text={language === 'RU' ? 'Главная' : 'Home'} href={PathE.Home} />
+            <DefaultLink
+              text={language === 'RU' ? 'Объявления о покупке' : 'Buy advertisements'}
+              href={generatePath(CatalogPathE.Catalog + '/?ad_type=BUY&page=1')}
+            />
+            <DefaultLink
+              text={language === 'RU' ? 'Объявления о продаже' : 'Advertisements for sale'}
+              href={generatePath(CatalogPathE.Catalog + '/?ad_type=SELL&page=1')}
+            />
+            <DefaultLink text={language === 'RU' ? 'Правила участия' : 'Rules of participation'} href={PathE.Rules} />
+            <DefaultLink text={language === 'RU' ? 'Тарифы' : 'Tariffs'} href={PathE.TarriffPlans} />
+            <DefaultLink text={language === 'RU' ? 'Реклама' : 'Advertising'} />
           </div>
           <div className={styles.wrapper_topHeader_rightContent}>
             <p>
-              Для подачи объявления необходимо пройти{' '}
+              {language === 'RU' ? 'Для подачи объявления необходимо пройти ' : 'To submit an ad, you must '}
               <DefaultLink
                 onClick={() => {
                   setModalState(2)
                   setShow(true)
                 }}
                 style={{ color: '#008001' }}
-                text="регистрацию"
+                text={language === 'RU' ? 'регистрацию' : 'register'}
               />
             </p>
           </div>
@@ -113,7 +122,7 @@ export default function Header() {
           </div>
           <div className={styles.wrapper_bottomHeader_rightContent}>
             <Button
-              text="Подать объявление"
+              text={language === 'RU' ? 'Подать объявление' : 'Submit an ad'}
               variant={user ? 'secondary' : 'primary'}
               onClick={() => {
                 auth && user?.profile.is_completed ? navigate(generatePath(LotPathE.CreateLot)) : openModal(Modal.EmptyProfile)
@@ -130,7 +139,7 @@ export default function Header() {
                   setModalState(1)
                   setShow(true)
                 }}
-                text="Вход в аккаунт и регистрация"
+                text={language === 'RU' ? 'Вход в аккаунт и регистрация' : 'Sign Up & Sign In'}
                 variant="secondary"
               />
             ) : (
@@ -144,59 +153,36 @@ export default function Header() {
               <img src={HammerLogo} className="w-[293px] h-[54px]" alt="logo" />
             </a>
             <div className="inline-flex gap-4 w-1/2">
-              <Button text={'Все объявления'} className="min-w-[168px]" variant="secondary">
+              <Button text={language === 'RU' ? 'Все объявления' : 'All advertisements'} className="min-w-[168px]" variant="secondary">
                 <IconBurgerSVG />
               </Button>
               <SearchInput />
             </div>
             <div className="justify-end items-center gap-6 flex">
-              <div className="justify-start items-center gap-6 flex">
+              <div className="justify-start items-center gap-6 flex cursor-pointer" onClick={() => navigate(generatePath(PathE.UserCart))}>
                 <div className="w-6 h-6 pl-[1.09px] pr-[1.08px] py-[0.86px] justify-center items-center flex">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <g clipPath="url(#clip0_3101_19280)">
-                      <path
-                        d="M4.28721 9.42885V8.57171C4.28721 6.52575 5.09996 4.56359 6.54667 3.11688C7.99338 1.67017 9.95554 0.857422 12.0015 0.857422C14.0475 0.857422 16.0096 1.67017 17.4563 3.11688C18.903 4.56359 19.7158 6.52575 19.7158 8.57171V9.42885M8.57293 14.5717V18.0003M15.4301 14.5717V18.0003M22.9044 11.3489C22.9336 11.1096 22.9121 10.8668 22.8412 10.6364C22.7704 10.406 22.6517 10.1931 22.4929 10.0117C22.3323 9.82885 22.1345 9.68229 21.9128 9.58179C21.6912 9.4813 21.4506 9.42916 21.2072 9.42885H2.79578C2.55238 9.42916 2.31183 9.4813 2.09015 9.58179C1.86846 9.68229 1.67071 9.82885 1.51007 10.0117C1.35133 10.1931 1.23264 10.406 1.16175 10.6364C1.09085 10.8668 1.06935 11.1096 1.09864 11.3489L2.38435 21.6346C2.43488 22.0527 2.63757 22.4376 2.95375 22.7158C3.26993 22.9941 3.67748 23.1462 4.09864 23.1431H19.9386C20.3598 23.1462 20.7673 22.9941 21.0835 22.7158C21.3997 22.4376 21.6024 22.0527 21.6529 21.6346L22.9044 11.3489Z"
-                        stroke="#1D1E22"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </g>
-                    <defs>
-                      <clipPath id="clip0_3101_19280">
-                        <rect width="24" height="24" fill="white" />
-                      </clipPath>
-                    </defs>
-                  </svg>
-                </div>
-              </div>
-              <div className="justify-start items-center gap-[13px] flex">
-                <div className="w-6 h-6 pl-[0.86px] pr-[0.85px] py-[0.86px] justify-center items-center flex">
-                  <div className="w-[22.29px] h-[22.29px] relative">
+                  <Tooltip title={language === 'RU' ? 'Корзина' : 'Basket'}>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <g clipPath="url(#clip0_3101_19283)">
+                      <g clipPath="url(#clip0_3101_19280)">
                         <path
-                          d="M12.0022 23.1431C18.1563 23.1431 23.1451 18.1543 23.1451 12.0003C23.1451 5.84625 18.1563 0.857422 12.0022 0.857422C5.8482 0.857422 0.859375 5.84625 0.859375 12.0003C0.859375 18.1543 5.8482 23.1431 12.0022 23.1431Z"
-                          stroke="#1D1E22"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M0.859375 12.0003H23.1451M16.2879 12.0003C16.0774 16.0751 14.5765 19.9774 12.0022 23.1431C9.42792 19.9774 7.92703 16.0751 7.71652 12.0003C7.92703 7.92544 9.42792 4.02311 12.0022 0.857422C14.5765 4.02311 16.0774 7.92544 16.2879 12.0003Z"
+                          d="M4.28721 9.42885V8.57171C4.28721 6.52575 5.09996 4.56359 6.54667 3.11688C7.99338 1.67017 9.95554 0.857422 12.0015 0.857422C14.0475 0.857422 16.0096 1.67017 17.4563 3.11688C18.903 4.56359 19.7158 6.52575 19.7158 8.57171V9.42885M8.57293 14.5717V18.0003M15.4301 14.5717V18.0003M22.9044 11.3489C22.9336 11.1096 22.9121 10.8668 22.8412 10.6364C22.7704 10.406 22.6517 10.1931 22.4929 10.0117C22.3323 9.82885 22.1345 9.68229 21.9128 9.58179C21.6912 9.4813 21.4506 9.42916 21.2072 9.42885H2.79578C2.55238 9.42916 2.31183 9.4813 2.09015 9.58179C1.86846 9.68229 1.67071 9.82885 1.51007 10.0117C1.35133 10.1931 1.23264 10.406 1.16175 10.6364C1.09085 10.8668 1.06935 11.1096 1.09864 11.3489L2.38435 21.6346C2.43488 22.0527 2.63757 22.4376 2.95375 22.7158C3.26993 22.9941 3.67748 23.1462 4.09864 23.1431H19.9386C20.3598 23.1462 20.7673 22.9941 21.0835 22.7158C21.3997 22.4376 21.6024 22.0527 21.6529 21.6346L22.9044 11.3489Z"
                           stroke="#1D1E22"
                           strokeLinecap="round"
                           strokeLinejoin="round"
                         />
                       </g>
                       <defs>
-                        <clipPath id="clip0_3101_19283">
+                        <clipPath id="clip0_3101_19280">
                           <rect width="24" height="24" fill="white" />
                         </clipPath>
                       </defs>
                     </svg>
-                  </div>
+                  </Tooltip>
                 </div>
-                <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text']">Русский-USD</div>
               </div>
+              <Tooltip title={language === 'RU' ? 'Выбор языка и валюты' : 'Set language & currency'}>
+                <LangChangeBlock />
+              </Tooltip>
             </div>
           </div>
         </div>
@@ -221,12 +207,18 @@ export default function Header() {
         <nav id="nav-menu" className={`${styles.mobileWrapper_sideMenu} ${showMenu ? styles.open : styles.closed}`}>
           <div className="w-full relative h-[0px] border border-zinc-300" />
           <ul className="w-full flex flex-col gap-4 px-6 font-normal text-base">
-            <DefaultLink text="Главная" href={PathE.Home} />
-            <DefaultLink text="Объявления о покупке" href={generatePath(CatalogPathE.Catalog + '/?ad_type=BUY&page=1')} />
-            <DefaultLink text="Объявления о продаже" href={generatePath(CatalogPathE.Catalog + '/?ad_type=SELL&page=1')} />
-            <DefaultLink text="Правила участия" href={PathE.Rules} />
-            <DefaultLink text="Тарифы" href={PathE.TarriffPlans} />
-            <DefaultLink text="Реклама" />
+            <DefaultLink text={language === 'RU' ? 'Главная' : 'Home'} href={PathE.Home} />
+            <DefaultLink
+              text={language === 'RU' ? 'Объявления о покупке' : 'Buy advertisements'}
+              href={generatePath(CatalogPathE.Catalog + '/?ad_type=BUY&page=1')}
+            />
+            <DefaultLink
+              text={language === 'RU' ? 'Объявления о продаже' : 'Advertisements for sale'}
+              href={generatePath(CatalogPathE.Catalog + '/?ad_type=SELL&page=1')}
+            />
+            <DefaultLink text={language === 'RU' ? 'Правила участия' : 'Rules of participation'} href={PathE.Rules} />
+            <DefaultLink text={language === 'RU' ? 'Тарифы' : 'Tariffs'} href={PathE.TarriffPlans} />
+            <DefaultLink text={language === 'RU' ? 'Реклама' : 'Advertising'} />
           </ul>
           {auth && user ? (
             <ul className={`w-full z-10 cursor-default`}>
@@ -240,7 +232,7 @@ export default function Header() {
                 <div className="w-full relative h-[0px] border border-zinc-300" />
                 <li>
                   <MenuButton
-                    text="Мои объявления"
+                    text={language === 'RU' ? 'Мои объявления' : 'My advertisements'}
                     onClick={() => {
                       closeSideMenu()
                       navigate(generatePath(ProfilePathE.MyLots))
@@ -263,7 +255,13 @@ export default function Header() {
                   </MenuButton>
                 </li>
                 <li>
-                  <MenuButton text="Мои заказы">
+                  <MenuButton
+                    text={language === 'RU' ? 'Мои заказы' : 'My orders'}
+                    onClick={() => {
+                      closeSideMenu()
+                      navigate(generatePath(ProfilePathE.MyPurchases))
+                    }}
+                  >
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <g clipPath="url(#clip0_3125_16348)">
                         <path
@@ -301,7 +299,7 @@ export default function Header() {
                 </li>
                 <li>
                   <MenuButton
-                    text="Настройки профиля"
+                    text={language === 'RU' ? 'Настройки профиля' : 'Profile settings'}
                     onClick={() => {
                       closeSideMenu()
                       navigate(generatePath(PathE.Profile))
@@ -319,7 +317,7 @@ export default function Header() {
                 </li>
                 <li>
                   <MenuButton
-                    text="Мой тариф"
+                    text={language === 'RU' ? 'Мой тариф' : 'My tariff'}
                     onClick={() => {
                       navigate(generatePath(ProfilePathE.MyTariff))
                       closeSideMenu()
@@ -364,7 +362,7 @@ export default function Header() {
                 </li>
                 <div className="w-full relative h-[0px] border border-zinc-300" />
                 <li>
-                  <MenuButton text="Выход" onClick={() => logout()}>
+                  <MenuButton text={language === 'RU' ? 'Выход' : 'Logout'} onClick={() => logout()}>
                     {isLoading ? (
                       <Loader />
                     ) : (
@@ -390,7 +388,7 @@ export default function Header() {
               <Button
                 className={styles.sideBarButton}
                 style={{ marginTop: '1rem' }}
-                text="Подать объявление"
+                text={language === 'RU' ? 'Подать объявление' : 'Submit an ad'}
                 variant={user ? 'secondary' : 'primary'}
                 onClick={() => {
                   closeSideMenu()
@@ -413,12 +411,12 @@ export default function Header() {
                   setModalState(1)
                   setShow(true)
                 }}
-                text="Вход в аккаунт и регистрация"
+                text={language === 'RU' ? 'Вход в аккаунт и регистрация' : 'Sign up & sign in'}
                 variant="secondary"
               />
               <Button
                 className={styles.sideBarButton}
-                text="Подать объявление"
+                text={language === 'RU' ? 'Подать объявление' : 'Submit an ad'}
                 variant={user ? 'secondary' : 'primary'}
                 onClick={() => {
                   openModal(Modal.EmptyProfile)

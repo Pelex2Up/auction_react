@@ -20,6 +20,8 @@ import { MyLots } from './pages/ProfilePages/MyLots'
 import { EditLotPage } from './pages/Lots/EditLot'
 import { MyTariffPage } from './pages/ProfilePages/MyTariff'
 import { LotCatalogPage } from './pages/LotCatalogPage/LotCatalogPage'
+import { UserCartPage } from './pages/UserCartPage'
+import { MyPurchasesPage } from './pages/ProfilePages/MyPurchases'
 
 const RootComponent: React.FC = () => {
   return (
@@ -28,6 +30,7 @@ const RootComponent: React.FC = () => {
         <Route path={PathE.Home} element={<RootLayout />}>
           <Route path="*" element={<NotFoundPage />} />
           <Route index element={<Home />} />
+          <Route path={PathE.UserCart} element={<UserCartPage />} />
           <Route path={PathE.RegistrationConfirm} element={<RegistrationSuccess />} />
           <Route path={PathE.AccessUserRegistration} element={<RegistrationToken />} />
           <Route path={PathE.ResetPasswordRequest} element={<ResetPasswordRequest />} />
@@ -39,6 +42,7 @@ const RootComponent: React.FC = () => {
             <Route index element={<MainProfile />} />
             <Route path={ProfilePathE.MyLots} element={<MyLots />} />
             <Route path={ProfilePathE.MyTariff} element={<MyTariffPage />} />
+            <Route path={ProfilePathE.MyPurchases} element={<MyPurchasesPage />} />
           </Route>
           <Route path={PathE.TarriffPlans} element={<TarriffPlans />} />
           <Route path={PathE.Rules} element={<UsageRules />} />
