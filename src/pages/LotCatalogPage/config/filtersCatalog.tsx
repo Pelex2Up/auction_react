@@ -124,7 +124,7 @@ export const FiltersCatalog: FC<IFilterCatalog> = ({ data, searchParams, updateU
             </button>
           </div>
         )}
-        {searchParams.size > 2 && (
+        {searchParams.size >= 2 && (
           <div className="w-max h-7 px-[13px] py-[5px] rounded border border-zinc-300 justify-between items-center gap-1.5 inline-flex">
             <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-none">сбросить фильтр</div>
             <button
@@ -138,7 +138,8 @@ export const FiltersCatalog: FC<IFilterCatalog> = ({ data, searchParams, updateU
                   region: '',
                   city: '',
                   old_price_reduced: '',
-                  main_category: ''
+                  main_category: '',
+                  category: ''
                 })
               }
               className="cursor-pointer"

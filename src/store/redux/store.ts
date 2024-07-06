@@ -29,6 +29,7 @@ export const rootReducer = combineReducers({
   [services.userService.reducerPath]: services.userService.reducer,
   [services.lotService.reducerPath]: services.lotService.reducer,
   [services.courseService.reducerPath]: services.courseService.reducer,
+  [services.searchService.reducerPath]: services.searchService.reducer,
   user: slices.authReduce,
   course: slices.courseReduce,
   history: slices.historyReduce,
@@ -51,7 +52,13 @@ export const store = configureStore({
       serializableCheck: false,
       immutableCheck: false
     })
-      .concat(services.userLoginService.middleware, services.userService.middleware, services.lotService.middleware, services.courseService.middleware)
+      .concat(
+        services.searchService.middleware,
+        services.userLoginService.middleware,
+        services.userService.middleware,
+        services.lotService.middleware,
+        services.courseService.middleware
+      )
       .concat(rtkQueryErrorLogger)
 })
 

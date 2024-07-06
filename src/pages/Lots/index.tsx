@@ -12,7 +12,6 @@ import { PathE } from '../../enum'
 export const LotPage: FC = () => {
   const navigate = useNavigate()
   const { slug } = useParams()
-  const history = useAppSelector(selectHistory)
   const dispatch = useAppDispatch()
   const [fetchLot, { data: lotData, isLoading, isError }] = useFetchLotDataMutation()
   const { data: categories, isSuccess, isFetching } = useFetchCategoriesQuery()
@@ -65,13 +64,13 @@ export const LotPage: FC = () => {
         .unwrap()
         .then((data) => dispatch(updateHistory(data.id)))
     }
-  }, [fetchLot, isLoading, lotData, slug])
+  }, [fetchLot, isLoading, lotData, slug, dispatch, isError])
 
   useEffect(() => {
     if (isError) {
       navigate(generatePath(PathE.NotFound))
     }
-  }, [isError])
+  }, [isError, navigate])
 
   if (!lotData || !mainCategory) {
     return (

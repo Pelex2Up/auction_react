@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react'
+import { FC } from 'react'
 import { LotT } from '../../../types/lotTypes'
 import styles from './buttonStyles.module.scss'
 import DefaultLink from '../../../components/common/DefaultLink'
@@ -6,7 +6,6 @@ import { generatePath, useNavigate } from 'react-router-dom'
 import { LotPathE } from '../../../enum'
 import { padWithZeros } from '../../../utils/articleNumberConverter'
 import { selectLangSettings, useAppSelector } from '../../../store/hooks'
-import { usdConverter } from '../../../utility/usdConverter'
 import { PriceDisplay } from '../../../components/PriceDisplay'
 
 interface ILotComp {

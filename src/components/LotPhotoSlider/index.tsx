@@ -3,6 +3,7 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import { IPhotoResponse } from '../../types/lotTypes'
 import { FreeMode, Navigation, Thumbs } from 'swiper/modules'
 import { Swiper as SwiperState } from 'swiper'
+import ImageLot from './noimage_detail.png'
 
 import './styles.css'
 import 'swiper/css'
@@ -26,11 +27,17 @@ export const LotPhotoSlider: FC<ILotPhotoSlider> = ({ images }) => {
         modules={[FreeMode, Navigation, Thumbs]}
         className="mySwiper2"
       >
-        {images.map((image, index) => (
-          <SwiperSlide key={`${image.order}_${image.id}_${index}`}>
-            <img src={image.image} />
+        {images.length > 0 ? (
+          images.map((image, index) => (
+            <SwiperSlide key={`${image.order}_${image.id}_${index}`}>
+              <img src={image.image} />
+            </SwiperSlide>
+          ))
+        ) : (
+          <SwiperSlide>
+            <img src={ImageLot} />
           </SwiperSlide>
-        ))}
+        )}
       </Swiper>
       {images.length > 1 && (
         <Swiper

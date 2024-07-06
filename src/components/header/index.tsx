@@ -37,6 +37,7 @@ export default function Header() {
   const [newModal, setNewModal] = useState<boolean>(false)
   const [variant, setVariant] = useState<string>('')
   const [getUserData] = useLazyFetchProfileQuery()
+  const [searchTerm, setSearchTerm] = useState<string>('')
 
   const toggleSideMenu = () => {
     setShowMenu(!showMenu)
@@ -158,10 +159,14 @@ export default function Header() {
               <img src={HammerLogo} className="w-[293px] h-[54px]" alt="logo" />
             </a>
             <div className="inline-flex gap-4 w-1/2">
-              <Button text={language === 'RU' ? 'Все объявления' : 'All advertisements'} className="min-w-[168px]" variant="secondary">
+              <Button
+                text={language === 'RU' ? 'Все объявления' : 'All advertisements'}
+                className={language === 'RU' ? 'min-w-[168px]' : 'min-w-[175px]'}
+                variant="secondary"
+              >
                 <IconBurgerSVG />
               </Button>
-              <SearchInput />
+              <SearchInput value={searchTerm} onChange={setSearchTerm} searchData={[]} id={'search-input-header'} />
             </div>
             <div className="justify-end items-center gap-6 flex">
               <Tooltip title={language === 'RU' ? 'Корзина' : 'Basket'}>

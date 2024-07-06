@@ -26,7 +26,7 @@ export const MyPurchasesPage: FC = () => {
     if (order || selectedFilter) {
       refetch()
     }
-  }, [order, selectedFilter])
+  }, [order, selectedFilter, refetch])
 
   if (!myOrders || isFetching || isError) {
     return (

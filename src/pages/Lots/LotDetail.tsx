@@ -8,7 +8,7 @@ import { ShopperSVG } from '../../assets/svg/shopperSVG'
 import { PlusIconSVG } from '../../assets/svg/plusIconSVG'
 import { MinusIconSVG } from '../../assets/svg/minusIconSVG'
 import { ICategory } from '../../types/commonTypes'
-import { generatePath, useNavigate } from 'react-router-dom'
+import { generatePath } from 'react-router-dom'
 import { useAppendLotInCartMutation } from '../../api/userService'
 import { toast } from 'react-toastify'
 import { useMakeBidMutation, usePurchaseLotMutation } from '../../api/lotService'
@@ -16,7 +16,7 @@ import { changeWordByNumber } from '../../utility/wordChangerByCount'
 import DefaultLink from '../../components/common/DefaultLink'
 import { Loader } from '../../components/Loader'
 import { selectLangSettings, selectUser, useAppSelector } from '../../store/hooks'
-import { LotDetailPrice } from '../../components/PriceDisplay'
+import { LotDetailOldPrice, LotDetailPrice } from '../../components/PriceDisplay'
 
 export type ContentWrapperType = {
   className?: string
@@ -29,7 +29,6 @@ export type ContentWrapperType = {
 
 const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, subCategory, lowerCat, refetch }) => {
   const { language, money } = useAppSelector(selectLangSettings)
-  const navigate = useNavigate()
   const { user } = useAppSelector(selectUser)
   const [makeBid, { isLoading, isSuccess: bigSuccess }] = useMakeBidMutation()
   const [count, setCount] = useState<number>(1)
@@ -43,14 +42,14 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
         type: 'warning'
       })
     }
-  }, [isError, error])
+  }, [isError, error, language])
 
   useEffect(() => {
     if (isSuccess) {
       refetch(lotData.slug)
       toast(language === 'RU' ? 'Лот успешно добавлен в корзину' : 'Lot added to basket', { type: 'success' })
     }
-  }, [isSuccess])
+  }, [isSuccess, lotData.slug, refetch, language])
 
   const handlePurchaseLot = () => {
     if (count && lotData) {
@@ -58,7 +57,7 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
       formdata.append('quantity', String(count))
       purchaseLot({ body: formdata, id: lotData.id })
         .unwrap()
-        .catch((err) => toast(language === 'RU' ? 'Невозможно купить свое объявление' : 'You can not buy your own advertisement', { type: 'error' }))
+        .catch(() => toast(language === 'RU' ? 'Невозможно купить свое объявление' : 'You can not buy your own advertisement', { type: 'error' }))
     }
   }
 
@@ -67,13 +66,13 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
       toast(language === 'RU' ? 'Ваша ставка принята' : 'Your bid accepted', { type: 'success' })
       refetch(lotData.slug)
     }
-  }, [bigSuccess])
+  }, [bigSuccess, refetch, lotData.slug, language])
 
   useEffect(() => {
     if (purchasedSuccess) {
       refetch(lotData.slug)
     }
-  }, [purchasedSuccess])
+  }, [purchasedSuccess, lotData.slug, refetch])
 
   return (
     <div
@@ -138,7 +137,7 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
           </div>
           <div className="self-stretch bg-stone-50 flex flex-col items-start justify-start py-[1.5rem] px-[2rem] relative gap-[1.5rem] text-[0.875rem] text-dark-grey">
             <div className="w-full h-full absolute !m-[0] top-[0rem] right-[0rem] bottom-[0rem] left-[0rem] shadow-[0px_2px_1px_rgba(23,_23,_23,_0.04),_0px_8px_16px_rgba(23,_23,_23,_0.12)] rounded bg-whitesmoke-100" />
-            <div className="self-stretch flex flex-row items-start justify-between gap-[1.25rem]">
+            <div className="self-stretch flex flex-row items-start justify-between">
               <div className="w-full flex flex-col items-start justify-start gap-[1.125rem]">
                 {lotData.is_auction ? (
                   <div className="w-full flex flex-col items-start justify-start gap-[0.25rem] z-[1]">
@@ -228,11 +227,7 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
                     <b className="self-stretch relative text-[2rem] tracking-[0.01em] leading-[120%] text-green-600 mq825:text-[1.625rem] mq825:leading-[1.938rem] mq450:text-[1.188rem] mq450:leading-[1.438rem]">
                       {lotData.price.split('.')[0]} BYN
                     </b>
-                    {lotData.old_price && (
-                      <div className="relative text-[1.375rem] [text-decoration:line-through] tracking-[0.01em] leading-[120%] inline-block min-w-[7.188rem] text-zinc-500 mq450:text-[1.125rem] mq450:leading-[1.313rem]">
-                        {lotData.old_price} BYN
-                      </div>
-                    )}
+                    {lotData.old_price && <LotDetailOldPrice money={money} lot={lotData} />}
                   </div>
                 )}
                 {!lotData.is_auction && lotData.count && (
@@ -347,29 +342,36 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
                 />
               )}
             </div>
-            <div className="w-full flex-col justify-start items-center gap-[18px] inline-flex z-[2]">
-              <div className="w-[422px] h-[0px] border border-zinc-300"></div>
-              {lotData.profile.id !== user?.profile.id || (lotData.last_bid && lotData.last_bid.user === user?.profile.id) ? (
-                <div className="w-[358px]">
-                  <span className="text-zinc-500 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">
-                    {language === 'RU'
-                      ? 'Ваша ставка последняя, повторно сделать ставку станет возможным после поднятия ее на шаг.'
-                      : 'Your bet is the last one, you will be able to place a bet again after raising it one step.'}
-                    <br />
-                    {language === 'RU' ? 'Следите за заказом в Личном кабинете/' : 'Follow your order in your Personal Account/'}{' '}
-                  </span>
-                  <DefaultLink
-                    text={language === 'RU' ? 'Мои заказы' : 'My orders'}
-                    className="text-green-700 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight cursor-pointer"
-                    href={ProfilePathE.MyPurchases}
-                  />
+            {lotData.is_auction && lotData.profile.id !== user?.profile.id ? (
+              lotData.last_bid &&
+              lotData.last_bid.user === user?.profile.id && (
+                <div className="w-full flex-col justify-start items-center gap-[18px] inline-flex z-[2]">
+                  <div className="w-full lg:w-[422px] h-[0px] border border-zinc-300"></div>
+                  <div className="lg:w-[358px] w-full">
+                    <span className="text-zinc-500 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">
+                      {language === 'RU'
+                        ? 'Ваша ставка последняя, повторно сделать ставку станет возможным после поднятия ее на шаг.'
+                        : 'Your bet is the last one, you will be able to place a bet again after raising it one step.'}
+                      <br />
+                      {language === 'RU' ? 'Следите за заказом в Личном кабинете/' : 'Follow your order in your Personal Account/'}{' '}
+                    </span>
+                    <DefaultLink
+                      text={language === 'RU' ? 'Мои заказы' : 'My orders'}
+                      className="text-green-700 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight cursor-pointer"
+                      href={ProfilePathE.MyPurchases}
+                    />
+                  </div>
                 </div>
-              ) : (
-                <span className="text-zinc-500 w-full text-xs font-normal text-start font-['SF Pro Text'] leading-[14.40px] tracking-tight">
-                  {language === 'RU' ? 'Вы не можете принимать участие в собственном объявлении.' : 'You cannot participate in your own advertisement.'}
-                </span>
-              )}
-            </div>
+              )
+            ) : (
+              <div className="w-full flex-col justify-start items-center gap-[18px] inline-flex z-[2]">
+                <div className="w-full lg:w-[422px] h-[0px] border border-zinc-300">
+                  <span className="text-zinc-500 w-full text-xs font-normal text-start font-['SF Pro Text'] leading-[14.40px] tracking-tight">
+                    {language === 'RU' ? 'Вы не можете принимать участие в собственном объявлении.' : 'You cannot participate in your own advertisement.'}
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

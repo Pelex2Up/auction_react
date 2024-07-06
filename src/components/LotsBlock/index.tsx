@@ -4,7 +4,7 @@ import type { SwiperRef } from 'swiper/react'
 import { Pagination } from 'swiper/modules'
 import 'swiper/scss'
 import 'swiper/scss/pagination'
-import AuctionCard from '../cards/auction'
+import { AuctionCard } from '../cards/auction'
 import './styles.css'
 import { useSearchAdvertisementMutation } from '../../api/lotService'
 import { LotT } from '../../types/lotTypes'
@@ -88,7 +88,7 @@ export const LotsBlock: FC = () => {
           slidesPerView={'auto'}
           modules={[Pagination]}
           pagination={{ clickable: true }}
-          style={{ height: 'auto', alignItems: 'center', paddingBottom: '5px' }}
+          style={{ height: 'auto', alignItems: 'center', paddingBottom: '40px' }}
           breakpoints={{
             300: {
               slidesPerView: 1,

@@ -1,5 +1,4 @@
 import { FC, useEffect } from 'react'
-import LotImage from '../../../assets/images/lot.png'
 import { LotT } from '../../../types/lotTypes'
 import { padWithZeros } from '../../../utils/articleNumberConverter'
 import { ShopperSVG } from '../../../assets/svg/shopperSVG'
@@ -11,8 +10,8 @@ import { useAppendLotInCartMutation } from '../../../api/userService'
 import { toast } from 'react-toastify'
 import { selectLangSettings, selectUser, useAppSelector } from '../../../store/hooks'
 import { Tooltip } from '@mui/material'
-import { PriceDisplay } from '../../PriceDisplay'
-import { usdConverter } from '../../../utility/usdConverter'
+import { OldPriceDisplay, PriceDisplay } from '../../PriceDisplay'
+import { useUsdConverter } from '../../../utility/usdConverter'
 
 export type ICard = {
   lot: LotT
@@ -33,7 +32,7 @@ export const AuctionCard: FC<ICard> = ({ lot, refetch }) => {
       toast(language === 'RU' ? 'Лот успешно добавлен в корзину' : 'Added to basket', { type: 'success' })
       refetch()
     }
-  }, [isSuccessCart])
+  }, [isSuccessCart, language, refetch, money])
 
   return (
     <div className="w-[255px] h-[430px] flex flex-col justify-between pb-3 relative bg-white rounded shadow">
@@ -101,11 +100,7 @@ export const AuctionCard: FC<ICard> = ({ lot, refetch }) => {
           <div className="w-[93px] h-[39px] flex-col justify-start items-end inline-flex">
             <PriceDisplay money={money} lot={lot} />
             {/* <div className="text-right text-green-800 text-lg font-bold font-['SF Pro Text'] leading-snug tracking-tight">{lot.price.split('.')[0]} BYN</div> */}
-            {lot.old_price && lot.old_price.length > 0 && (
-              <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] line-through leading-[16.80px] tracking-tight">
-                {money === 'BYN' ? lot.old_price.split('.')[0] : usdConverter(lot.old_price.split('.')[0])} {money}
-              </div>
-            )}
+            {lot.old_price && lot.old_price.length > 0 && <OldPriceDisplay money={money} lot={lot} />}
           </div>
         </div>
         <div className="flex-col justify-start items-start gap-1.5 px-3 inline-flex">
@@ -131,10 +126,8 @@ export const AuctionCard: FC<ICard> = ({ lot, refetch }) => {
         ) : (
           <div></div>
         )}
-        <div className="px-3 self-end text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">г. Минск</div>
+        <div className="px-3 self-end text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">{lot.city}</div>
       </div>
     </div>
   )
 }
-
-export default AuctionCard

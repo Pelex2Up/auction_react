@@ -1,6 +1,6 @@
 import { selectCourse, useAppSelector } from '../store/hooks'
 
-export function usdConverter(byr: string): number {
+export function useUsdConverter(byr: string): number {
   const { course } = useAppSelector(selectCourse)
   const usdCourse = Number(course?.usd)
   if (usdCourse) {

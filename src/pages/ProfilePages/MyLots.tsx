@@ -24,7 +24,7 @@ export const MyLots: FC = () => {
   const { language } = useAppSelector(selectLangSettings)
   const [selectedFilter, setSelectedFilter] = useState<string>('all')
   const [order, setOrder] = useState<boolean>(false)
-  const { data, refetch, isFetching } = useFetchUserLotsQuery({ order: order ? 'asc' : 'desc', type: selectedFilter })
+  const { data, refetch } = useFetchUserLotsQuery({ order: order ? 'asc' : 'desc', type: selectedFilter })
   const [deleteLot, { isSuccess: deletedSuccess, isLoading: isDeleting, isError }] = useDeleteUserLotMutation()
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export const MyLots: FC = () => {
       toast(language === 'RU' ? 'Объявление успешно удалено' : 'Advertisement has been deleted successfuly', { type: 'success' })
       refetch()
     }
-  }, [deletedSuccess, refetch])
+  }, [deletedSuccess, refetch, language])
 
   const handleChangeOrder = async () => {
     setOrder((prevOrder) => !prevOrder)
@@ -48,7 +48,7 @@ export const MyLots: FC = () => {
     if (isError) {
       toast(language === 'RU' ? 'Произошла непредвиденная ошибка' : 'Something went wrong', { type: 'error' })
     }
-  }, [isError])
+  }, [isError, language])
 
   if (!data) {
     return (

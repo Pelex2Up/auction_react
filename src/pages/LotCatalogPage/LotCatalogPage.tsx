@@ -3,13 +3,14 @@ import { useLocation, useSearchParams } from 'react-router-dom'
 import { SideBarCatalog } from './config/sideBarCatalog'
 import { LotsCatalogSchedule } from './config/lotsCatalogSchedule'
 import { FiltersCatalog } from './config/filtersCatalog'
-import { useFetchCategoriesQuery, useSearchAdvertisementMutation } from '../../api/lotService'
+import { useFetchCategoriesQuery, useGetCategoryMutation, useSearchAdvertisementMutation } from '../../api/lotService'
 import { Loader } from '../../components/Loader'
 import { debounce } from 'lodash'
 import { CatalogResponseT } from '../../types/ResponseTypes'
 import { Pagination } from '@mui/material'
 import { useAppendLotInCartMutation, useAppendManyLotsInCartMutation } from '../../api/userService'
 import { toast } from 'react-toastify'
+import { ICategory } from '../../types/commonTypes'
 
 export const LotCatalogPage: FC = () => {
   const location = useLocation()
@@ -18,12 +19,36 @@ export const LotCatalogPage: FC = () => {
   const [getPageData, { data, isSuccess, isLoading, isError }] = useSearchAdvertisementMutation()
   const [catalogData, setCatalogData] = useState<CatalogResponseT>()
   const category = searchParams.get('main_category')
+  const subCat = searchParams.get('category')
   const [addToCart, { isSuccess: isSuccessCart, isError: isErrorCart, error }] = useAppendLotInCartMutation()
   const [addManyToCart, { isSuccess: isSuccessCartMany }] = useAppendManyLotsInCartMutation()
 
   function filterObjectByValues(obj: Record<string, any>): Record<string, any> {
     return Object.fromEntries(Object.entries(obj).filter(([_, value]) => String(value).length > 0))
   }
+
+  const findTopCategory = (categories: ICategory[], currentId: number): ICategory => {
+    const findCat: ICategory = categories[0]
+    const inSecondCat = categories.find((cat) => cat.children.find((subCat) => subCat.id === currentId))
+    const inThirdCat = categories.find((cat) => cat.children.find((subCat) => subCat.children.find((child) => child.id === currentId)))
+
+    if (inSecondCat) {
+      return inSecondCat
+    } else if (inThirdCat) {
+      return inThirdCat
+    } else {
+      return findCat
+    }
+  }
+
+  useEffect(() => {
+    if (!category && subCat && categories) {
+      const parent = findTopCategory(categories, Number(subCat))
+      if (parent) {
+        updateUrl({ main_category: parent.id })
+      }
+    }
+  }, [category, subCat, categories])
 
   const updateUrl = async (newParams: any) => {
     const currentParams = Object.fromEntries(searchParams)

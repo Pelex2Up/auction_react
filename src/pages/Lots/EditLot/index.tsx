@@ -15,7 +15,7 @@ import Checkbox from '../../../components/common/checkbox'
 import DefaultLink from '../../../components/common/DefaultLink'
 import { PhoneInput, defaultCountries, parseCountry } from 'react-international-phone'
 import styles from './MakeLot.module.scss'
-import { countList, daysList, handleKeyPress, lotTypeGroup, monthsList, oblastList, productStateOptions, radioGroup, typeGroup, yearsList } from '../MakeLot'
+import { countList,  handleKeyPress, lotTypeGroup, oblastList, productStateOptions, radioGroup, typeGroup } from '../MakeLot'
 import { ICategory } from '../../../types/commonTypes'
 import { ProfilePathE } from '../../../enum'
 
