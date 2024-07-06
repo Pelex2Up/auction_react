@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import userImage from '../../assets/icons/newUser.svg'
 import { MenuButton } from '../common/buttons'
-import { selectUser, useAppDispatch, useAppSelector } from '../../store/hooks'
+import { selectLangSettings, selectUser, useAppDispatch, useAppSelector } from '../../store/hooks'
 import { useLogoutMutation } from '../../api/loginService'
 import { logoutState } from '../../store/redux/users/slice'
 import { Loader } from '../Loader'
@@ -9,6 +9,7 @@ import { generatePath, useNavigate } from 'react-router-dom'
 import { PathE, ProfilePathE } from '../../enum'
 
 export default function ProfileHeader({ ...props }: { username: string; avatar: string }) {
+  const { language } = useAppSelector(selectLangSettings)
   const listRef = useRef<HTMLUListElement>(null)
   const [show, setShow] = useState<boolean>(false)
   const { user } = useAppSelector(selectUser)
@@ -86,7 +87,7 @@ export default function ProfileHeader({ ...props }: { username: string; avatar: 
             <div className="w-[260px] relative h-[0px] border border-zinc-300" />
             <li>
               <MenuButton
-                text="Мои объявления"
+                text={language === 'RU' ? 'Мои объявления' : 'My advertisements'}
                 onClick={() => {
                   setShow(false)
                   navigate(generatePath(ProfilePathE.MyLots))
@@ -110,7 +111,7 @@ export default function ProfileHeader({ ...props }: { username: string; avatar: 
             </li>
             <li>
               <MenuButton
-                text="Мои заказы"
+                text={language === 'RU' ? 'Мои заказы' : 'My orders'}
                 onClick={() => {
                   setShow(false)
                   navigate(generatePath(ProfilePathE.MyPurchases))
@@ -153,7 +154,7 @@ export default function ProfileHeader({ ...props }: { username: string; avatar: 
             </li>
             <li>
               <MenuButton
-                text="Настройки профиля"
+                text={language === 'RU' ? 'Настройки профиля' : 'Profile settings'}
                 onClick={() => {
                   setShow(!show)
                   navigate(generatePath(PathE.Profile))
@@ -171,7 +172,7 @@ export default function ProfileHeader({ ...props }: { username: string; avatar: 
             </li>
             <li>
               <MenuButton
-                text="Мой тариф"
+                text={language === 'RU' ? 'Мой тариф' : 'My tariff'}
                 onClick={() => {
                   setShow(!show)
                   navigate(generatePath(ProfilePathE.MyTariff))
@@ -216,7 +217,7 @@ export default function ProfileHeader({ ...props }: { username: string; avatar: 
             </li>
             <div className="w-[260px] relative h-[0px] border border-zinc-300" />
             <li>
-              <MenuButton text="Выход" onClick={() => logout()}>
+              <MenuButton text={language === 'RU' ? 'Выход' : 'Logout'} onClick={() => logout()}>
                 {isLoading ? (
                   <Loader />
                 ) : (

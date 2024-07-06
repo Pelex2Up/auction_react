@@ -8,6 +8,7 @@ import { generatePath, useNavigate } from 'react-router-dom'
 import { useRegisterMutation } from '../../../api/loginService'
 import { Loader } from '../../Loader'
 import { toast } from 'react-toastify'
+import { selectLangSettings, useAppSelector } from '../../../store/hooks'
 
 interface IElement {
   changeAction: Dispatch<SetStateAction<number>>
@@ -15,6 +16,7 @@ interface IElement {
 }
 
 export const RegistrationElement: FC<IElement> = ({ changeAction, close }) => {
+  const { language } = useAppSelector(selectLangSettings)
   const navigate = useNavigate()
   const [errors, setErrors] = useState<{ email: string; pass: string }>({
     email: '',
@@ -52,7 +54,7 @@ export const RegistrationElement: FC<IElement> = ({ changeAction, close }) => {
           navigate(generatePath(PathE.RegistrationConfirm, { email: String(formdata.get('email')) }))
           close()
         })
-        .catch((err) => setErrors((prevErrors) => ({ ...prevErrors, email: err.email })))
+        .catch((err: any) => setErrors((prevErrors) => ({ ...prevErrors, email: err.email })))
     } else if (pass1 !== pass2) {
       setErrors({ ...errors, pass: 'Пароли не совпадают' })
     } else if (pass1.length < 8 || pass2.length < 8) {
@@ -64,10 +66,12 @@ export const RegistrationElement: FC<IElement> = ({ changeAction, close }) => {
     <form onSubmit={submitForm}>
       <div className="flex flex-col gap-[20px] justify-start w-full top-[159px] relative px-6 py-3 xl:px-[93px] xl:py-[30px]">
         <div className="w-full flex flex-col gap-1">
-          <label className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">Электронная почта</label>
+          <label className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
+            {language === 'RU' ? 'Электронная почта' : 'Email'}
+          </label>
           <Input
             multiline={false}
-            placeholder="Ваша электронная почта"
+            placeholder={language === 'RU' ? 'Ваша электронная почта' : 'Enter email'}
             className="w-full"
             name="email"
             id="email"
@@ -77,10 +81,12 @@ export const RegistrationElement: FC<IElement> = ({ changeAction, close }) => {
           />
         </div>
         <div className="w-full flex flex-col gap-1">
-          <label className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">Пароль</label>
+          <label className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
+            {language === 'RU' ? 'Пароль' : 'Password'}
+          </label>
           <Input
             multiline={false}
-            placeholder="Введите ваш пароль"
+            placeholder={language === 'RU' ? 'Введите ваш пароль' : 'Enter password'}
             className="w-full"
             type="password"
             name="password"
@@ -93,15 +99,19 @@ export const RegistrationElement: FC<IElement> = ({ changeAction, close }) => {
           {errors.pass.length > 0 ? (
             <label className="text-red-600 text-xs font-normal leading-[16.80px] tracking-tight">{errors.pass}</label>
           ) : (
-            <label className="text-zinc-500 text-xs font-normal leading-[16.80px] tracking-tight">Введите не менее 8 символов</label>
+            <label className="text-zinc-500 text-xs font-normal leading-[16.80px] tracking-tight">
+              {language === 'RU' ? 'Введите не менее 8 символов' : 'Enter at least 8 symbols'}
+            </label>
           )}
         </div>
         <div className="w-full flex flex-col gap-1">
-          <label className="text-zinc-900 text-sm font-normal leading-[16.80px] tracking-tight">Повторите пароль</label>
+          <label className="text-zinc-900 text-sm font-normal leading-[16.80px] tracking-tight">
+            {language === 'RU' ? 'Повторите пароль' : 'Confirm password'}
+          </label>
           <Input
             multiline={false}
             name="password_confirmation"
-            placeholder="Введите ваш пароль"
+            placeholder={language === 'RU' ? 'Введите ваш пароль' : 'Enter password'}
             className="w-full"
             error={errors.pass.length > 0}
             onChange={handlePasswordChange}
@@ -117,16 +127,19 @@ export const RegistrationElement: FC<IElement> = ({ changeAction, close }) => {
           name="agreement_policy"
           label={
             <p className="max-w-[230px] text-sm text-[#808080] font-normal">
-              Я принимаю условия <DefaultLink text="Пользовательского соглашения" style={{ color: '#008001' }} />
+              {language === 'RU' ? 'Я принимаю условия ' : 'I accept '}{' '}
+              <DefaultLink text={language === 'RU' ? 'Пользовательского соглашения' : 'User agreement rules'} style={{ color: '#008001' }} />
             </p>
           }
         />
-        <Button type="submit" text="Создать аккаунт" style={{ width: '100%' }}>
+        <Button type="submit" text={language === 'RU' ? 'Создать аккаунт' : 'Create account'} style={{ width: '100%' }}>
           {isLoading && <Loader />}
         </Button>
         <div className="w-full h-[22px] justify-center items-center gap-2 flex">
-          <label className="text-zinc-500 text-base font-normal font-['SF Pro Text'] leading-snug">Уже есть аккаунт?</label>
-          <DefaultLink onClick={() => changeAction(1)} text="Войти" style={{ fontSize: '16px', color: '#008001' }} />
+          <label className="text-zinc-500 text-base font-normal font-['SF Pro Text'] leading-snug">
+            {language === 'RU' ? 'Уже есть аккаунт?' : 'Already have an account?'}
+          </label>
+          <DefaultLink className='h-full flex items-center' onClick={() => changeAction(1)} text={language === 'RU'? "Войти": 'Log in'} style={{ fontSize: '16px', color: '#008001' }} />
         </div>
       </div>
     </form>

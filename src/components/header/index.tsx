@@ -23,6 +23,7 @@ import { IconBurgerSVG } from '../../assets/svg/iconBurgerSVG'
 import SearchInput from '../common/SearchInput'
 import { Tooltip } from '@mui/material'
 import { LangChangeBlock } from '../LangChangeBlock'
+import { toast } from 'react-toastify'
 
 export default function Header() {
   const { language } = useAppSelector(selectLangSettings)
@@ -93,19 +94,23 @@ export default function Header() {
             <DefaultLink text={language === 'RU' ? 'Тарифы' : 'Tariffs'} href={PathE.TarriffPlans} />
             <DefaultLink text={language === 'RU' ? 'Реклама' : 'Advertising'} />
           </div>
-          <div className={styles.wrapper_topHeader_rightContent}>
-            <p>
-              {language === 'RU' ? 'Для подачи объявления необходимо пройти ' : 'To submit an ad, you must '}
-              <DefaultLink
-                onClick={() => {
-                  setModalState(2)
-                  setShow(true)
-                }}
-                style={{ color: '#008001' }}
-                text={language === 'RU' ? 'регистрацию' : 'register'}
-              />
-            </p>
-          </div>
+          {auth ? (
+            <></>
+          ) : (
+            <div className={styles.wrapper_topHeader_rightContent}>
+              <p>
+                {language === 'RU' ? 'Для подачи объявления необходимо пройти ' : 'To submit an ad, you must '}
+                <DefaultLink
+                  onClick={() => {
+                    setModalState(2)
+                    setShow(true)
+                  }}
+                  style={{ color: '#008001' }}
+                  text={language === 'RU' ? 'регистрацию' : 'register'}
+                />
+              </p>
+            </div>
+          )}
         </div>
         <span
           style={{
@@ -159,9 +164,18 @@ export default function Header() {
               <SearchInput />
             </div>
             <div className="justify-end items-center gap-6 flex">
-              <div className="justify-start items-center gap-6 flex cursor-pointer" onClick={() => navigate(generatePath(PathE.UserCart))}>
-                <div className="w-6 h-6 pl-[1.09px] pr-[1.08px] py-[0.86px] justify-center items-center flex">
-                  <Tooltip title={language === 'RU' ? 'Корзина' : 'Basket'}>
+              <Tooltip title={language === 'RU' ? 'Корзина' : 'Basket'}>
+                <div
+                  className="justify-start items-center gap-6 flex cursor-pointer"
+                  onClick={() =>
+                    auth
+                      ? navigate(generatePath(PathE.UserCart))
+                      : toast(language === 'RU' ? 'Для использования корзины, вы должны быть авторизованы' : 'To use cart, you must be logged in', {
+                          type: 'warning'
+                        })
+                  }
+                >
+                  <div className="w-6 h-6 pl-[1.09px] pr-[1.08px] py-[0.86px] justify-center items-center flex">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <g clipPath="url(#clip0_3101_19280)">
                         <path
@@ -177,12 +191,10 @@ export default function Header() {
                         </clipPath>
                       </defs>
                     </svg>
-                  </Tooltip>
+                  </div>
                 </div>
-              </div>
-              <Tooltip title={language === 'RU' ? 'Выбор языка и валюты' : 'Set language & currency'}>
-                <LangChangeBlock />
               </Tooltip>
+              <LangChangeBlock />
             </div>
           </div>
         </div>

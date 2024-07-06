@@ -1,5 +1,5 @@
 import { LotT } from '../types/lotTypes'
-import { IProfile, ISubscription } from '../types/profile'
+import { IProfile, ISubscription, ITariff } from '../types/profile'
 import { formDataConverter } from '../utils/formDataConverter'
 import { CartT } from './apiTypes'
 import { baseQuery } from './baseApi'
@@ -33,7 +33,7 @@ export const userService = createApi({
     fetchUserCart: builder.query<CartT[], void>({
       query: () => '/auction/cart/for-user/'
     }),
-    appendLotInCart: builder.mutation<any, { advertisement_id: number | string } | FormData>({
+    appendLotInCart: builder.mutation<any, { advertisement_ids: number[] }>({
       query: (advId) => {
         const data = formDataConverter(advId)
         return {
@@ -70,12 +70,16 @@ export const userService = createApi({
       }
     }),
     fetchMyOrders: builder.query<LotT[], { type: string; order: string }>({
-      query: (arg) => `/auction/advertisements/user-action/?type=${arg.type}&order=${arg.order}`
+      query: (arg) => `/auction/advertisement/user-action/?type=${arg.type}&order=${arg.order}`
+    }),
+    fetchTariffs: builder.query<ITariff[], void>({
+      query: () => '/subscription/tariffs/'
     })
   })
 })
 
 export const {
+  useFetchTariffsQuery,
   useFetchMyOrdersQuery,
   useFetchLastVisitedMutation,
   useAppendManyLotsInCartMutation,

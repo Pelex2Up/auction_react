@@ -15,7 +15,8 @@ import { useMakeBidMutation, usePurchaseLotMutation } from '../../api/lotService
 import { changeWordByNumber } from '../../utility/wordChangerByCount'
 import DefaultLink from '../../components/common/DefaultLink'
 import { Loader } from '../../components/Loader'
-import { selectUser, useAppSelector } from '../../store/hooks'
+import { selectLangSettings, selectUser, useAppSelector } from '../../store/hooks'
+import { LotDetailPrice } from '../../components/PriceDisplay'
 
 export type ContentWrapperType = {
   className?: string
@@ -27,6 +28,7 @@ export type ContentWrapperType = {
 }
 
 const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, subCategory, lowerCat, refetch }) => {
+  const { language, money } = useAppSelector(selectLangSettings)
   const navigate = useNavigate()
   const { user } = useAppSelector(selectUser)
   const [makeBid, { isLoading, isSuccess: bigSuccess }] = useMakeBidMutation()
@@ -37,14 +39,16 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
 
   useEffect(() => {
     if (error && 'data' in error && error.data && 'status' in error && isError && error.status === 400) {
-      toast('Вы не можете добавить своё собственное объявление в корзину', { type: 'warning' })
+      toast(language === 'RU' ? 'Вы не можете добавить своё собственное объявление в корзину' : 'You can not add your own advertisement to basket', {
+        type: 'warning'
+      })
     }
   }, [isError, error])
 
   useEffect(() => {
     if (isSuccess) {
       refetch(lotData.slug)
-      toast('Лот успешно добавлен в корзину', { type: 'success' })
+      toast(language === 'RU' ? 'Лот успешно добавлен в корзину' : 'Lot added to basket', { type: 'success' })
     }
   }, [isSuccess])
 
@@ -54,13 +58,13 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
       formdata.append('quantity', String(count))
       purchaseLot({ body: formdata, id: lotData.id })
         .unwrap()
-        .catch((err) => toast('Невозможно купить свое объявление', { type: 'error' }))
+        .catch((err) => toast(language === 'RU' ? 'Невозможно купить свое объявление' : 'You can not buy your own advertisement', { type: 'error' }))
     }
   }
 
   useEffect(() => {
     if (bigSuccess) {
-      toast('Ваша ставка принята', { type: 'success' })
+      toast(language === 'RU' ? 'Ваша ставка принята' : 'Your bid accepted', { type: 'success' })
       refetch(lotData.slug)
     }
   }, [bigSuccess])
@@ -78,7 +82,7 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
       <div className="flex-1 flex flex-col items-start justify-start gap-[2rem] max-w-full mq825:gap-[1rem] mq825:min-w-full">
         <div className="w-[34.063rem] flex flex-row items-start justify-start gap-[0.75rem] max-w-full mq825:flex-wrap">
           <a className="relative tracking-[0.04em] leading-[1.063rem] inline-block" href={PathE.Home}>
-            Главная
+            {language === 'RU' ? 'Главная' : 'Home'}
           </a>
           <span className="relative tracking-[0.04em] leading-[1.063rem] inline-block mq825:w-full mq825:h-[0.313rem]">/</span>
           <a
@@ -115,7 +119,7 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
             <LotPhotoSlider images={lotData.photos} />
             <button className="cursor-pointer [border:none] p-[0.5rem] bg-white w-max min-w-[6.925rem] !m-[0] absolute top-[2rem] left-[0rem] rounded-tl-none rounded-tr rounded-br rounded-bl-none overflow-hidden flex flex-row items-start justify-start box-border whitespace-nowrap text-green-600 z-50">
               <div className="relative text-[0.75rem] tracking-[0.01em] leading-[120%] font-text-2 text-green text-left">
-                {lotData.is_auction ? 'Аукцион' : 'Фиксированная цена'}
+                {lotData.is_auction ? (language === 'RU' ? 'Аукцион' : 'Auction') : language === 'RU' ? 'Фиксированная цена' : 'Fixed price'}
               </div>
             </button>
           </div>
@@ -128,7 +132,7 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
               {lotData.title}
             </h2>
             <div className="flex flex-row items-start justify-start gap-[0.375rem] text-[0.875rem] text-dark-grey">
-              <div className="relative tracking-[0.01em] leading-[1.063rem] inline-block">Код товара</div>
+              <div className="relative tracking-[0.01em] leading-[1.063rem] inline-block">{language === 'RU' ? 'Код товара' : 'Product code'}</div>
               <div className="relative tracking-[0.01em] leading-[1.063rem] inline-block">№{padWithZeros(String(lotData.id))}</div>
             </div>
           </div>
@@ -138,13 +142,23 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
               <div className="w-full flex flex-col items-start justify-start gap-[1.125rem]">
                 {lotData.is_auction ? (
                   <div className="w-full flex flex-col items-start justify-start gap-[0.25rem] z-[1]">
-                    <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">Текущая цена</div>
+                    <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
+                      {language === 'RU' ? 'Текущая цена' : 'Current price'}
+                    </div>
                     <div className="flex flex-row w-full items-center gap-2">
-                      <div className="text-right text-green-700 text-[32px] font-bold font-['SF Pro Text'] leading-[38.40px] tracking-tight">
-                        {lotData.auction_current_price ? lotData.auction_current_price.split('.')[0] : lotData.price.split('.')[0]} BYN{' '}
-                      </div>
+                      <LotDetailPrice money={money} lot={lotData} />
                       <p className="text-right text-zinc-500 text-lg font-normal font-['SF Pro Text'] leading-snug tracking-tight">{`/ ${lotData.count} ${
-                        lotData.unit === 'PIECE' ? 'шт' : lotData.unit === 'KG' ? 'кг' : changeWordByNumber(Number(lotData.count), 'тонну', 'тонны', 'тонн')
+                        lotData.unit === 'PIECE'
+                          ? language === 'RU'
+                            ? 'шт'
+                            : 'pcs'
+                          : lotData.unit === 'KG'
+                          ? language === 'RU'
+                            ? 'кг'
+                            : 'kg'
+                          : language === 'RU'
+                          ? changeWordByNumber(Number(lotData.count), 'тонну', 'тонны', 'тонн')
+                          : 'ton'
                       }
                       `}</p>
                     </div>
@@ -165,11 +179,15 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
                           <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[17px]">BYN</div>
                         </div>
                         <div className="px-1 left-[8px] top-0.5 absolute bg-stone-50 justify-start items-start gap-2.5 inline-flex">
-                          <div className="text-zinc-500 text-xs font-normal font-['SF Pro Text'] leading-none">Ваша ставка</div>
+                          <div className="text-zinc-500 text-xs font-normal font-['SF Pro Text'] leading-none">
+                            {language === 'RU' ? 'Ваша ставка' : 'Your bid'}
+                          </div>
                         </div>
                       </div>
                       <div className="w-[152px] h-10 flex-col justify-start items-start gap-1.5 inline-flex">
-                        <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">Окончание аукциона:</div>
+                        <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
+                          {language === 'RU' ? 'Окончание аукциона:' : 'Auction untill:'}
+                        </div>
                         <div className="flex-col justify-start items-start gap-1.5 flex">
                           <div className="justify-start items-start gap-1.5 inline-flex">
                             <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
@@ -183,18 +201,29 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
                       </div>
                     </div>
                     <div className="w-[167px] text-zinc-500 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">
-                      Мин.ставка{' '}
+                      {language === 'RU' ? 'Мин.ставка:' : 'Min bid:'}{' '}
                       {lotData.auction_current_price
                         ? Number(lotData.auction_current_price.split('.')[0]) + Number(lotData.step_bid.split('.')[0])
                         : Number(lotData.price.split('.')[0]) + Number(lotData.step_bid.split('.')[0])}{' '}
                       BYN, <br />
-                      шаг ставки {lotData.step_bid.split('.')[0]} BYN
+                      {language === 'RU' ? 'шаг ставки:' : 'step bid:'} {lotData.step_bid.split('.')[0]} BYN
                     </div>
                   </div>
                 ) : (
                   <div className="w-full flex flex-col items-start justify-start gap-[0.125rem] z-[1]">
                     <div className="w-[7.438rem] relative tracking-[0.01em] leading-[1.063rem] inline-block">
-                      Цена за {lotData.unit === 'PIECE' ? 'единицу' : lotData.unit === 'KG' ? 'кг' : 'тонну'}
+                      {language === 'RU' ? 'Цена за' : 'Price for 1'}{' '}
+                      {lotData.unit === 'PIECE'
+                        ? language === 'RU'
+                          ? 'единицу'
+                          : 'piece'
+                        : lotData.unit === 'KG'
+                        ? language === 'RU'
+                          ? 'кг'
+                          : 'kg'
+                        : language === 'RU'
+                        ? 'тонну'
+                        : 'ton'}
                     </div>
                     <b className="self-stretch relative text-[2rem] tracking-[0.01em] leading-[120%] text-green-600 mq825:text-[1.625rem] mq825:leading-[1.938rem] mq450:text-[1.188rem] mq450:leading-[1.438rem]">
                       {lotData.price.split('.')[0]} BYN
@@ -208,7 +237,9 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
                 )}
                 {!lotData.is_auction && lotData.count && (
                   <div className="self-stretch flex flex-col items-start justify-start gap-[0.75rem]">
-                    <div className="relative text-zinc-500 tracking-[0.01em] leading-[1.063rem] inline-block min-w-[5.125rem] z-[1]">Количество</div>
+                    <div className="relative text-zinc-500 tracking-[0.01em] leading-[1.063rem] inline-block min-w-[5.125rem] z-[1]">
+                      {language === 'RU' ? 'Количество' : 'Count'}
+                    </div>
                     <div className="self-stretch flex flex-col items-start justify-start gap-[0.5rem] text-[1.125rem] text-main-black">
                       <div className="self-stretch flex flex-row items-start justify-start gap-[0.5rem] z-[1]">
                         <div className="flex-1 flex flex-row items-start justify-between rounded-lg border-[1px] border-solid border-grey box-border py-[0rem] pr-[0.062rem] pl-[0rem] relative gap-[1.25rem]">
@@ -230,19 +261,31 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
                         </div>
                         <div className="flex flex-col items-start justify-start pt-[0.718rem] px-[0rem] pb-[0rem] text-[0.875rem] text-dark-grey">
                           <div className="relative text-zinc-500 tracking-[0.01em] leading-[1.063rem] inline-block min-w-[4.25rem]">
-                            из {lotData.count} штук
+                            {language === 'RU' ? 'из' : 'from'} {lotData.count}{' '}
+                            {lotData.unit === 'PIECE'
+                              ? language === 'RU'
+                                ? 'единицу'
+                                : 'pcs'
+                              : lotData.unit === 'KG'
+                              ? language === 'RU'
+                                ? 'кг'
+                                : 'kg'
+                              : language === 'RU'
+                              ? 'тонну'
+                              : 'ton'}
                           </div>
                         </div>
                       </div>
 
                       {lotData.purchase_count > 0 && (
                         <div className="w-full text-zinc-500 relative text-[0.875rem] tracking-[0.01em] leading-[1.063rem] text-dark-grey inline-block z-[1]">
-                          {`${changeWordByNumber(lotData.purchase_count, 'Подана', 'Подано', 'Подано')} ${lotData.purchase_count} ${changeWordByNumber(
-                            lotData.purchase_count,
-                            'заявка',
-                            'заявки',
-                            'заявок'
-                          )}`}
+                          {`${language === 'RU' ? changeWordByNumber(lotData.purchase_count, 'Подана', 'Подано', 'Подано') : 'Accepted'} ${
+                            lotData.purchase_count
+                          } ${
+                            language === 'RU'
+                              ? changeWordByNumber(lotData.purchase_count, 'заявка', 'заявки', 'заявок')
+                              : changeWordByNumber(lotData.purchase_count, 'order', 'orders', 'orders')
+                          }`}
                         </div>
                       )}
                     </div>
@@ -253,8 +296,8 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
                 className="h-[1.5rem] w-[1.5rem] relative overflow-hidden shrink-0 z-[1]"
                 onClick={() => {
                   if (!lotData.cart) {
-                    addToCart({ advertisement_id: lotData.id })
-                  } else toast('Лот уже добавлен в корзину', { type: 'warning' })
+                    addToCart({ advertisement_ids: [lotData.id] })
+                  } else toast(language === 'RU' ? 'Лот уже добавлен в корзину' : 'Already in basket', { type: 'warning' })
                 }}
               >
                 <ShopperSVG />
@@ -262,7 +305,19 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
             </div>
             <div className="self-stretch w-full flex flex-row items-start justify-start gap-[1.125rem] z-[1] mq450:flex-wrap">
               <a href={`mailto:${lotData.profile.email}?subject=Вопрос`} type="email" className="w-full">
-                <Button variant="secondary" className="w-full" text="Написать продавцу" />
+                <Button
+                  variant="secondary"
+                  className="w-full"
+                  text={
+                    lotData.ad_type === 'SELL'
+                      ? language === 'RU'
+                        ? 'Написать продавцу'
+                        : 'Message seller'
+                      : language === 'RU'
+                      ? 'Написать покупателю'
+                      : 'Message buyer'
+                  }
+                />
               </a>
               {lotData.is_auction ? (
                 <Button
@@ -274,16 +329,22 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
                         : 'disabled'
                       : 'disabled'
                   }
-                  disabled={lotData.profile.id !== user?.profile.id && lotData.last_bid && lotData.last_bid.user === user?.profile.id}
-                  text="Сделать ставку"
+                  disabled={lotData.profile.id === user?.profile.id || (lotData.last_bid && lotData.last_bid.user === user?.profile.id)}
+                  text={language === 'RU' ? 'Сделать ставку' : 'Make bid'}
                   onClick={() => makeBid(lotData.id)}
                 >
                   {isLoading && <Loader />}
                 </Button>
               ) : lotData.purchase ? (
-                <Button variant="disabled" className="w-full" text="Куплено" disabled />
+                <Button variant="disabled" className="w-full" text={language === 'RU' ? 'Куплено' : 'Purchased'} disabled />
               ) : (
-                <Button variant="primary" className="w-full" text="Купить" onClick={handlePurchaseLot} />
+                <Button
+                  variant={lotData.profile.id !== user?.profile.id ? 'primary' : 'disabled'}
+                  disabled={lotData.profile.id === user?.profile.id}
+                  className="w-full"
+                  text={language === 'RU' ? 'Купить' : 'Purchase'}
+                  onClick={handlePurchaseLot}
+                />
               )}
             </div>
             <div className="w-full flex-col justify-start items-center gap-[18px] inline-flex z-[2]">
@@ -291,19 +352,21 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
               {lotData.profile.id !== user?.profile.id || (lotData.last_bid && lotData.last_bid.user === user?.profile.id) ? (
                 <div className="w-[358px]">
                   <span className="text-zinc-500 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">
-                    Ваша ставка последняя, повторно сделать ставку станет возможным после поднятия ее на шаг.
+                    {language === 'RU'
+                      ? 'Ваша ставка последняя, повторно сделать ставку станет возможным после поднятия ее на шаг.'
+                      : 'Your bet is the last one, you will be able to place a bet again after raising it one step.'}
                     <br />
-                    Следите за заказом в Личном кабинете/{' '}
+                    {language === 'RU' ? 'Следите за заказом в Личном кабинете/' : 'Follow your order in your Personal Account/'}{' '}
                   </span>
                   <DefaultLink
-                    text="Мои заказы"
+                    text={language === 'RU' ? 'Мои заказы' : 'My orders'}
                     className="text-green-700 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight cursor-pointer"
                     href={ProfilePathE.MyPurchases}
                   />
                 </div>
               ) : (
                 <span className="text-zinc-500 w-full text-xs font-normal text-start font-['SF Pro Text'] leading-[14.40px] tracking-tight">
-                  Вы не можете принимать участие в собственном аукционе.
+                  {language === 'RU' ? 'Вы не можете принимать участие в собственном объявлении.' : 'You cannot participate in your own advertisement.'}
                 </span>
               )}
             </div>

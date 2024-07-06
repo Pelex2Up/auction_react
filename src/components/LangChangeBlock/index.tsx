@@ -49,7 +49,7 @@ export const LangChangeBlock: FC = () => {
       }
       dispatch(updateLangSettings(updateData))
       setShow(false)
-      toast(langState.language === 'RU' ? 'Настройки языка и валюты успешно изменены' : 'Language and currency has been changed successfuly', {
+      toast(language === 'RU' ? 'Настройки языка и валюты успешно изменены' : 'Language and currency has been changed successfuly', {
         type: 'success'
       })
     }
@@ -63,7 +63,7 @@ export const LangChangeBlock: FC = () => {
         position: 'relative'
       }}
     >
-      <Tooltip title={langState.language === 'RU' ? 'Смена языка и валюты' : 'Set language & currency'}>
+      <Tooltip title={language === 'RU' ? 'Выбор языка и валюты' : 'Set language & currency'}>
         <div onClick={() => setShow(!show)} className="flex items-center gap-2">
           <div className="w-6 h-6 pl-[0.86px] pr-[0.85px] py-[0.86px] justify-center items-center flex">
             <div className="w-[22.29px] h-[22.29px] relative">
@@ -98,14 +98,18 @@ export const LangChangeBlock: FC = () => {
       {show && (
         <ul className={`absolute right-0 top-[200%] w-[432px] z-10 cursor-default rounded-lg`}>
           <div className="w-full bg-white flex flex-col p-6 justify-start items-start rounded shadow-xl relative gap-4">
-            <p className="text-zinc-900 text-lg font-medium font-['SF Pro Text'] leading-[17px]">Выбор языка и валюты</p>
+            <p className="text-zinc-900 text-lg font-medium font-['SF Pro Text'] leading-[17px]">
+              {langState.language === 'RU' ? 'Выбор языка и валюты' : 'Set language and currency'}
+            </p>
             <p className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[17px]">
-              Выберите предпочтительный язык и валюту.
+              {langState.language === 'RU' ? 'Выберите предпочтительный язык и валюту.' : 'Select your preferred language and currency.'}
               <br />
-              Вы можете изменить настройки в любое время
+              {langState.language === 'RU' ? 'Вы можете изменить настройки в любое время' : 'You can change your settings at any time'}
             </p>
             <div className="flex flex-col gap-2 w-full">
-              <label className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[17px]">Язык</label>
+              <label className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[17px]">
+                {langState.language === 'RU' ? 'Язык' : 'Language'}
+              </label>
               <SelectInput
                 optionsList={langList}
                 defaultOption="Выберите язык"
@@ -114,7 +118,9 @@ export const LangChangeBlock: FC = () => {
               />
             </div>
             <div className="flex flex-col gap-2 w-full">
-              <label className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[17px]">Валюта</label>
+              <label className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[17px]">
+                {langState.language === 'RU' ? 'Валюта' : 'Currency'}
+              </label>
               <SelectInput
                 optionsList={cashList}
                 defaultOption="Выберите валюту"
@@ -123,7 +129,7 @@ export const LangChangeBlock: FC = () => {
               />
             </div>
             <div className="flex w-full justify-center">
-              <Button text="Сохранить" onClick={handleSave} />
+              <Button text={langState.language === 'RU' ? 'Сохранить' : 'Save'} onClick={handleSave} />
             </div>
           </div>
         </ul>

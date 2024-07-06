@@ -3,6 +3,7 @@ import Logo from '../../../assets/logo/logoModal.png'
 import LoginElement from './loginElement'
 import ResetPassword from './resetPassword'
 import RegistrationElement from './registrationElement'
+import { selectLangSettings, useAppSelector } from '../../../store/hooks'
 
 type LoginT = {
   close: () => void
@@ -10,6 +11,7 @@ type LoginT = {
 }
 
 export const LoginModal: FC<LoginT> = ({ close, selectedState }) => {
+  const { language } = useAppSelector(selectLangSettings)
   const [selected, setSelected] = useState<number>(selectedState || 1)
 
   const handleClose = () => {
@@ -56,14 +58,14 @@ export const LoginModal: FC<LoginT> = ({ close, selectedState }) => {
             onClick={() => setSelected(1)}
             className="w-[50%] h-[55px] transition-all duration-500 flex items-center justify-center text-lg font-normal font-['SF Pro Text'] leading-snug tracking-tight cursor-pointer"
           >
-            Вход в аккаунт
+            {language === 'RU' ? 'Вход в аккаунт' : 'Log in'}
           </li>
           <li
             style={selected === 2 ? { borderBottom: '2px solid #1D1E22', color: '#1D1E22' } : { borderBottom: '2px solid #D9D9D9', color: '#D9D9D9' }}
             onClick={() => setSelected(2)}
             className="w-[50%] h-[55px] transition-all duration-500 flex items-center justify-center text-lg font-normal font-['SF Pro Text'] leading-snug tracking-tight cursor-pointer"
           >
-            Регистрация
+            {language === 'RU' ? 'Регистрация' : 'Registration'}
           </li>
         </ul>
       )}

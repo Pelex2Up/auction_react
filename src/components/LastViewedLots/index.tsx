@@ -7,20 +7,19 @@ import 'swiper/scss/pagination'
 import AuctionCard from '../cards/auction'
 import './styles.css'
 import { LotT } from '../../types/lotTypes'
-import { selectHistory, useAppSelector } from '../../store/hooks'
+import { selectHistory, selectLangSettings, useAppSelector } from '../../store/hooks'
 import { useFetchLastVisitedMutation } from '../../api/userService'
 
 export const LastViewedLotsBlock: FC = () => {
-  // переделать под лоты из истории
+  const { language } = useAppSelector(selectLangSettings)
   const { lots: lotsHistory } = useAppSelector(selectHistory)
   const [getLots, { data, isSuccess, isLoading, isError }] = useFetchLastVisitedMutation()
   const lotsListSwiperRef = useRef<SwiperRef>(null)
   const [lotsData, setLotsData] = useState<LotT[]>()
 
   useEffect(() => {
-    if (!lotsData && !isLoading && !isError && lotsHistory) {
+    if (!lotsData && !isLoading && !isError && lotsHistory && lotsHistory.length > 0) {
       getLots({ advertisement_ids: lotsHistory })
-      // getLots('?page=1')
     }
   }, [lotsData, isLoading, isError])
 
@@ -50,7 +49,9 @@ export const LastViewedLotsBlock: FC = () => {
     <div className="w-full h-full flex-col justify-center items-start gap-8 inline-flex">
       <div className="self-stretch justify-between items-center inline-flex">
         <div className="w-[372px] h-[29px] pr-[7px] justify-start items-center flex">
-          <div className="text-zinc-900 text-2xl font-medium font-['SF Pro Text'] leading-[28.80px] tracking-tight">Недавно просмотренные</div>
+          <div className="text-zinc-900 text-2xl font-medium font-['SF Pro Text'] leading-[28.80px] tracking-tight">
+            {language === 'RU' ? 'Недавно просмотренные' : 'Last viewed advertisements'}
+          </div>
         </div>
         <div className="justify-start items-start gap-6 flex">
           <div onClick={prevElementSwiper} className="w-10 h-10 relative origin-top-left cursor-pointer">

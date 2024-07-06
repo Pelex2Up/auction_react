@@ -1,7 +1,7 @@
 import { FC, useEffect } from 'react'
 import { Outlet, generatePath, useLocation, useNavigate } from 'react-router-dom'
 import { MenuButton } from '../components/common/buttons'
-import { selectUser, useAppDispatch, useAppSelector } from '../store/hooks'
+import { selectLangSettings, selectUser, useAppDispatch, useAppSelector } from '../store/hooks'
 import { useLogoutMutation } from '../api/loginService'
 import { logoutState } from '../store/redux/users/slice'
 import { PathE, ProfilePathE } from '../enum'
@@ -9,6 +9,7 @@ import { Loader } from '../components/Loader'
 import styles from './defaultStyles.module.scss'
 
 export const ProfilePage: FC = () => {
+  const { language } = useAppSelector(selectLangSettings)
   const [logout, { isLoading, isSuccess }] = useLogoutMutation()
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
@@ -32,7 +33,7 @@ export const ProfilePage: FC = () => {
     <div className="flex-col xl:flex-row flex gap-8 px-4 xl:px-[60px]">
       <ul className="min-w-[312px] w-[312px] h-min hidden xl:flex flex-col px-2 py-8 bg-[#F6F6F6] shadow-xl">
         <MenuButton
-          text="Мои объявления"
+          text={language === 'RU' ? 'Мои объявления' : 'My advertisements'}
           className={path.pathname === ProfilePathE.MyLots ? styles.selected : ''}
           onClick={() => {
             navigate(generatePath(ProfilePathE.MyLots))
@@ -54,7 +55,7 @@ export const ProfilePage: FC = () => {
           </svg>
         </MenuButton>
         <MenuButton
-          text="Мои заказы"
+          text={language === 'RU' ? 'Мои заказы' : 'My orders'}
           onClick={() => {
             navigate(generatePath(ProfilePathE.MyPurchases))
           }}
@@ -95,7 +96,7 @@ export const ProfilePage: FC = () => {
           </svg>
         </MenuButton>
         <MenuButton
-          text="Настройки профиля"
+          text={language === 'RU' ? 'Настройки профиля' : 'Profile settings'}
           className={path.pathname === PathE.Profile ? styles.selected : ''}
           onClick={() => {
             navigate(generatePath(PathE.Profile))
@@ -111,7 +112,7 @@ export const ProfilePage: FC = () => {
           </svg>
         </MenuButton>
         <MenuButton
-          text="Мой тариф"
+          text={language === 'RU' ? 'Мой тариф' : 'My tariff'}
           className={path.pathname === ProfilePathE.MyTariff ? styles.selected : ''}
           onClick={() => {
             navigate(generatePath(ProfilePathE.MyTariff))
@@ -154,7 +155,7 @@ export const ProfilePage: FC = () => {
           </svg>
         </MenuButton>
         <div className="my-2 w-full relative h-[0px] border border-zinc-300" />
-        <MenuButton text="Выход" onClick={() => logout()}>
+        <MenuButton text={language === 'RU' ? 'Выход' : 'Logout'} onClick={() => logout()}>
           {isLoading ? (
             <Loader />
           ) : (

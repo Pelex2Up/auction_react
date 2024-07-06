@@ -1,6 +1,6 @@
 import { useLoginMutation } from '../../../api/loginService'
 import { useLazyFetchProfileQuery } from '../../../api/userService'
-import { useAppDispatch } from '../../../store/hooks'
+import { selectLangSettings, useAppDispatch, useAppSelector } from '../../../store/hooks'
 import { auth, updateUser } from '../../../store/redux/users/slice'
 import { IProfile } from '../../../types/profile'
 import { Loader } from '../../Loader'
@@ -16,6 +16,7 @@ interface IElement {
 }
 
 export const LoginElement: FC<IElement> = ({ changeAction, close }) => {
+  const { language } = useAppSelector(selectLangSettings)
   const dispatch = useAppDispatch()
   const [errors, setErrors] = useState<{ email: string; pass: string }>({
     email: '',
@@ -55,8 +56,8 @@ export const LoginElement: FC<IElement> = ({ changeAction, close }) => {
           setErrors({ email: err.message, pass: '' })
         } else {
           setErrors({
-            email: 'Неверный email или пароль',
-            pass: 'Неверный email или пароль'
+            email: language === 'RU' ? 'Неверный email или пароль' : 'Wrong email or password',
+            pass: language === 'RU' ? 'Неверный email или пароль' : 'Wrong email or password'
           })
         }
       })
@@ -78,13 +79,15 @@ export const LoginElement: FC<IElement> = ({ changeAction, close }) => {
     <form onSubmit={submitForm}>
       <div className="flex flex-col gap-[20px] justify-start w-full top-[159px] relative px-6 xl:px-[93px] py-[30px]">
         <div className="w-full flex flex-col gap-1">
-          <label className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">Электронная почта</label>
+          <label className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
+            {language === 'RU' ? 'Электронная почта' : 'Email'}
+          </label>
           <Input
             multiline={false}
             required
             error={errors.email.length > 0}
             onChange={handleEmailChange}
-            placeholder="Ваша электронная почта"
+            placeholder={language === 'RU' ? 'Ваша электронная почта' : 'Your email'}
             className="w-full"
             name="email"
             type="email"
@@ -93,14 +96,16 @@ export const LoginElement: FC<IElement> = ({ changeAction, close }) => {
           <label className="text-red-600 text-xs font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">{errors.email}</label>
         </div>
         <div className="w-full flex flex-col gap-1">
-          <label className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">Пароль</label>
+          <label className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
+            {language === 'RU' ? 'Пароль' : 'Password'}
+          </label>
           <Input
             multiline={false}
             secure={true}
             required
             onChange={handlePasswordChange}
             error={errors.pass.length > 0}
-            placeholder="Ваш пароль"
+            placeholder={language === 'RU' ? 'Ваш пароль' : 'Your password'}
             className="w-full"
             name="password"
             id="password"
@@ -110,7 +115,7 @@ export const LoginElement: FC<IElement> = ({ changeAction, close }) => {
         <div className="w-full flex justify-end">
           <DefaultLink
             onClick={() => changeAction(3)}
-            text="Забыли пароль?"
+            text={language === 'RU' ? 'Забыли пароль?' : 'Forgot password?'}
             style={{
               color: '#008001',
               fontSize: '12px',
@@ -121,12 +126,14 @@ export const LoginElement: FC<IElement> = ({ changeAction, close }) => {
             }}
           />
         </div>
-        <Button text={'Войти'} type="submit" className={styles.button}>
+        <Button text={language === 'RU' ? 'Войти' : 'Log in'} type="submit" className={styles.button}>
           {(isFetching || isLoading) && <Loader />}
         </Button>
         <div className="justify-center items-center gap-2 inline-flex">
-          <div className="text-zinc-500 text-base font-normal font-['SF Pro Text'] leading-snug">Еще нет аккаунта?</div>
-          <DefaultLink onClick={() => changeAction(2)} text="Регистрация" style={{ fontSize: '16px', color: '#008001' }} />
+          <div className="text-zinc-500 text-base font-normal font-['SF Pro Text'] leading-snug">
+            {language === 'RU' ? 'Еще нет аккаунта?' : "Don't have an account yet?"}
+          </div>
+          <DefaultLink className='h-full flex items-center' onClick={() => changeAction(2)} text={language === 'RU' ? 'Регистрация' : 'Sign up'} style={{ fontSize: '16px', color: '#008001' }} />
         </div>
       </div>
     </form>

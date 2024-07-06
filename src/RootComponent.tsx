@@ -22,28 +22,32 @@ import { MyTariffPage } from './pages/ProfilePages/MyTariff'
 import { LotCatalogPage } from './pages/LotCatalogPage/LotCatalogPage'
 import { UserCartPage } from './pages/UserCartPage'
 import { MyPurchasesPage } from './pages/ProfilePages/MyPurchases'
+import { selectUser, useAppSelector } from './store/hooks'
 
 const RootComponent: React.FC = () => {
+  const { auth } = useAppSelector(selectUser)
   return (
     <Router>
       <Routes>
         <Route path={PathE.Home} element={<RootLayout />}>
           <Route path="*" element={<NotFoundPage />} />
           <Route index element={<Home />} />
-          <Route path={PathE.UserCart} element={<UserCartPage />} />
+          {auth && <Route path={PathE.UserCart} element={<UserCartPage />} />}
           <Route path={PathE.RegistrationConfirm} element={<RegistrationSuccess />} />
           <Route path={PathE.AccessUserRegistration} element={<RegistrationToken />} />
           <Route path={PathE.ResetPasswordRequest} element={<ResetPasswordRequest />} />
           <Route path={PathE.ResetPassword} element={<ResetPasswordForm />} />
           <Route path={PathE.ResetPasswordSuccess} element={<ResetPasswordSuccess />} />
-          <Route path={LotPathE.CreateLot} element={<CreateLotPage />} />
-          <Route path={LotPathE.EditLot} element={<EditLotPage />} />
-          <Route path={PathE.Profile} element={<ProfilePage />}>
-            <Route index element={<MainProfile />} />
-            <Route path={ProfilePathE.MyLots} element={<MyLots />} />
-            <Route path={ProfilePathE.MyTariff} element={<MyTariffPage />} />
-            <Route path={ProfilePathE.MyPurchases} element={<MyPurchasesPage />} />
-          </Route>
+          {auth && <Route path={LotPathE.CreateLot} element={<CreateLotPage />} />}
+          {auth && <Route path={LotPathE.EditLot} element={<EditLotPage />} />}
+          {auth && (
+            <Route path={PathE.Profile} element={<ProfilePage />}>
+              <Route index element={<MainProfile />} />
+              <Route path={ProfilePathE.MyLots} element={<MyLots />} />
+              <Route path={ProfilePathE.MyTariff} element={<MyTariffPage />} />
+              <Route path={ProfilePathE.MyPurchases} element={<MyPurchasesPage />} />
+            </Route>
+          )}
           <Route path={PathE.TarriffPlans} element={<TarriffPlans />} />
           <Route path={PathE.Rules} element={<UsageRules />} />
           <Route path={LotPathE.LotDetail} element={<LotPage />} />

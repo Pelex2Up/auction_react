@@ -8,8 +8,10 @@ import AuctionCard from '../cards/auction'
 import './styles.css'
 import { useSearchAdvertisementMutation } from '../../api/lotService'
 import { LotT } from '../../types/lotTypes'
+import { selectLangSettings, useAppSelector } from '../../store/hooks'
 
 export const LotsBlock: FC = () => {
+  const { language } = useAppSelector(selectLangSettings)
   const [getLots, { data, isSuccess, isLoading, isError }] = useSearchAdvertisementMutation()
   const lotsListSwiperRef = useRef<SwiperRef>(null)
   const [lotsData, setLotsData] = useState<LotT[]>()
@@ -44,10 +46,12 @@ export const LotsBlock: FC = () => {
   }
 
   return (
-    <div className="w-full h-full flex-col justify-center items-start gap-8 inline-flex xl:px-[60px] px-5">
+    <div className="w-full h-full flex-col justify-center items-start gap-8 inline-flex">
       <div className="self-stretch justify-between items-center inline-flex">
         <div className="w-[372px] h-[29px] pr-[7px] justify-start items-center flex">
-          <div className="text-zinc-900 text-2xl font-medium font-['SF Pro Text'] leading-[28.80px] tracking-tight">Товары по сниженным ценам</div>
+          <div className="text-zinc-900 text-2xl font-medium font-['SF Pro Text'] leading-[28.80px] tracking-tight">
+            {language === 'RU' ? 'Товары по сниженным ценам' : 'Discount advertisements'}
+          </div>
         </div>
         <div className="justify-start items-start gap-6 flex">
           <div onClick={prevElementSwiper} className="w-10 h-10 relative origin-top-left cursor-pointer">

@@ -12,7 +12,9 @@ export const Home: FC = () => {
       <div className="lg:px-[60px] px-5">
         <SliderAds />
       </div>
-      <LotsBlock />
+      <div className="xl:px-[60px] px-5">
+        <LotsBlock />
+      </div>
       <div className="lg:px-[60px] px-5">
         <LastViewedLotsBlock />
       </div>

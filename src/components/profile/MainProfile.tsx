@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ChangeEvent, FC, FormEvent, useEffect, useState } from 'react'
-import { selectUser, useAppDispatch, useAppSelector } from '../../store/hooks'
+import { selectLangSettings, selectUser, useAppDispatch, useAppSelector } from '../../store/hooks'
 import { UserProfilePhotoSVG } from '../../assets/svg/userProfile'
 import Input from '../common/Input'
 import { RadioButton } from '../common/RadioButton'
@@ -24,6 +24,7 @@ interface IProfileError {
 }
 
 export const MainProfile: FC = () => {
+  const { language } = useAppSelector(selectLangSettings)
   const { user } = useAppSelector(selectUser)
   const [userProfile, setUserProfile] = useState<IProfile>()
   const [avatarUrl, setAvatarUrl] = useState<string>('')
@@ -33,10 +34,16 @@ export const MainProfile: FC = () => {
   const [changePassword, { isLoading: isPassLoading }] = useChangePasswordMutation()
   const [selectedOption, setSelectedOption] = useState('')
   const [errors, setErrors] = useState<IProfileError>({ name: '', phone_number: '', passwordNew: '', passwordOld: '', unp: '' })
-  const radioGroup = [
+  const radioGroupRu = [
     { value: 'person', label: 'Физическое лицо' },
     { value: 'sole_proprietor', label: 'Индивидуальный предприниматель' },
     { value: 'company', label: 'Юридическое лицо' }
+  ]
+
+  const radioGroupEng = [
+    { value: 'person', label: 'Person' },
+    { value: 'sole_proprietor', label: 'Sole proprietor' },
+    { value: 'company', label: 'Company' }
   ]
 
   function formatPhoneNumber(e164Number: string): string {
@@ -134,18 +141,21 @@ export const MainProfile: FC = () => {
           if (user) {
             setUserProfile({ ...data, email: user.email })
             dispatch(updateUser({ ...data, email: user.email }))
-            toast('Данные профиля успешно обновлены', { type: 'success' })
+            toast(language === 'RU' ? 'Данные профиля успешно обновлены' : 'Profile has been changed', { type: 'success' })
           }
         })
         .catch((err: any) => {
           if (err.data && 'profile' in err.data && 'phone_number' in err.data.profile && err.data.profile.phone_number) {
             setErrors({ ...errors, phone_number: 'Введен некорректный номер телефона' })
-            toast('Введен некорректный номер телефона', { type: 'error' })
+            toast(language === 'RU' ? 'Введен некорректный номер телефона' : 'Wrong phone number', { type: 'error' })
           } else if (err.data && 'profile' in err.data && 'unp' in err.data.profile && err.data.profile.unp) {
             setErrors({ ...errors, unp: 'Некорректный УНП' })
-            toast('Введен некорректный УНП', { type: 'error' })
+            toast(language === 'RU' ? 'Введен некорректный УНП' : 'Wrong UNP', { type: 'error' })
           } else {
-            toast('Ошибка изменения профиля. Проверьте корректность введенных данных', { type: 'error' })
+            toast(
+              language === 'RU' ? 'Ошибка изменения профиля. Проверьте корректность введенных данных' : 'Something went wrong, please check your chaged fields',
+              { type: 'error' }
+            )
           }
         })
     }
@@ -161,15 +171,15 @@ export const MainProfile: FC = () => {
       if (newPass1 === newPass2 && newPass1.length >= 8) {
         await changePassword(profileResetData)
           .unwrap()
-          .then(() => toast('Пароль успешно изменен', { type: 'success' }))
+          .then(() => toast(language === 'RU' ? 'Пароль успешно изменен' : 'Password has been changed', { type: 'success' }))
           .catch(() => {
-            toast('Неверный текущий пароль', { type: 'error' })
+            toast(language === 'RU' ? 'Неверный текущий пароль' : 'Wrong current password', { type: 'error' })
           })
       } else if (newPass1.length < 8 || newPass2.length < 8) {
         setErrors({ ...errors, passwordNew: 'Пароль должен содержать более 8 символов' })
       } else {
         setErrors({ ...errors, passwordNew: 'Пароли не совпадают' })
-        toast('Пароли не совпадают', { type: 'error' })
+        toast(language === 'RU' ? 'Пароли не совпадают' : 'Passwords are not equal', { type: 'error' })
       }
     }
   }
@@ -177,7 +187,7 @@ export const MainProfile: FC = () => {
   return (
     <form onSubmit={handleSaveProfile} className="flex-col flex gap-8">
       <ul className="w-full xl:w-[733px] flex flex-col px-4 py-6 gap-8 bg-white shadow-md">
-        <li className="text-zinc-900 text-lg font-normal leading-snug tracking-tight">Персональные данные</li>
+        <li className="text-zinc-900 text-lg font-normal leading-snug tracking-tight">{language === 'RU' ? 'Персональные данные' : 'Personal information'}</li>
         <li className="justify-start items-center gap-[9px] inline-flex">
           <div className="relative">
             {userProfile && userProfile.profile.avatar ? (
@@ -191,29 +201,51 @@ export const MainProfile: FC = () => {
         </li>
         <li className="flex-col justify-center items-start gap-1.5 inline-flex">
           <label htmlFor="username" className="text-zinc-900 text-sm font-normal leading-[16.80px] tracking-tight">
-            Имя пользователя
+            {language === 'RU' ? 'Имя пользователя' : 'Username'}
           </label>
           <Input multiline={false} defaultValue={userProfile?.username || ''} placeholder="User_12345" className="w-[315px]" name="username" id="username" />
         </li>
       </ul>
       <ul className="w-full xl:w-[733px] flex flex-col px-4 py-6 gap-6 bg-white shadow-md">
-        <li className="text-zinc-900 text-lg font-normal leading-snug tracking-tight">Контактная информация</li>
+        <li className="text-zinc-900 text-lg font-normal leading-snug tracking-tight">{language === 'RU' ? 'Контактная информация' : 'Contact information'}</li>
         <li className="justify-start items-start xl:items-center gap-[9px] flex flex-col xl:flex-row xl:inline-flex">
-          {radioGroup.map((option) => (
-            <RadioButton
-              key={option.label + option.value}
-              name="type"
-              id={option.value}
-              value={option.value}
-              text={option.label}
-              onChange={handleChangeOption}
-              checked={selectedOption === option.value}
-            />
-          ))}
+          {language === 'RU'
+            ? radioGroupRu.map((option) => (
+                <RadioButton
+                  key={option.label + option.value}
+                  name="type"
+                  id={option.value}
+                  value={option.value}
+                  text={option.label}
+                  onChange={handleChangeOption}
+                  checked={selectedOption === option.value}
+                />
+              ))
+            : radioGroupEng.map((option) => (
+                <RadioButton
+                  key={option.label + option.value}
+                  name="type"
+                  id={option.value}
+                  value={option.value}
+                  text={option.label}
+                  onChange={handleChangeOption}
+                  checked={selectedOption === option.value}
+                />
+              ))}
         </li>
         <li className="flex-col justify-center items-start gap-1.5 inline-flex">
           <label htmlFor="name" className="text-zinc-900 text-sm font-normal leading-[16.80px] tracking-tight">
-            {selectedOption === 'person' ? 'Имя Фамилия Отчество' : selectedOption === 'company' ? 'Название организации' : 'Название ИП'}
+            {selectedOption === 'person'
+              ? language === 'RU'
+                ? 'Имя Фамилия Отчество'
+                : 'Full name'
+              : selectedOption === 'company'
+              ? language === 'RU'
+                ? 'Название организации'
+                : 'Company name'
+              : language === 'RU'
+              ? 'Название ИП'
+              : 'Company name'}
             <span className="text-red-500 text-xl font-normal leading-[16.80px] tracking-tight">*</span>
           </label>
           <Input
@@ -232,7 +264,7 @@ export const MainProfile: FC = () => {
         {selectedOption && selectedOption !== 'person' && (
           <li className="flex-col justify-center items-start gap-1.5 inline-flex">
             <label htmlFor="unp" className="text-zinc-900 text-sm font-normal leading-[16.80px] tracking-tight">
-              УНП
+              {language === 'RU' ? 'УНП' : `UNP (Payer's Account Number)`}
               <span className="text-red-500 text-xl font-normal leading-[16.80px] tracking-tight">*</span>
             </label>
             <Input
@@ -241,7 +273,7 @@ export const MainProfile: FC = () => {
               error={errors && errors.name.length > 0}
               defaultValue={userProfile?.profile.unp || ''}
               onChange={() => setErrors({ ...errors, unp: '' })}
-              placeholder="Введите Ваш УНП"
+              placeholder={language === 'RU' ? 'Введите Ваш УНП' : 'Enter UNP'}
               className="w-full max-w-[315px] xl:w-[315px]"
               name="unp"
               id="unp"
@@ -251,7 +283,7 @@ export const MainProfile: FC = () => {
         )}
         <li className="flex-col justify-center items-start gap-1.5 inline-flex">
           <label htmlFor="email" className="text-zinc-900 text-sm font-normal leading-[16.80px] tracking-tight">
-            Электронная почта
+            {language === 'RU' ? 'Электронная почта' : 'Email'}
           </label>
           <div className="xl:inline-flex xl:flex-row flex flex-col items-start xl:items-center gap-[10px] w-full">
             <div className="xl:w-[315px] w-full">
@@ -293,7 +325,9 @@ export const MainProfile: FC = () => {
                     wordWrap: 'break-word'
                   }}
                 >
-                  Вы указали эту электронную почту при регистрации, ее нельзя изменить
+                  {language === 'RU'
+                    ? 'Вы указали эту электронную почту при регистрации, ее нельзя изменить'
+                    : 'You provided this email when registering. It cannot be changed'}
                 </p>
               </div>
             </div>
@@ -301,7 +335,8 @@ export const MainProfile: FC = () => {
         </li>
         <li className="flex-col justify-center items-start gap-1.5 inline-flex">
           <label htmlFor="phone_number" className="text-zinc-900 text-sm font-normal leading-[16.80px] tracking-tight">
-            Номер телефона<span className="text-red-500 text-xl font-normal leading-[16.80px] tracking-tight">*</span>
+            {language === 'RU' ? 'Номер телефона' : 'Phone number'}
+            <span className="text-red-500 text-xl font-normal leading-[16.80px] tracking-tight">*</span>
           </label>
           <PhoneInput
             onChange={() => setErrors({ ...errors, phone_number: '' })}
@@ -309,7 +344,7 @@ export const MainProfile: FC = () => {
             defaultCountry="by"
             countries={countries}
             value={userProfile?.profile.phone_number || ''}
-            placeholder="Введите номер телефона"
+            placeholder={language === 'RU' ? 'Введите номер телефона' : 'Enter phone number'}
             className={styles.PhoneInput}
             // localization={ru}
           />
@@ -328,16 +363,18 @@ export const MainProfile: FC = () => {
         </li>
       </ul>
       <ul className="w-full xl:w-[733px] flex flex-col px-4 py-6 gap-8 bg-white shadow-md">
-        <li className="text-zinc-900 text-lg font-normal leading-snug tracking-tight">Изменение пароля от профиля</li>
+        <li className="text-zinc-900 text-lg font-normal leading-snug tracking-tight">
+          {language === 'RU' ? 'Изменение пароля от профиля' : 'Change password'}
+        </li>
         <li className="flex-col justify-center items-start gap-1.5 inline-flex">
           <label htmlFor="password-current" className="text-zinc-900 text-sm font-normal leading-[16.80px] tracking-tight">
-            Текущий пароль
+            {language === 'RU' ? 'Текущий пароль' : 'Current password'}
           </label>
           <div className="w-full max-w-[315px] xl:w-[315px]">
             <Input
               multiline={false}
               secure
-              placeholder="Введите пароль"
+              placeholder={language === 'RU' ? 'Введите пароль' : 'Enter password'}
               className="w-full max-w-[315px] xl:w-[315px]"
               name="old_password"
               id="password-current"
@@ -346,7 +383,7 @@ export const MainProfile: FC = () => {
         </li>
         <li className="flex-col justify-center items-start gap-1.5 inline-flex">
           <label htmlFor="password-new" className="text-zinc-900 text-sm font-normal leading-[16.80px] tracking-tight">
-            Новый пароль
+            {language === 'RU' ? 'Новый пароль' : 'New password'}
           </label>
           <div className="w-full max-w-[315px] xl:w-[315px]">
             <Input
@@ -354,7 +391,7 @@ export const MainProfile: FC = () => {
               error={errors && errors.passwordNew.length > 0}
               onChange={() => setErrors({ ...errors, passwordNew: '' })}
               secure
-              placeholder="Введите пароль"
+              placeholder={language === 'RU' ? 'Введите пароль' : 'Enter new password'}
               className="w-full max-w-[315px] xl:w-[315px]"
               name="new_password1"
               id="password-new"
@@ -364,7 +401,7 @@ export const MainProfile: FC = () => {
         </li>
         <li className="flex-col justify-center items-start gap-1.5 inline-flex">
           <label htmlFor="password-new-repeat" className="text-zinc-900 text-sm font-normal leading-[16.80px] tracking-tight">
-            Повторить пароль
+            {language === 'RU' ? 'Повторить пароль' : 'Repeat new password'}
           </label>
           <div className="w-full max-w-[315px] xl:w-[315px]">
             <Input
@@ -372,7 +409,7 @@ export const MainProfile: FC = () => {
               secure
               error={errors && errors.passwordNew.length > 0}
               onChange={() => setErrors({ ...errors, passwordNew: '' })}
-              placeholder="Введите пароль повторно"
+              placeholder={language === 'RU' ? 'Введите пароль повторно' : 'Enter new password'}
               className="w-full max-w-[315px] xl:w-[315px]"
               name="new_password2"
               id="password-new-repeat"
@@ -382,7 +419,7 @@ export const MainProfile: FC = () => {
         </li>
       </ul>
       <div className="flex gap-4 items-center">
-        {isLoading || isPassLoading ? <Loader /> : <Button type="submit" text="Сохранить" />}
+        {isLoading || isPassLoading ? <Loader /> : <Button type="submit" text={language === 'RU' ? 'Сохранить' : 'Save changes'} />}
         <label className="text-red-600 text-xs font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
           {errors.name || errors.phone_number ? 'Введены некорректные данные в профиле' : ''}
         </label>

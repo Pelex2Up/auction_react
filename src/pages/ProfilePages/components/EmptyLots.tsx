@@ -3,8 +3,10 @@ import DefaultLink from '../../../components/common/DefaultLink'
 import { PathE, ProfilePathE } from '../../../enum'
 import bellIcon from '../../../assets/images/notification.png'
 import { useLocation } from 'react-router-dom'
+import { selectLangSettings, useAppSelector } from '../../../store/hooks'
 
 export const EmptyLots: FC = () => {
+  const { language } = useAppSelector(selectLangSettings)
   const { pathname } = useLocation()
 
   return (
@@ -12,14 +14,22 @@ export const EmptyLots: FC = () => {
       <img src={bellIcon} alt="notification" className="w-[99px] h-[99px]" />
       <div className="flex-col justify-start items-center gap-1.5 flex">
         <div className="text-zinc-900 text-lg font-medium font-['SF Pro Text'] leading-snug">
-          {pathname === ProfilePathE.MyLots ? 'Объявлений нет' : 'Заказов нет'}
+          {pathname === ProfilePathE.MyLots
+            ? language === 'RU'
+              ? 'Объявлений нет'
+              : `Don't have any advertisements`
+            : language === 'RU'
+            ? 'Заказов нет'
+            : `Don't have any orders`}
         </div>
         <div className="justify-start items-center gap-4 inline-flex">
           <div className="w-[499px] text-center">
-            <span className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px]">Ознакомиться с правилами подачи объявления можно </span>
+            <span className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px]">
+              {language === 'RU' ? 'Ознакомиться с правилами подачи объявления можно ' : 'You can view the rules for submitting an ad '}{' '}
+            </span>
             <DefaultLink
               href={PathE.Rules}
-              text="Здесь"
+              text={language === 'RU' ? 'Здесь' : 'Here'}
               style={{
                 color: '#008001',
                 fontSize: 14,
