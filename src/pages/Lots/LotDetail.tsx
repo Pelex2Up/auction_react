@@ -29,7 +29,7 @@ export type ContentWrapperType = {
 
 const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, subCategory, lowerCat, refetch }) => {
   const { language, money } = useAppSelector(selectLangSettings)
-  const { user } = useAppSelector(selectUser)
+  const { user, auth } = useAppSelector(selectUser)
   const [makeBid, { isLoading, isSuccess: bigSuccess }] = useMakeBidMutation()
   const [count, setCount] = useState<number>(1)
   const [addToCart, { isSuccess, isError, error }] = useAppendLotInCartMutation()
@@ -324,7 +324,7 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
                         : 'disabled'
                       : 'disabled'
                   }
-                  disabled={lotData.profile.id === user?.profile.id || (lotData.last_bid && lotData.last_bid.user === user?.profile.id)}
+                  disabled={lotData.profile.id === user?.profile.id || (lotData.last_bid && lotData.last_bid.user === user?.profile.id) || !auth}
                   text={language === 'RU' ? 'Сделать ставку' : 'Make bid'}
                   onClick={() => makeBid(lotData.id)}
                 >
@@ -335,41 +335,52 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
               ) : (
                 <Button
                   variant={lotData.profile.id !== user?.profile.id ? 'primary' : 'disabled'}
-                  disabled={lotData.profile.id === user?.profile.id}
+                  disabled={lotData.profile.id === user?.profile.id || !auth}
                   className="w-full"
                   text={language === 'RU' ? 'Купить' : 'Purchase'}
                   onClick={handlePurchaseLot}
                 />
               )}
             </div>
-            {lotData.is_auction && lotData.profile.id !== user?.profile.id ? (
-              lotData.last_bid &&
-              lotData.last_bid.user === user?.profile.id && (
+            {auth ? (
+              lotData.is_auction && lotData.profile.id !== user?.profile.id ? (
+                lotData.last_bid &&
+                lotData.last_bid.user === user?.profile.id && (
+                  <div className="w-full flex-col justify-start items-center gap-[18px] inline-flex z-[2]">
+                    <div className="w-full lg:w-[422px] h-[0px] border border-zinc-300"></div>
+                    <div className="lg:w-[358px] w-full">
+                      <span className="text-zinc-500 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">
+                        {language === 'RU'
+                          ? 'Ваша ставка последняя, повторно сделать ставку станет возможным после поднятия ее на шаг.'
+                          : 'Your bet is the last one, you will be able to place a bet again after raising it one step.'}
+                        <br />
+                        {language === 'RU' ? 'Следите за заказом в Личном кабинете/' : 'Follow your order in your Personal Account/'}{' '}
+                      </span>
+                      <DefaultLink
+                        text={language === 'RU' ? 'Мои заказы' : 'My orders'}
+                        className="text-green-700 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight cursor-pointer"
+                        href={ProfilePathE.MyPurchases}
+                      />
+                    </div>
+                  </div>
+                )
+              ) : (
                 <div className="w-full flex-col justify-start items-center gap-[18px] inline-flex z-[2]">
-                  <div className="w-full lg:w-[422px] h-[0px] border border-zinc-300"></div>
-                  <div className="lg:w-[358px] w-full">
-                    <span className="text-zinc-500 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">
-                      {language === 'RU'
-                        ? 'Ваша ставка последняя, повторно сделать ставку станет возможным после поднятия ее на шаг.'
-                        : 'Your bet is the last one, you will be able to place a bet again after raising it one step.'}
-                      <br />
-                      {language === 'RU' ? 'Следите за заказом в Личном кабинете/' : 'Follow your order in your Personal Account/'}{' '}
+                  <div className="w-full lg:w-[422px] h-[0px] border border-zinc-300">
+                    <span className="text-zinc-500 w-full text-xs font-normal text-start font-['SF Pro Text'] leading-[14.40px] tracking-tight">
+                      {language === 'RU' ? 'Вы не можете принимать участие в собственном объявлении.' : 'You cannot participate in your own advertisement.'}
                     </span>
-                    <DefaultLink
-                      text={language === 'RU' ? 'Мои заказы' : 'My orders'}
-                      className="text-green-700 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight cursor-pointer"
-                      href={ProfilePathE.MyPurchases}
-                    />
                   </div>
                 </div>
               )
             ) : (
               <div className="w-full flex-col justify-start items-center gap-[18px] inline-flex z-[2]">
-                <div className="w-full lg:w-[422px] h-[0px] border border-zinc-300">
-                  <span className="text-zinc-500 w-full text-xs font-normal text-start font-['SF Pro Text'] leading-[14.40px] tracking-tight">
-                    {language === 'RU' ? 'Вы не можете принимать участие в собственном объявлении.' : 'You cannot participate in your own advertisement.'}
-                  </span>
-                </div>
+                <div className="w-full lg:w-[422px] h-[0px] border border-zinc-300" />
+                <span className="text-zinc-500 w-full text-xs font-normal text-start font-['SF Pro Text'] leading-[14.40px] tracking-tight">
+                  {language === 'RU'
+                    ? 'Вы должны быть авторизованы, чтоб принимать участие в торгах.'
+                    : 'You must be authenticated to participate any advertisements.'}
+                </span>
               </div>
             )}
           </div>

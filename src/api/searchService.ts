@@ -1,4 +1,5 @@
 import { ICategory } from '../types/commonTypes'
+import { IAds } from './apiTypes'
 import { baseQuery } from './baseApi'
 import { createApi } from '@reduxjs/toolkit/query/react'
 
@@ -19,8 +20,11 @@ export const searchService = createApi({
     }),
     searchInputData: builder.mutation<ISearchCategory[], string>({
       query: (arg) => `/auction/categories/f-text-search/?search=${arg}`
+    }),
+    fetchAds: builder.query<IAds[], string>({
+      query: (params) => `/ad/ad${params && params !== 'undefined' ? `/${params}` : ''}`
     })
   })
 })
 
-export const { useGetSearchBlockDataQuery, useSearchInputDataMutation } = searchService
+export const { useGetSearchBlockDataQuery, useSearchInputDataMutation, useFetchAdsQuery } = searchService

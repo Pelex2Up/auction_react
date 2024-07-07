@@ -23,6 +23,7 @@ import { LotCatalogPage } from './pages/LotCatalogPage/LotCatalogPage'
 import { UserCartPage } from './pages/UserCartPage'
 import { MyPurchasesPage } from './pages/ProfilePages/MyPurchases'
 import { selectUser, useAppSelector } from './store/hooks'
+import { AdsPage } from './pages/AdsPage'
 
 const RootComponent: React.FC = () => {
   const { auth } = useAppSelector(selectUser)
@@ -32,6 +33,7 @@ const RootComponent: React.FC = () => {
         <Route path={PathE.Home} element={<RootLayout />}>
           <Route path="*" element={<NotFoundPage />} />
           <Route index element={<Home />} />
+          <Route path={PathE.AdsPage} element={<AdsPage />} />
           {auth && <Route path={PathE.UserCart} element={<UserCartPage />} />}
           <Route path={PathE.RegistrationConfirm} element={<RegistrationSuccess />} />
           <Route path={PathE.AccessUserRegistration} element={<RegistrationToken />} />

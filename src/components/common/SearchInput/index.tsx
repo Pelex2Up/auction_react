@@ -10,9 +10,10 @@ interface IInput {
   searchData: ISearchCategory[] | undefined
   id: string
   variant?: 'BUY' | 'SELL'
+  placeholder?: string
 }
 
-export const SearchInput: FC<IInput> = ({ value, onChange, searchData, id, variant }) => {
+export const SearchInput: FC<IInput> = ({ value, onChange, searchData, id, variant, placeholder }) => {
   const { language } = useAppSelector(selectLangSettings)
   const inputRef = useRef<HTMLInputElement>(null)
   const [openList, setOpenList] = useState<boolean>(false)
@@ -66,7 +67,7 @@ export const SearchInput: FC<IInput> = ({ value, onChange, searchData, id, varia
             onFocus={() => setOpenList(true)}
             onBlur={handleInputBlur}
             onChange={(e) => onChange(e.target.value)}
-            placeholder={language === 'RU' ? 'Введите текст' : 'Enter text'}
+            placeholder={placeholder ? placeholder : language === 'RU' ? 'Введите текст' : 'Enter text'}
             className="text-zinc-500 outline-none h-full w-full text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight"
           />
         </div>

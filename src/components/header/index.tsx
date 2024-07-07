@@ -4,13 +4,14 @@ import { Button, MenuButton } from '../common/buttons'
 import { CourseInfo } from './courseInfo'
 import styles from './header.module.scss'
 import Portal from '../Modal/Portal'
+import HeaderPlaceholder from '../../assets/images/headerPlaceholder.png'
 import { LoginModal } from '../Modal/Login'
 import ProfileHeader from '../profile'
 import userImage from '../../assets/icons/newUser.svg'
 import Logo from '../../assets/logo/logo.png'
 import HammerLogo from '../../assets/logo/headerHammerLogo.png'
 import { CatalogPathE, LotPathE, PathE, ProfilePathE } from '../../enum/index'
-import { generatePath, useNavigate } from 'react-router-dom'
+import { generatePath, useLocation, useNavigate } from 'react-router-dom'
 import { selectLangSettings, selectUser, useAppDispatch, useAppSelector } from '../../store/hooks'
 import { Loader } from '../Loader'
 import { useLogoutMutation } from '../../api/loginService'
@@ -24,6 +25,10 @@ import SearchInput from '../common/SearchInput'
 import { Tooltip } from '@mui/material'
 import { LangChangeBlock } from '../LangChangeBlock'
 import { toast } from 'react-toastify'
+import { useSearchInputDataMutation } from '../../api/searchService'
+import { useDebounceFunc } from '../../utils/useDebounceFunc'
+import { CloseIcon } from '../../assets/svg/closeIcon'
+import SearchBlock from '../SearchBlock'
 
 export default function Header() {
   const { language } = useAppSelector(selectLangSettings)
@@ -38,6 +43,10 @@ export default function Header() {
   const [variant, setVariant] = useState<string>('')
   const [getUserData] = useLazyFetchProfileQuery()
   const [searchTerm, setSearchTerm] = useState<string>('')
+  const [sendSearch, { data: searchData, isLoading: loadingSearch }] = useSearchInputDataMutation()
+  const debouncedBuy = useDebounceFunc(sendSearch, 300)
+  const [open, setOpen] = useState<boolean>(false)
+  const location = useLocation()
 
   const toggleSideMenu = () => {
     setShowMenu(!showMenu)
@@ -46,6 +55,12 @@ export default function Header() {
   const closeSideMenu = () => {
     setShowMenu(false)
   }
+
+  useEffect(() => {
+    if (searchTerm) {
+      debouncedBuy(searchTerm)
+    }
+  }, [searchTerm])
 
   useEffect(() => {
     if (auth && !user) {
@@ -93,7 +108,7 @@ export default function Header() {
             />
             <DefaultLink text={language === 'RU' ? 'Правила участия' : 'Rules of participation'} href={PathE.Rules} />
             <DefaultLink text={language === 'RU' ? 'Тарифы' : 'Tariffs'} href={PathE.TarriffPlans} />
-            <DefaultLink text={language === 'RU' ? 'Реклама' : 'Advertising'} />
+            <DefaultLink text={language === 'RU' ? 'Реклама' : 'Advertising'} href={PathE.AdsPage} />
           </div>
           {auth ? (
             <></>
@@ -154,20 +169,31 @@ export default function Header() {
           </div>
         </div>
         <div className="xl:w-full xl:h-[54px] xl:justify-between xl:items-center xl:inline-flex hidden">
-          <div className="grow shrink basis-0 self-stretch justify-between items-center inline-flex">
+          <div className="grow shrink basis-0 self-stretch justify-between items-center inline-flex relative">
             <a href={PathE.Home}>
               <img src={HammerLogo} className="w-[293px] h-[54px]" alt="logo" />
             </a>
-            <div className="inline-flex gap-4 w-1/2">
-              <Button
-                text={language === 'RU' ? 'Все объявления' : 'All advertisements'}
-                className={language === 'RU' ? 'min-w-[168px]' : 'min-w-[175px]'}
-                variant="secondary"
-              >
-                <IconBurgerSVG />
-              </Button>
-              <SearchInput value={searchTerm} onChange={setSearchTerm} searchData={[]} id={'search-input-header'} />
-            </div>
+            {location.pathname !== PathE.Home ? (
+              <div className="inline-flex gap-4 w-1/2">
+                <Button
+                  text={language === 'RU' ? 'Все объявления' : 'All advertisements'}
+                  className={language === 'RU' ? 'min-w-[168px]' : 'min-w-[175px]'}
+                  variant="secondary"
+                  onClick={() => setOpen(!open)}
+                >
+                  {open ? <CloseIcon /> : <IconBurgerSVG />}
+                </Button>
+                <SearchInput
+                  value={searchTerm}
+                  onChange={setSearchTerm}
+                  searchData={searchData}
+                  id={'search-input-header'}
+                  placeholder="Поиск по всем категориям"
+                />
+              </div>
+            ) : (
+              <img src={HeaderPlaceholder} className="w-[203px] h-[119px] mr-[150px]" />
+            )}
             <div className="justify-end items-center gap-6 flex">
               <Tooltip title={language === 'RU' ? 'Корзина' : 'Basket'}>
                 <div
@@ -200,6 +226,9 @@ export default function Header() {
                 </div>
               </Tooltip>
               <LangChangeBlock />
+            </div>
+            <div className={`${open ? 'flex' : 'hidden'} absolute top-[120%] w-full py-8 px-4 bg-white shadow-md z-10 rounded`}>
+              <SearchBlock />
             </div>
           </div>
         </div>
@@ -235,7 +264,7 @@ export default function Header() {
             />
             <DefaultLink text={language === 'RU' ? 'Правила участия' : 'Rules of participation'} href={PathE.Rules} />
             <DefaultLink text={language === 'RU' ? 'Тарифы' : 'Tariffs'} href={PathE.TarriffPlans} />
-            <DefaultLink text={language === 'RU' ? 'Реклама' : 'Advertising'} />
+            <DefaultLink text={language === 'RU' ? 'Реклама' : 'Advertising'} href={PathE.AdsPage} />
           </ul>
           {auth && user ? (
             <ul className={`w-full z-10 cursor-default`}>

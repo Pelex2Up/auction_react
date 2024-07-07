@@ -10,7 +10,7 @@ export enum PathE {
   ResetPasswordSuccess = '/reset-password',
   UserCart = '/my-cart',
   AdsPage = '/commercial-promotions',
-  NotFound = '/not-found-page-404'
+  NotFound = '/not-found-page-404',
 }
 
 export enum LotPathE {
