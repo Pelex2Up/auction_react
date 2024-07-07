@@ -11,6 +11,7 @@ import { LowerPriceFilter } from './filterComponents/lowerPriceFilter'
 import styles from './filterComponents/componentsStyles.module.scss'
 import { useGetCategoryMutation } from '../../../api/lotService'
 import { SelectInputFilters } from '../../../components/common/SelectInputFilters/SelectInput'
+import { selectLangSettings, useAppSelector } from '../../../store/hooks'
 
 interface ISideBarCatalog {
   categories: ICategory[]
@@ -21,6 +22,7 @@ interface ISideBarCatalog {
 }
 
 export const SideBarCatalog: FC<ISideBarCatalog> = ({ categories, currentCategory, lotsData, searchParams, updateUrl }) => {
+  const { language } = useAppSelector(selectLangSettings)
   const [getCategoryData, { data: categoryData, isSuccess }] = useGetCategoryMutation()
   const [previousCategory, setPreviousCategory] = useState<string | null>(null)
 
@@ -39,20 +41,22 @@ export const SideBarCatalog: FC<ISideBarCatalog> = ({ categories, currentCategor
           optionsList={categories || []}
           selectedOption={searchParams.get('main_category') ? (searchParams.get('main_category') as string) : ''}
           setSelectedValue={(event) => updateUrl({ main_category: event, category: '' })}
-          defaultOption="Выберите раздел"
+          defaultOption={language === 'RU' ? 'Выберите раздел' : 'Choose category'}
         />
       </div>
       {categoryData &&
         categoryData.children.map((cat, index) => <CatalogCategoriesSelector key={index} category={cat} searchParams={searchParams} updateUrl={updateUrl} />)}
-      <li className="text-zinc-900 text-2xl font-medium font-['SF Pro Text'] leading-[28.80px] tracking-tight">Фильтр</li>
+      <li className="text-zinc-900 text-2xl font-medium font-['SF Pro Text'] leading-[28.80px] tracking-tight">{language === 'RU' ? 'Фильтр' : 'Filter'}</li>
       <PriceFilter searchParams={searchParams} updateUrl={updateUrl} />
       <ConditionFilter searchParams={searchParams} updateUrl={updateUrl} />
       <AdTypeFilter searchParams={searchParams} updateUrl={updateUrl} />
       <LocationFilter searchParams={searchParams} updateUrl={updateUrl} />
       <LowerPriceFilter searchParams={searchParams} updateUrl={updateUrl} />
-      <li className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[17px]">Найдено {lotsData.count} товар(ов)</li>
+      <li className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[17px]">
+        {language === 'RU' ? `Найдено ${lotsData.count} товар(ов)` : `Found ${lotsData.count} lot(s)`}
+      </li>
       <Button
-        text="Сбросить фильтры"
+        text={language === 'RU' ? 'Сбросить фильтры' : 'Reset filters'}
         className="w-full"
         variant="secondary"
         onClick={() =>

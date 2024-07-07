@@ -6,7 +6,7 @@ export type CartT = {
   advertisement: LotT
 }
 
-export interface IAds {
+export interface IAd {
   id: number
   order: number
   active: boolean
@@ -17,4 +17,11 @@ export interface IAds {
   description: string
   url: string
   image: string
+}
+
+export interface IAds {
+  count: number
+  next: string | null
+  previous: string | null
+  results: IAd[]
 }

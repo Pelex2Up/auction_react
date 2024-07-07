@@ -15,6 +15,7 @@ import { Loader } from '../../../components/Loader'
 import CreateLotSuccess from './SuccessCreated'
 import { ICategory } from '../../../types/commonTypes'
 import { useFetchProfileQuery } from '../../../api/userService'
+import { selectLangSettings, useAppSelector } from '../../../store/hooks'
 
 export const tarriffGroup = [
   {
@@ -136,6 +137,7 @@ export const handleKeyPress: React.KeyboardEventHandler<HTMLInputElement> & Reac
 }
 
 export const CreateLotPage: FC = () => {
+  const { language } = useAppSelector(selectLangSettings)
   const dateNow = new Date()
   const { data: categories } = useFetchCategoriesQuery()
   const { data: user, isFetching, isSuccess } = useFetchProfileQuery()
@@ -235,7 +237,12 @@ export const CreateLotPage: FC = () => {
   }
 
   const toggleToast = () => {
-    toast('Вы указали эту информацию в Вашем профиле, ее нельзя изменить при подаче объявления', { type: 'info' })
+    toast(
+      language === 'RU'
+        ? 'Вы указали эту информацию в Вашем профиле, ее нельзя изменить при подаче объявления'
+        : "You set that information in your personal profile. It can't be changed here.",
+      { type: 'info' }
+    )
   }
 
   const handleAddNumber = () => {
@@ -254,9 +261,9 @@ export const CreateLotPage: FC = () => {
       formdata.append('user', String(user.profile.id))
     }
     if (!city) {
-      toast('Пожалуйста, укажите город', { type: 'warning' })
+      toast(language === 'RU' ? 'Пожалуйста, укажите город' : 'Please select city', { type: 'warning' })
     } else if (!category) {
-      toast('Необходимо указать категорию товара', { type: 'warning' })
+      toast(language === 'RU' ? 'Необходимо указать категорию товара' : 'Need to choose category', { type: 'warning' })
     } else {
       formdata.append('ad_type', typeOption)
       formdata.append('condition', productState)
@@ -287,7 +294,7 @@ export const CreateLotPage: FC = () => {
       await sendForm(formdata)
         .unwrap()
         .then(() => setCreatedSuccessfuly(true))
-        .catch(() => toast('Произошла непредвиденная ошибка', { type: 'error' }))
+        .catch(() => toast(language === 'RU' ? 'Произошла непредвиденная ошибка' : 'Something went wrong.', { type: 'error' }))
     }
   }
 
@@ -296,9 +303,9 @@ export const CreateLotPage: FC = () => {
   ) : (
     <form onSubmit={handleSubmitForm} className="lg:px-[60px] px-4 w-full flex flex-col gap-8 relative">
       <ul className="w-full flex flex-col gap-8">
-        <li className="text-zinc-900 text-2xl font-extrabold leading-[28.80px]">Подача объявления</li>
+        <li className="text-zinc-900 text-2xl font-extrabold leading-[28.80px]">{language === 'RU' ? 'Подача объявления' : 'Advertisement create'}</li>
         <li className="inline-flex items-start gap-8 flex-col md:flex-row">
-          <span className="text-zinc-900 text-lg font-medium leading-snug tracking-tight">Ваш тариф</span>
+          <span className="text-zinc-900 text-lg font-medium leading-snug tracking-tight">{language === 'RU' ? 'Ваш тариф' : 'Your tariff'}</span>
           <div className="justify-start h-full items-start xl:items-center gap-6 flex flex-col xl:flex-row xl:inline-flex">
             {user?.subscription && user.subscription.tariff ? (
               <RadioButton

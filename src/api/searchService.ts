@@ -21,7 +21,7 @@ export const searchService = createApi({
     searchInputData: builder.mutation<ISearchCategory[], string>({
       query: (arg) => `/auction/categories/f-text-search/?search=${arg}`
     }),
-    fetchAds: builder.query<IAds[], string>({
+    fetchAds: builder.query<IAds, string>({
       query: (params) => `/ad/ad${params && params !== 'undefined' ? `/${params}` : ''}`
     })
   })

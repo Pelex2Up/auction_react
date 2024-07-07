@@ -6,7 +6,7 @@ import placeholderImage from '../../../assets/images/imagePlaceholderTable.png'
 import { generatePath, useNavigate } from 'react-router-dom'
 import { LotPathE, PathE } from '../../../enum'
 import cartImage from '../../../assets/images/cart.png'
-import { selectUser, useAppSelector } from '../../../store/hooks'
+import { selectLangSettings, selectUser, useAppSelector } from '../../../store/hooks'
 import { Tooltip } from '@mui/material'
 
 interface ICatalogTable {
@@ -16,6 +16,7 @@ interface ICatalogTable {
 }
 
 export const LotsCatalogSchedule: FC<ICatalogTable> = ({ lotsData, addToCart, addManyToCart }) => {
+  const { language } = useAppSelector(selectLangSettings)
   const { user } = useAppSelector(selectUser)
   const [checkAll, setCheckAll] = useState<boolean>(false)
   const MAX_LENGTH = 60
@@ -40,11 +41,13 @@ export const LotsCatalogSchedule: FC<ICatalogTable> = ({ lotsData, addToCart, ad
           <span className="w-[24px]">
             <Checkbox checked={checkAll} onChange={() => setCheckAll(!checkAll)} />
           </span>
-          <p className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[17px]">Выбрать все</p>
+          <p className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[17px]">{language === 'RU' ? 'Выбрать все' : 'Select all'}</p>
         </button>
         <button className="flex flex-row items-center justify-start gap-2" onClick={takeAllCheckedLots}>
           <ShopperSVG />
-          <p className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[17px]">Поместить выбранное в корзину</p>
+          <p className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[17px]">
+            {language === 'RU' ? 'Поместить выбранное в корзину' : 'Move selected to basket'}
+          </p>
         </button>
       </div>
       <table className="w-full table-auto border-collapse border border-zinc-300">
@@ -52,14 +55,14 @@ export const LotsCatalogSchedule: FC<ICatalogTable> = ({ lotsData, addToCart, ad
           <tr className="bg-transparent text-center text-zinc-500 text-xs font-normal font-['SF Pro Text'] leading-[17px]">
             <th className="px-4 py-2 border border-zinc-300">№</th>
             <th className="px-4 py-2 border border-zinc-300"></th>
-            <th className="px-4 py-2 border border-zinc-300">Название</th>
-            <th className="px-4 py-2 border border-zinc-300">Описание</th>
-            <th className="px-4 py-2 border border-zinc-300">Кол-во (ед. изм)</th>
-            <th className="px-4 py-2 border border-zinc-300">Стоимость (1 ед.)</th>
-            <th className="px-4 py-2 border border-zinc-300">Общая стоимость</th>
-            <th className="px-4 py-2 border border-zinc-300">Вид объявления</th>
-            <th className="px-4 py-2 border border-zinc-300">Тип продажи</th>
-            <th className="px-4 py-2 border border-zinc-300">Фото</th>
+            <th className="px-4 py-2 border border-zinc-300">{language === 'RU' ? 'Название' : 'Title'}</th>
+            <th className="px-4 py-2 border border-zinc-300">{language === 'RU' ? 'Описание' : 'Description'}</th>
+            <th className="px-4 py-2 border border-zinc-300">{language === 'RU' ? 'Кол-во (ед. изм)' : 'Count'}</th>
+            <th className="px-4 py-2 border border-zinc-300">{language === 'RU' ? 'Стоимость (1 ед.)' : 'Price (1pcs)'}</th>
+            <th className="px-4 py-2 border border-zinc-300">{language === 'RU' ? 'Общая стоимость' : 'Total price'}</th>
+            <th className="px-4 py-2 border border-zinc-300">{language === 'RU' ? 'Вид объявления' : 'Variant'}</th>
+            <th className="px-4 py-2 border border-zinc-300">{language === 'RU' ? 'Тип продажи' : 'Type'}</th>
+            <th className="px-4 py-2 border border-zinc-300">{language === 'RU' ? 'Фото' : 'Photo'}</th>
             <th className="px-4 py-2 border border-zinc-300"></th>
           </tr>
         </thead>
@@ -115,7 +118,7 @@ export const LotsCatalogSchedule: FC<ICatalogTable> = ({ lotsData, addToCart, ad
               {!(lot.profile.id === user?.profile.id) ? (
                 <td className="p-1 border border-zinc-300">
                   {lot.cart ? (
-                    <Tooltip title={'Товар уже в корзине. Перейти в корзину?'}>
+                    <Tooltip title={language === 'RU' ? 'Товар уже в корзине. Перейти в корзину?' : 'Go to basket'}>
                       <img
                         src={cartImage}
                         className="min-w-[40px] w-[40px] h-[40px] cursor-pointer"
@@ -124,7 +127,7 @@ export const LotsCatalogSchedule: FC<ICatalogTable> = ({ lotsData, addToCart, ad
                       />
                     </Tooltip>
                   ) : (
-                    <Tooltip title={'Добавить в корзину'}>
+                    <Tooltip title={language === 'RU' ? 'Добавить в корзину' : 'Move to basket'}>
                       <button onClick={() => addToCart({ advertisement_id: lot.id })}>
                         <ShopperSVG />
                       </button>

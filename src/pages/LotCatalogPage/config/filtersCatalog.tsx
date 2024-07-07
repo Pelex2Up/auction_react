@@ -2,18 +2,8 @@ import { FC } from 'react'
 import { SelectInputFilters } from '../../../components/common/SelectInputFilters/SelectInput'
 import { ArrowDown } from '../../../assets/svg/arrowDown'
 import { CatalogResponseT } from '../../../types/ResponseTypes'
-import { CloseIcon } from '../../../assets/svg/closeIcon'
 import { CloseIconPath } from './assets/CloseIconPath'
-
-const sortList = [
-  { label: 'Без сортировки', value: '' },
-  { label: 'Цене (возрастание)', value: 'price' },
-  { label: 'Цене (убывание)', value: '-price' },
-  { label: 'Названию (А-Я)', value: 'title' },
-  { label: 'Названию (Я-А)', value: '-title' },
-  { label: 'Дате добавления (от нового)', value: '-start_date' },
-  { label: 'Дате добавления (от старого)', value: 'start_date' }
-]
+import { selectLangSettings, useAppSelector } from '../../../store/hooks'
 
 interface IFilterCatalog {
   data: CatalogResponseT
@@ -22,13 +12,29 @@ interface IFilterCatalog {
 }
 
 export const FiltersCatalog: FC<IFilterCatalog> = ({ data, searchParams, updateUrl }) => {
+  const { language } = useAppSelector(selectLangSettings)
+  const sortList = [
+    { label: language === 'RU' ? 'Без сортировки' : "Don't sort", value: '' },
+    { label: language === 'RU' ? 'Цене (возрастание)' : 'Price (asc)', value: 'price' },
+    { label: language === 'RU' ? 'Цене (убывание)' : 'Price (desc)', value: '-price' },
+    { label: language === 'RU' ? 'Названию (А-Я)' : 'Title (A-Z)', value: 'title' },
+    { label: language === 'RU' ? 'Названию (Я-А)' : 'Title (Z-A)', value: '-title' },
+    { label: language === 'RU' ? 'Дате добавления (от нового)' : 'Date (from new)', value: '-start_date' },
+    { label: language === 'RU' ? 'Дате добавления (от старого)' : 'Date (from old)', value: 'start_date' }
+  ]
   return (
     <div className="flex w-full flex-col gap-4">
       <div className="w-full h-[60px] bg-[#F8F8F8] shadow flex justify-between items-center gap-4 p-6">
         <div className="flex items-center gap-2">
-          <span className="text-green-700 text-base font-medium font-['SF Pro Text'] leading-tight tracking-tight">Сортировать по</span>
+          <span className="text-green-700 text-base font-medium font-['SF Pro Text'] leading-tight tracking-tight">
+            {language === 'RU' ? 'Сортировать по' : 'Sort by'}
+          </span>
           <div className="w-[199px] h-[36px] flex items-center">
-            <SelectInputFilters optionsList={sortList} defaultOption="Без сортировки" setSelectedValue={(event) => updateUrl({ ordering: event as string })} />
+            <SelectInputFilters
+              optionsList={sortList}
+              defaultOption={language === 'RU' ? 'Без сортировки' : "Don't sort"}
+              setSelectedValue={(event) => updateUrl({ ordering: event as string })}
+            />
           </div>
         </div>
 
@@ -56,7 +62,9 @@ export const FiltersCatalog: FC<IFilterCatalog> = ({ data, searchParams, updateU
       <div className="flex flex-wrap gap-4">
         {searchParams.get('price_min') && (
           <div className="w-max h-7 px-[13px] py-[5px] rounded border border-zinc-300 justify-between items-center gap-1.5 inline-flex">
-            <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-none">цена от {searchParams.get('price_min')}</div>
+            <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-none">
+              {language === 'RU' ? 'цена от' : 'price from'} {searchParams.get('price_min')}
+            </div>
             <button onClick={() => updateUrl({ price_min: '' })} className="cursor-pointer">
               <CloseIconPath height={4} width={4} />
             </button>
@@ -64,7 +72,9 @@ export const FiltersCatalog: FC<IFilterCatalog> = ({ data, searchParams, updateU
         )}
         {searchParams.get('price_max') && (
           <div className="w-max h-7 px-[13px] py-[5px] rounded border border-zinc-300 justify-between items-center gap-1.5 inline-flex">
-            <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-none">цена до {searchParams.get('price_max')}</div>
+            <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-none">
+              {language === 'RU' ? 'цена до' : 'price to'} {searchParams.get('price_max')}
+            </div>
             <button onClick={() => updateUrl({ price_max: '' })} className="cursor-pointer">
               <CloseIconPath height={4} width={4} />
             </button>
@@ -73,7 +83,8 @@ export const FiltersCatalog: FC<IFilterCatalog> = ({ data, searchParams, updateU
         {searchParams.get('condition') && (
           <div className="w-max h-7 px-[13px] py-[5px] rounded border border-zinc-300 justify-between items-center gap-1.5 inline-flex">
             <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-none">
-              состояние: {searchParams.get('condition') === 'NEW' ? 'новое' : 'Б/У'}
+              {language === 'RU' ? 'состояние:' : 'condition:'}{' '}
+              {searchParams.get('condition') === 'NEW' ? (language === 'RU' ? 'новое' : 'new') : language === 'RU' ? 'Б/У' : 'used'}
             </div>
             <button onClick={() => updateUrl({ condition: '' })} className="cursor-pointer">
               <CloseIconPath height={4} width={4} />
@@ -83,7 +94,8 @@ export const FiltersCatalog: FC<IFilterCatalog> = ({ data, searchParams, updateU
         {searchParams.get('ad_type') && (
           <div className="w-max h-7 px-[13px] py-[5px] rounded border border-zinc-300 justify-between items-center gap-1.5 inline-flex">
             <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-none">
-              тип объявления: {searchParams.get('ad_type') === 'BUY' ? 'покупка' : 'продажа'}
+              {language === 'RU' ? 'тип объявления:' : 'variant:'}{' '}
+              {searchParams.get('ad_type') === 'BUY' ? (language === 'RU' ? 'покупка' : 'buy') : language === 'RU' ? 'продажа' : 'sell'}
             </div>
             <button onClick={() => updateUrl({ ad_type: '' })} className="cursor-pointer">
               <CloseIconPath height={4} width={4} />
@@ -93,7 +105,14 @@ export const FiltersCatalog: FC<IFilterCatalog> = ({ data, searchParams, updateU
         {searchParams.get('is_auction') && (
           <div className="w-max h-7 px-[13px] py-[5px] rounded border border-zinc-300 justify-between items-center gap-1.5 inline-flex">
             <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-none">
-              тип покупки: {searchParams.get('is_auction') === 'true' ? 'аукцион' : 'фиксированная цена'}
+              {language === 'RU' ? 'тип покупки:' : 'purchase type:'}{' '}
+              {searchParams.get('is_auction') === 'true'
+                ? language === 'RU'
+                  ? 'аукцион'
+                  : 'auction'
+                : language === 'RU'
+                ? 'фиксированная цена'
+                : 'fixed price'}
             </div>
             <button onClick={() => updateUrl({ is_auction: '' })} className="cursor-pointer">
               <CloseIconPath height={4} width={4} />
@@ -102,7 +121,9 @@ export const FiltersCatalog: FC<IFilterCatalog> = ({ data, searchParams, updateU
         )}
         {searchParams.get('region') && (
           <div className="w-max h-7 px-[13px] py-[5px] rounded border border-zinc-300 justify-between items-center gap-1.5 inline-flex">
-            <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-none">область: {searchParams.get('region')}</div>
+            <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-none">
+              {language === 'RU' ? 'область:' : 'state:'} {searchParams.get('region')}
+            </div>
             <button onClick={() => updateUrl({ region: '' })} className="cursor-pointer">
               <CloseIconPath height={4} width={4} />
             </button>
@@ -110,7 +131,9 @@ export const FiltersCatalog: FC<IFilterCatalog> = ({ data, searchParams, updateU
         )}
         {searchParams.get('city') && (
           <div className="w-max h-7 px-[13px] py-[5px] rounded border border-zinc-300 justify-between items-center gap-1.5 inline-flex">
-            <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-none">город: {searchParams.get('city')}</div>
+            <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-none">
+              {language === 'RU' ? 'город:' : 'city'} {searchParams.get('city')}
+            </div>
             <button onClick={() => updateUrl({ city: '' })} className="cursor-pointer">
               <CloseIconPath height={4} width={4} />
             </button>
@@ -118,7 +141,7 @@ export const FiltersCatalog: FC<IFilterCatalog> = ({ data, searchParams, updateU
         )}
         {searchParams.get('old_price_reduced') && searchParams.get('old_price_reduced') === 'true' && (
           <div className="w-max h-7 px-[13px] py-[5px] rounded border border-zinc-300 justify-between items-center gap-1.5 inline-flex">
-            <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-none">сниженная цена</div>
+            <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-none">{language === 'RU' ? 'сниженная цена' : 'discount price'}</div>
             <button onClick={() => updateUrl({ old_price_reduced: 'false' })} className="cursor-pointer">
               <CloseIconPath height={4} width={4} />
             </button>
@@ -126,7 +149,7 @@ export const FiltersCatalog: FC<IFilterCatalog> = ({ data, searchParams, updateU
         )}
         {searchParams.size >= 2 && (
           <div className="w-max h-7 px-[13px] py-[5px] rounded border border-zinc-300 justify-between items-center gap-1.5 inline-flex">
-            <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-none">сбросить фильтр</div>
+            <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-none">{language === 'RU' ?'сбросить фильтры': 'reset filters'}</div>
             <button
               onClick={() =>
                 updateUrl({
