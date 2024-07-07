@@ -88,7 +88,7 @@ export const SearchBlock: FC = () => {
           {language === 'RU' ? 'Обьявления о продаже' : 'Advertisements for sale'}
         </div>
         <div className="w-[337px] relative">
-          <SearchInput value={searchSellTerm} onChange={setSearchSellTerm} searchData={searchSellData} id={'search-input-sell'} variant='SELL'/>
+          <SearchInput value={searchSellTerm} onChange={setSearchSellTerm} searchData={searchSellData} id={'search-input-sell'} variant="SELL" />
         </div>
         <div className="w-full justify-center items-start gap-2 inline-flex flex-wrap px-2">
           {alphabetRu.map((el, index) => (
@@ -103,8 +103,8 @@ export const SearchBlock: FC = () => {
             </button>
           ))}
         </div>
-        <div className="w-full h-[472px] gap-12 shadow-md px-6 py-8 flex flex-row relative lg:overflow-hidden overflow-x-scroll overflow-y-hidden">
-          <div className="flex-col justify-start items-start gap-4 w-[138px] inline-flex overflow-y-scroll">
+        <div className="w-full h-[472px] gap-12 shadow-md px-6 py-8 flex flex-row relative lg:overflow-hidden overflow-x-scroll overflow-y-hidden scrollbar-hide">
+          <div className="flex-col justify-start items-start gap-4 w-[138px] inline-flex overflow-y-scroll scrollbar-hide">
             {sellData &&
               sellData.map((category, index: number) => (
                 <button className="w-[138px] justify-start items-center gap-2 inline-flex" onClick={() => setSelectedSellCategory(category)} key={index}>
@@ -127,7 +127,7 @@ export const SearchBlock: FC = () => {
                 </button>
               ))}
           </div>
-          <div className="w-full lg:w-[408px] justify-start h-full overflow-y-auto flex-wrap items-start gap-2 flex-row inline-flex">
+          <div className="w-full lg:w-[420px] justify-start h-full overflow-y-scroll scrollbar-hide flex-wrap items-start gap-2 flex-row inline-flex">
             {selectedSellCategory && selectedSellCategory.children.length > 0 ? (
               selectedSellCategory.children.map((subCat) => (
                 <div className="flex-col w-[195px] h-min justify-start items-start gap-3 flex" key={subCat.id}>
@@ -146,8 +146,7 @@ export const SearchBlock: FC = () => {
           {language === 'RU' ? 'Обьявления о покупке' : 'Buy advertisements'}
         </div>
         <div className="w-[337px] relative">
-          <SearchInput value={searchBuyTerm} onChange={setSearchBuyTerm} variant='BUY' searchData={searchBuyData} id={'search-input-buy'}/>
-          
+          <SearchInput value={searchBuyTerm} onChange={setSearchBuyTerm} variant="BUY" searchData={searchBuyData} id={'search-input-buy'} />
         </div>
         <div className="w-full justify-center items-start gap-2 inline-flex flex-wrap px-2">
           {alphabetRu.map((el, index) => (
@@ -162,8 +161,8 @@ export const SearchBlock: FC = () => {
             </span>
           ))}
         </div>
-        <div className="w-full h-[472px] gap-5 shadow-md px-6 py-8 flex flex-row relative lg:overflow-hidden overflow-x-scroll overflow-y-hidden">
-          <div className="flex-col w-[138px] justify-start items-start gap-6 inline-flex overflow-y-scroll">
+        <div className="w-full h-[472px] gap-5 shadow-md px-6 py-8 flex flex-row relative lg:overflow-hidden overflow-x-scroll overflow-y-hidden scrollbar-hide">
+          <div className="flex-col w-[138px] justify-start items-start gap-6 inline-flex overflow-y-scroll scrollbar-hide">
             {buyData &&
               buyData.map((category, index: number) => (
                 <button className="w-[138px] justify-start items-center gap-2 inline-flex" onClick={() => setSelectedBuyCategory(category)} key={index}>
@@ -186,7 +185,7 @@ export const SearchBlock: FC = () => {
                 </button>
               ))}
           </div>
-          <div className="w-full lg:w-[408px] justify-start h-full overflow-y-auto flex-wrap items-start gap-2 flex-row inline-flex">
+          <div className="w-full lg:w-[420px] justify-start h-full overflow-y-auto scrollbar-hide flex-wrap items-start gap-2 flex-row inline-flex">
             {selectedBuyCategory && selectedBuyCategory.children.length > 0 ? (
               selectedBuyCategory.children.map((subCat) => (
                 <div className="flex-col w-[195px] h-min justify-start items-start gap-3 flex" key={subCat.id}>
