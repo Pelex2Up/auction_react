@@ -347,7 +347,7 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
                 lotData.last_bid &&
                 lotData.last_bid.user === user?.profile.id && (
                   <div className="w-full flex-col justify-start items-center gap-[18px] inline-flex z-[2]">
-                    <div className="w-full lg:w-[422px] h-[0px] border border-zinc-300"></div>
+                    <div className="w-full lg:w-[422px] h-[0px] border border-zinc-300"/>
                     <div className="lg:w-[358px] w-full">
                       <span className="text-zinc-500 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">
                         {language === 'RU'
@@ -366,11 +366,10 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
                 )
               ) : (
                 <div className="w-full flex-col justify-start items-center gap-[18px] inline-flex z-[2]">
-                  <div className="w-full lg:w-[422px] h-[0px] border border-zinc-300">
-                    <span className="text-zinc-500 w-full text-xs font-normal text-start font-['SF Pro Text'] leading-[14.40px] tracking-tight">
-                      {language === 'RU' ? 'Вы не можете принимать участие в собственном объявлении.' : 'You cannot participate in your own advertisement.'}
-                    </span>
-                  </div>
+                  <div className="w-full lg:w-[422px] h-[0px] border border-zinc-300" />
+                  <span className="text-zinc-500 w-full text-xs font-normal text-start font-['SF Pro Text'] leading-[14.40px] tracking-tight">
+                    {language === 'RU' ? 'Вы не можете принимать участие в собственном объявлении.' : 'You cannot participate in your own advertisement.'}
+                  </span>
                 </div>
               )
             ) : (

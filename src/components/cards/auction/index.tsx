@@ -50,7 +50,7 @@ export const AuctionCard: FC<ICard> = ({ lot, refetch }) => {
                   {language === 'RU' ? 'завершен' : 'closed'}
                 </div>
               )}
-              <img className="w-full h-full rounded object-cover" src={lot.photos[0].image} />
+              <img className="w-full h-full rounded object-contain" src={lot.photos[0].image} />
             </div>
           ) : (
             <div className="w-full h-full pl-[9px] pr-2 flex-col justify-center items-center gap-4 inline-flex relative">

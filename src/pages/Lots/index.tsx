@@ -9,6 +9,8 @@ import { selectHistory, useAppDispatch, useAppSelector } from '../../store/hooks
 import { updateHistory } from '../../store/redux/lastViewedLots/slice'
 import { PathE } from '../../enum'
 import { SameLotsBlock } from '../../components/SimilarAds'
+import FeedBack from '../../components/feedBack'
+import { LastViewedLotsBlock } from '../../components/LastViewedLots'
 
 export const LotPage: FC = () => {
   const navigate = useNavigate()
@@ -82,10 +84,14 @@ export const LotPage: FC = () => {
   }
 
   return (
-    <div className="w-full h-full flex flex-col gap-4 xl:px-[60px] px-4">
-      <LotDetail lotData={lotData} category={mainCategory} subCategory={subCategory} lowerCat={lowerCat} refetch={fetchLot} />
-      <LotDescription lotData={lotData} category={mainCategory} subCategory={subCategory} lowerCat={lowerCat} />
-      <SameLotsBlock id={lotData.id} />
-    </div>
+    <>
+      <div className="w-full h-full flex flex-col gap-4 xl:px-[60px] px-4">
+        <LotDetail lotData={lotData} category={mainCategory} subCategory={subCategory} lowerCat={lowerCat} refetch={fetchLot} />
+        <LotDescription lotData={lotData} category={mainCategory} subCategory={subCategory} lowerCat={lowerCat} />
+        <SameLotsBlock id={lotData.id} />
+        <LastViewedLotsBlock />
+      </div>
+      <FeedBack />
+    </>
   )
 }
