@@ -69,6 +69,14 @@ export const userService = createApi({
         }
       }
     }),
+    fetchSameLots: builder.mutation<any, string | number>({
+      query: (advId) => {
+        return {
+          url: `/auction/advertisement/get-similar-ads/?ad_id=${advId}`,
+          method: 'GET'
+        }
+      }
+    }),
     fetchMyOrders: builder.query<LotT[], { type: string; order: string }>({
       query: (arg) => `/auction/advertisement/user-action/?type=${arg.type}&order=${arg.order}`
     }),
@@ -79,6 +87,7 @@ export const userService = createApi({
 })
 
 export const {
+  useFetchSameLotsMutation,
   useFetchTariffsQuery,
   useFetchMyOrdersQuery,
   useFetchLastVisitedMutation,
