@@ -22,6 +22,7 @@ export const LotCatalogPage: FC = () => {
   const subCat = searchParams.get('category')
   const [addToCart, { isSuccess: isSuccessCart, isError: isErrorCart, error }] = useAppendLotInCartMutation()
   const [addManyToCart, { isSuccess: isSuccessCartMany }] = useAppendManyLotsInCartMutation()
+  const [catData, setCatData] = useState<ICategory | undefined>()
 
   function filterObjectByValues(obj: Record<string, any>): Record<string, any> {
     return Object.fromEntries(Object.entries(obj).filter(([_, value]) => String(value).length > 0))
@@ -109,9 +110,17 @@ export const LotCatalogPage: FC = () => {
 
   return (
     <div className="flex-col xl:flex-row flex gap-8 px-4 xl:px-[60px]">
-      <SideBarCatalog categories={categories ?? []} lotsData={catalogData} currentCategory={category} searchParams={searchParams} updateUrl={updateUrl} />
+      <SideBarCatalog
+        catData={catData}
+        setCatData={setCatData}
+        categories={categories ?? []}
+        lotsData={catalogData}
+        currentCategory={category}
+        searchParams={searchParams}
+        updateUrl={updateUrl}
+      />
       <div className="w-full flex-col flex gap-4">
-        <FiltersCatalog data={catalogData} searchParams={searchParams} updateUrl={updateUrl} />
+        <FiltersCatalog catData={catData} setCatData={setCatData} data={catalogData} searchParams={searchParams} updateUrl={updateUrl} />
         <LotsCatalogSchedule lotsData={catalogData.results} addToCart={addToCart} addManyToCart={addManyToCart} />
         {/* {parseInt(searchParams.get('page') as string) > 1 && ( */}
         <div className="w-full flex items-center justify-center mt-6">

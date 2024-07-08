@@ -19,12 +19,20 @@ interface ISideBarCatalog {
   lotsData: CatalogResponseT
   searchParams: URLSearchParams
   updateUrl: (newParams: any) => void
+  catData: ICategory | undefined
+  setCatData: (arg: ICategory | undefined) => void
 }
 
-export const SideBarCatalog: FC<ISideBarCatalog> = ({ categories, currentCategory, lotsData, searchParams, updateUrl }) => {
+export const SideBarCatalog: FC<ISideBarCatalog> = ({ categories, currentCategory, lotsData, searchParams, updateUrl, catData, setCatData }) => {
   const { language } = useAppSelector(selectLangSettings)
   const [getCategoryData, { data: categoryData, isSuccess }] = useGetCategoryMutation()
   const [previousCategory, setPreviousCategory] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (categoryData && isSuccess) {
+      setCatData(categoryData)
+    }
+  }, [isSuccess, categoryData])
 
   useEffect(() => {
     if ((currentCategory && currentCategory !== previousCategory) || (categoryData && !categoryData)) {
@@ -44,8 +52,8 @@ export const SideBarCatalog: FC<ISideBarCatalog> = ({ categories, currentCategor
           defaultOption={language === 'RU' ? 'Выберите раздел' : 'Choose category'}
         />
       </div>
-      {categoryData &&
-        categoryData.children.map((cat, index) => <CatalogCategoriesSelector key={index} category={cat} searchParams={searchParams} updateUrl={updateUrl} />)}
+      {catData &&
+        catData.children.map((cat, index) => <CatalogCategoriesSelector key={index} category={cat} searchParams={searchParams} updateUrl={updateUrl} />)}
       <li className="text-zinc-900 text-2xl font-medium font-['SF Pro Text'] leading-[28.80px] tracking-tight">{language === 'RU' ? 'Фильтр' : 'Filter'}</li>
       <PriceFilter searchParams={searchParams} updateUrl={updateUrl} />
       <ConditionFilter searchParams={searchParams} updateUrl={updateUrl} />
@@ -59,7 +67,8 @@ export const SideBarCatalog: FC<ISideBarCatalog> = ({ categories, currentCategor
         text={language === 'RU' ? 'Сбросить фильтры' : 'Reset filters'}
         className="w-full"
         variant="secondary"
-        onClick={() =>
+        onClick={() => {
+          setCatData(undefined)
           updateUrl({
             ad_type: '',
             price_min: '',
@@ -69,9 +78,10 @@ export const SideBarCatalog: FC<ISideBarCatalog> = ({ categories, currentCategor
             region: '',
             city: '',
             old_price_reduced: '',
-            main_category: ''
+            main_category: '',
+            category: ''
           })
-        }
+        }}
       />
     </ul>
   )

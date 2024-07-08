@@ -1,4 +1,4 @@
-import { FC, useRef, useState } from 'react'
+import { FC, useEffect, useRef, useState } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import type { SwiperRef } from 'swiper/react'
 import { Pagination as PaginatorSwiper } from 'swiper/modules'
@@ -7,13 +7,34 @@ import 'swiper/scss/pagination'
 import { selectLangSettings, useAppSelector } from '../../../store/hooks'
 import { useFetchAdsQuery } from '../../../api/searchService'
 import { Loader } from '../../Loader'
-import { Pagination } from '@mui/material'
+import { Pagination, useMediaQuery } from '@mui/material'
 
 export const SliderAds: FC = () => {
   const { language } = useAppSelector(selectLangSettings)
   const adsListSwiperRef = useRef<SwiperRef>(null)
   const [page, setPage] = useState<number>(1)
-  const { data: adsData, isFetching } = useFetchAdsQuery(`?page=${page}&page_size=4`)
+  const [pageSize, setPageSize] = useState<number>(4)
+  const { data: adsData, isFetching, refetch } = useFetchAdsQuery(`?page=${page}&page_size=${pageSize}`)
+  const laptopDisplay = useMediaQuery('(min-width:1300px)', { noSsr: true })
+  const mediumDisplay = useMediaQuery('(min-width:1024px)', { noSsr: true })
+
+  console.log('laptop?', laptopDisplay)
+
+  useEffect(() => {
+    if (laptopDisplay) {
+      setPageSize(4)
+    } else if (mediumDisplay) {
+      setPageSize(2)
+    } else {
+      setPageSize(1)
+    }
+  }, [laptopDisplay, mediumDisplay])
+
+  useEffect(() => {
+    if (pageSize) {
+      refetch()
+    }
+  }, [pageSize])
 
   const nextElementSwiper = () => {
     if (!adsListSwiperRef.current) return false
@@ -69,7 +90,7 @@ export const SliderAds: FC = () => {
           </Swiper>
         </div>
         <div className="w-full flex items-center justify-center">
-          <Pagination count={Math.ceil(adsData.count / 6)} size="small" page={page} onChange={(event, value) => setPage(value)} />
+          <Pagination count={Math.ceil(adsData.count / pageSize)} size="small" page={page} onChange={(event, value) => setPage(value)} />
         </div>
       </div>
     </div>
