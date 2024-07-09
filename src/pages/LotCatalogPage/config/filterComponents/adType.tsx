@@ -53,7 +53,7 @@ export const AdTypeFilter: FC<IFilter> = ({ searchParams, updateUrl }) => {
             setCheckedBuy(true)
           }}
         />
-        {checkedBuy && (
+        {/* {checkedBuy && (
           <>
             <Checkbox
               label={language === 'RU' ? 'Аукцион' : 'Auction'}
@@ -68,7 +68,7 @@ export const AdTypeFilter: FC<IFilter> = ({ searchParams, updateUrl }) => {
               onChange={() => updateUrl({ is_auction: 'false' })}
             />
           </>
-        )}
+        )} */}
         <Checkbox
           label={language === 'RU' ? 'Все' : 'All'}
           checked={(!checkedBuy && !checkedSell) || !searchParams.get('ad_type')}

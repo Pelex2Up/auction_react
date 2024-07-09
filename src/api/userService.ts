@@ -82,11 +82,15 @@ export const userService = createApi({
     }),
     fetchTariffs: builder.query<ITariff[], void>({
       query: () => '/subscription/tariffs/'
+    }),
+    fetchUserAdvertisements: builder.query<LotT[], string | number>({
+      query: (userId) => `/auction/advertisements/${userId}/by-user/`
     })
   })
 })
 
 export const {
+  useFetchUserAdvertisementsQuery,
   useFetchSameLotsMutation,
   useFetchTariffsQuery,
   useFetchMyOrdersQuery,

@@ -58,16 +58,24 @@ export const EditLotPage: FC = () => {
     }
   ]
 
-  const lotTypeGroup = [
-    {
-      value: 'auction',
-      label: language === 'RU' ? 'Аукцион' : 'Auction'
-    },
-    {
-      value: 'fixPrice',
-      label: language === 'RU' ? 'Фиксированная цена' : 'Fixed price'
-    }
-  ]
+  const lotTypeGroup =
+    typeOption === 'SELL'
+      ? [
+          {
+            value: 'auction',
+            label: language === 'RU' ? 'Аукцион' : 'Auction'
+          },
+          {
+            value: 'fixPrice',
+            label: language === 'RU' ? 'Фиксированная цена' : 'Fixed price'
+          }
+        ]
+      : [
+          {
+            value: 'auction',
+            label: language === 'RU' ? 'Аукцион' : 'Auction'
+          }
+        ]
 
   const countList = [
     { value: 'PIECE', label: language === 'RU' ? 'шт' : 'piece' },
@@ -256,6 +264,9 @@ export const EditLotPage: FC = () => {
   const handleChangeOption = (option: string, event: ChangeEvent<HTMLInputElement>) => {
     if (option === 'type') {
       setTypeOption(event.target.value)
+      if (event.target.value === 'BUY') {
+        setLotTypeOption('auction')
+      }
     } else if (option === 'lotType') {
       setLotTypeOption(event.target.value)
     } else if (option === 'state') {

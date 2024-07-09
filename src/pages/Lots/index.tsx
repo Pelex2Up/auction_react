@@ -11,6 +11,7 @@ import { PathE } from '../../enum'
 import { SameLotsBlock } from '../../components/SimilarAds'
 import FeedBack from '../../components/feedBack'
 import { LastViewedLotsBlock } from '../../components/LastViewedLots'
+import { OtherSellerAdsSlider } from '../../components/OtherSellerAdsSlider'
 
 export const LotPage: FC = () => {
   const navigate = useNavigate()
@@ -88,6 +89,7 @@ export const LotPage: FC = () => {
       <div className="w-full h-full flex flex-col gap-4 xl:px-[60px] px-4">
         <LotDetail lotData={lotData} category={mainCategory} subCategory={subCategory} lowerCat={lowerCat} refetch={fetchLot} />
         <LotDescription lotData={lotData} category={mainCategory} subCategory={subCategory} lowerCat={lowerCat} />
+        <OtherSellerAdsSlider userId={lotData.profile.id} />
         <SameLotsBlock id={lotData.id} />
         <LastViewedLotsBlock />
       </div>

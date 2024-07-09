@@ -11,7 +11,6 @@ import { toast } from 'react-toastify'
 import { selectLangSettings, selectUser, useAppSelector } from '../../../store/hooks'
 import { Tooltip } from '@mui/material'
 import { OldPriceDisplay, PriceDisplay } from '../../PriceDisplay'
-import { useUsdConverter } from '../../../utility/usdConverter'
 
 export type ICard = {
   lot: LotT
