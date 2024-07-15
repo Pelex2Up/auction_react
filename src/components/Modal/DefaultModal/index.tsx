@@ -3,6 +3,7 @@ import { Modal } from './ModalTypes'
 import Portal from '../Portal'
 import { EmptyProfileModal } from '../EmptyProfileModal'
 import { LoginModal } from '../Login'
+import { AdminAssistanceModal } from '../AdminAssistanceModal'
 
 export interface IModal {
   close: () => void
@@ -28,6 +29,8 @@ export const DefaultModal: FC<ModalPropsT> = ({ variant, onClose, onToggle }) =>
         return <LoginModal close={closeModal} selectedState={2} />
       case Modal.EmptyProfile:
         return <EmptyProfileModal close={closeModal} />
+      case Modal.AdminAssistance:
+        return <AdminAssistanceModal close={closeModal} />
     }
   }
 

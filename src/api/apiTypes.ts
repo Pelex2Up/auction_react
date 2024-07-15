@@ -25,3 +25,10 @@ export interface IAds {
   previous: string | null
   results: IAd[]
 }
+
+export interface IFeedBackForm {
+  email: string
+  phone_number: string
+  message: string
+  accept_privacy_policy: boolean
+}

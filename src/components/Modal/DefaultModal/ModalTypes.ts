@@ -3,5 +3,5 @@ export enum Modal {
   Login = 'login',
   Registration = 'registration',
   AdminAssistance = 'adminAssistance',
-  EmptyProfile = 'emptyProfile'
+  EmptyProfile = 'emptyProfile',
 }

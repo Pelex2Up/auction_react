@@ -37,4 +37,5 @@ export interface ICategory {
   products: number[]
   title: string
   children: ICategory[]
+  count_products: number
 }

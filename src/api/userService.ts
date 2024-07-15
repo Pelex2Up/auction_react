@@ -1,7 +1,7 @@
 import { LotT } from '../types/lotTypes'
 import { IProfile, ISubscription, ITariff } from '../types/profile'
 import { formDataConverter } from '../utils/formDataConverter'
-import { CartT } from './apiTypes'
+import { CartT, IFeedBackForm } from './apiTypes'
 import { baseQuery } from './baseApi'
 import { createApi } from '@reduxjs/toolkit/query/react'
 
@@ -85,11 +85,31 @@ export const userService = createApi({
     }),
     fetchUserAdvertisements: builder.query<LotT[], string | number>({
       query: (userId) => `/auction/advertisements/${userId}/by-user/`
+    }),
+    sendFeedBack: builder.mutation<any, FormData>({
+      query: (data) => {
+        return {
+          url: `/message/feedback/`,
+          method: 'POST',
+          body: data
+        }
+      }
+    }),
+    sendAdminMessage: builder.mutation<any, FormData>({
+      query: (data) => {
+        return {
+          url: `/message/admin-mess/`,
+          method: 'POST',
+          body: data
+        }
+      }
     })
   })
 })
 
 export const {
+  useSendAdminMessageMutation,
+  useSendFeedBackMutation,
   useFetchUserAdvertisementsQuery,
   useFetchSameLotsMutation,
   useFetchTariffsQuery,

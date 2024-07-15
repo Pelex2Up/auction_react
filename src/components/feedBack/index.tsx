@@ -5,9 +5,34 @@ import Checkbox from '../common/checkbox'
 import { Button } from '../common/buttons'
 import DefaultLink from '../common/DefaultLink'
 import { selectLangSettings, useAppSelector } from '../../store/hooks'
+import { useSendFeedBackMutation } from '../../api/userService'
+import { FormEvent } from 'react'
+import { toast } from 'react-toastify'
 
 export default function FeedBack() {
   const { language } = useAppSelector(selectLangSettings)
+  const [sendForm, { isSuccess }] = useSendFeedBackMutation()
+
+  const handleForm = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const form = e.target as HTMLFormElement
+    const formdata = new FormData(form)
+    if (formdata) {
+      sendForm(formdata)
+        .unwrap()
+        .then(() => {
+          toast(
+            language === 'RU'
+              ? 'Сообщение успешно отправлено, ожидайте ответа администратора на вашу электронную почту'
+              : 'Mail successfuly delivered, wait answer at your email.',
+            { type: 'success' }
+          )
+          close()
+        })
+        .catch(() => toast(language === 'RU' ? 'Что-то пошло не так' : 'smth went wrong', { type: 'error' }))
+    }
+  }
+
   return (
     <div className="w-full mb-[360px] lg:mb-0 relative">
       <img
@@ -40,14 +65,23 @@ export default function FeedBack() {
           <span className="text-sm leading-[16.8px] font-normal text-[#1D1E22]">
             {language === 'RU' ? 'Отправьте ваш электронный адрес и мы ответим' : 'Send your email and we will respond'}
           </span>
-          <div className="grid lg:grid-cols-2 grid-rows-2 w-full gap-[20px]">
+          <form onSubmit={handleForm} className="grid lg:grid-cols-2 grid-rows-2 w-full gap-[20px]">
             <div className="grid grid-cols-2 w-full gap-[10px]">
-              <Input className="w-full" multiline={false} placeholder={language === 'RU' ? 'Имя' : 'Your Name'} name="name" />
-              <Input className="w-full" multiline={false} placeholder={language === 'RU' ? 'Электронная почта' : 'Email'} name="email" />
-              <Input multiline rows={2} placeholder={language === 'RU' ? 'Сообщение' : 'Message'} className="col-span-2" name="message" aria-multiline />
+              <Input className="w-full" required multiline={false} placeholder={language === 'RU' ? 'Имя' : 'Your Name'} name="name" />
+              <Input className="w-full" required multiline={false} placeholder={language === 'RU' ? 'Электронная почта' : 'Email'} name="email" />
+              <Input
+                multiline
+                rows={2}
+                required
+                placeholder={language === 'RU' ? 'Сообщение' : 'Message'}
+                className="col-span-2"
+                name="message"
+                aria-multiline
+              />
             </div>
             <div className="flex flex-col gap-[20px]">
               <Checkbox
+                required
                 label={
                   <p className="max-w-[230px] text-sm text-[#808080] font-normal">
                     {language === 'RU' ? `Я принимаю условия` : 'I accept'}{' '}
@@ -57,9 +91,9 @@ export default function FeedBack() {
                   </p>
                 }
               />
-              <Button variant="primary" text={language === 'RU' ? 'Отправить' : 'Send message'} />
+              <Button type="submit" variant="primary" text={language === 'RU' ? 'Отправить' : 'Send message'} />
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </div>

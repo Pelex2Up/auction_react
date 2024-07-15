@@ -22,7 +22,7 @@ export const AdsPage: FC = () => {
       <div className="lg:px-[60px] px-4 flex-col gap-6">
         <h1 className="text-zinc-900 text-2xl font-medium font-['SF Pro Text'] leading-[28.80px]">Реклама</h1>
         {adsData.results && adsData.results.length > 0 ? (
-          <div className="w-full flex-col flex gap-4">
+          <div className="w-full flex-col flex gap-[60px]">
             <div className="w-full flex flex-row flex-wrap gap-4 justify-center">
               {adsData.results.map((el, index) => (
                 <AdItem key={index} ad={el} />

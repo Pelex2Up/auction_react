@@ -34,7 +34,7 @@ export const CatalogCategoriesSelector: FC<IPicker> = ({ category, searchParams,
         <p
           className="text-base font-medium font-['SF Pro Text'] leading-tight tracking-tight cursor-pointer"
           onClick={() => updateUrl({ category: category.id })}
-        >{`${category.title} (${category.products.length})`}</p>
+        >{`${category.title} (${category.count_products})`}</p>
         {category.children.length > 0 && (
           <span className={`transition-all duration-100 cursor-pointer ${open ? 'rotate-180' : ''}`} onClick={() => setOpen(!open)}>
             <ArrowDown />

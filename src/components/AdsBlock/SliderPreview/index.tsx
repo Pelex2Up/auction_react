@@ -76,9 +76,10 @@ export const SliderAds: FC = () => {
           >
             {!isFetching ? (
               adsData.results.map((el, index) => (
-                <SwiperSlide className="flex justify-center" key={el.id}>
-                  <a className="w-[312px] h-[418px] hover:scale-105 rounded shadow" href={el.url} target="_blank" rel="noreferrer">
-                    <img className="w-[312px] h-[418px] rounded hover:scale-105 transition-all duration-200 shadow" src={el.image} alt={el.title} />
+                <SwiperSlide key={el.id}>
+                  <a className="w-full" href={el.url} target="_blank" rel="noreferrer">
+                    <img style={{objectFit: 'contain'}} className="w-[424px] max-h-[266px] rounded object-contain hover:scale-105 transition-all duration-200" src={el.image} alt={el.title} />
+                    {/* <img className="w-[312px] h-[418px] rounded hover:scale-105 transition-all duration-200 shadow" src={el.image} alt={el.title} /> */}
                   </a>
                 </SwiperSlide>
               ))
