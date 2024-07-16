@@ -38,13 +38,13 @@ export const EditLotPage: FC = () => {
   const [typeOption, setTypeOption] = useState<string>('')
   const [lotTypeOption, setLotTypeOption] = useState<string>('')
   const [productState, setProductState] = useState<string>('')
-  const [category, setCategory] = useState<string>('')
+  const [category, setCategory] = useState<ICategory>()
   const [subCategoriesList, setSubCategoriesList] = useState<ICategory[]>([])
-  const [subCategory, setSubCategory] = useState<string>('')
+  const [subCategory, setSubCategory] = useState<ICategory>()
   const [imagesCount, setImagesCount] = useState<number>(0)
   const [lotPhotos, setLotPhotos] = useState<LotImageT[]>()
   const [lowerCatList, setLowerCatList] = useState<ICategory[]>()
-  const [lowerCat, setLowerCat] = useState<string>('')
+  const [lowerCat, setLowerCat] = useState<ICategory>()
   const [getCatData] = useGetCategoryMutation()
 
   const typeGroup = [
@@ -153,11 +153,25 @@ export const EditLotPage: FC = () => {
 
   useEffect(() => {
     if (subCategory) {
-      getCatData(subCategory)
+      setLowerCatList(subCategory.children)
+      getCatData(subCategory.parent)
         .unwrap()
-        .then((data) => setLowerCatList(data.children))
+        .then((data: ICategory) => {
+          setCategory(data)
+          setSubCategoriesList(data.children)
+        })
     }
   }, [getCatData, subCategory])
+
+  useEffect(() => {
+    if (lowerCat) {
+      getCatData(lowerCat.parent)
+        .unwrap()
+        .then((data: ICategory) => {
+          setSubCategory(data)
+        })
+    }
+  }, [getCatData, lowerCat])
 
   useEffect(() => {
     if (lotData && lotPhotos && lotPhotos.length < 6) {
@@ -165,38 +179,58 @@ export const EditLotPage: FC = () => {
     }
   }, [fillMissingOrders, lotData, lotPhotos])
 
+  // useEffect(() => {
+  //   if (categories && categories.length > 0) {
+  //     if (category) {
+  //       const currentCategory = categories.find((cat) => cat.id === category.id || cat.title === category.title)
+  //       if (currentCategory?.children && currentCategory.children.length > 0) {
+  //         setSubCategoriesList(currentCategory.children)
+  //       } else {
+  //         setSubCategoriesList([])
+  //         setSubCategory(undefined)
+  //         setLowerCat(undefined)
+  //       }
+  //     } else if (lotData && categories) {
+  //       const cat = categories.find((cat) => cat.id === lotData.category)
+  //       if (cat) {
+  //         setCategory(cat)
+  //         setSubCategoriesList(cat.children || [])
+  //       } else {
+  //         const subCat = categories.find((cat) => cat.children.some((subCat) => subCat.id === lotData.category))
+  //         if (subCat) {
+  //           setCategory(cat)
+  //           const selectedSubCategory = subCat.children?.find(
+  //             (sc) => sc.id === lotData.category || sc.title === subCategory?.title || sc.id === subCategory?.id
+  //           )
+  //           if (selectedSubCategory) {
+  //             setSubCategory(selectedSubCategory)
+  //           }
+  //         } else {
+  //           setSubCategory(undefined)
+  //           setLowerCat(undefined)
+  //         }
+  //       }
+  //     }
+  //   }
+  // }, [categories, category, lotData, setCategory, setSubCategory, subCategory])
+
   useEffect(() => {
-    if (categories && categories.length > 0) {
-      if (category) {
-        const currentCategory = categories.find((cat) => String(cat.id) === category || cat.title === category)
-        if (currentCategory?.children && currentCategory.children.length > 0) {
-          setSubCategoriesList(currentCategory.children)
-        } else {
-          setSubCategoriesList([])
-          setSubCategory('')
-          setLowerCat('')
-        }
-      } else if (lotData && categories) {
-        const cat = categories.find((cat) => cat.id === lotData.category)
-        if (cat) {
-          setCategory(cat.title)
-          setSubCategoriesList(cat.children || [])
-        } else {
-          const subCat = categories.find((cat) => cat.children.some((subCat) => subCat.id === lotData.category))
-          if (subCat) {
-            setCategory(String(subCat.id))
-            const selectedSubCategory = subCat.children?.find((sc) => sc.id === lotData.category || sc.title === subCategory || String(sc.id) === subCategory)
-            if (selectedSubCategory) {
-              setSubCategory(String(selectedSubCategory?.title))
-            }
-          } else {
-            setSubCategory('')
-            setLowerCat('')
+    if (lotData) {
+      getCatData(lotData.category)
+        .unwrap()
+        .then((data: ICategory) => {
+          if (data.parent === null) {
+            setCategory(data)
+            setSubCategoriesList(data.children)
+          } else if (data.level === 1) {
+            setSubCategory(data)
+            setLowerCatList(data.children)
+          } else if (data.level === 2) {
+            setLowerCat(data)
           }
-        }
-      }
+        })
     }
-  }, [categories, category, lotData, setCategory, setSubCategory, subCategory])
+  }, [lotData])
 
   useEffect(() => {
     if (lotPhotos) {
@@ -287,15 +321,15 @@ export const EditLotPage: FC = () => {
       if (typeOption !== lotPureData.ad_type) {
         formdata.append('ad_type', typeOption)
       }
-      if (lowerCat && lowerCat.length > 0) {
-        const cat = lowerCatList?.find((cat) => cat.title === lowerCat || String(cat.id) === lowerCat)
+      if (lowerCat && lowerCat.title.length > 0) {
+        const cat = lowerCatList?.find((cat) => cat.title === lowerCat.title || cat.id === lowerCat.id)
         formdata.append('category', String(cat?.id))
-      } else if (subCategory && subCategory.length > 0) {
-        const subCat = categories?.find((cat) => cat.children.find((subCat) => String(subCat.id) === subCategory || subCat.title === subCategory))
-        const selectedSubCategory = subCat?.children?.find((sc) => String(sc.id) === subCategory || sc.title === subCategory)
+      } else if (subCategory && subCategory.title.length > 0) {
+        const subCat = categories?.find((cat) => cat.children.find((subCat) => subCat.id === subCategory.id || subCat.title === subCategory.title))
+        const selectedSubCategory = subCat?.children?.find((sc) => sc.id === subCategory.id || sc.title === subCategory.title)
         formdata.append('category', String(selectedSubCategory?.id))
       } else {
-        const cat = categories?.find((cat) => cat.title === category || String(cat.id) === category)
+        const cat = categories?.find((cat) => cat.title === category?.title || cat.id === category?.id)
         formdata.append('category', String(cat?.id))
       }
       if (lotTypeOption !== 'auction' && lotPureData.is_auction) {
@@ -457,13 +491,18 @@ export const EditLotPage: FC = () => {
             </div>
             <SelectInput
               optionsList={categories || []}
-              selectedOption={category}
-              setSelectedValue={(event) => setCategory(event as string)}
-              defaultOption={category || language === 'RU' ? 'Выберите категорию' : 'Select category'}
+              selectedOption={category ? category?.title : ''}
+              setSelectedValue={(event) => {
+                setCategory(event as ICategory)
+                setSubCategoriesList(event.children as ICategory[])
+                setSubCategory(undefined)
+                setLowerCat(undefined)
+              }}
+              defaultOption={category ? category.title : language === 'RU' ? 'Выберите категорию' : 'Select category'}
             />
           </div>
         </li>
-        {subCategoriesList && subCategoriesList.length > 0 && (
+        {category && subCategoriesList && subCategoriesList.length > 0 && (
           <li className="w-full h-auto justify-center items-center inline-flex">
             <div className="w-full h-full relative flex-col justify-start items-start flex gap-2">
               <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
@@ -472,14 +511,18 @@ export const EditLotPage: FC = () => {
               </div>
               <SelectInput
                 optionsList={subCategoriesList || []}
-                setSelectedValue={(event) => setSubCategory(event as string)}
-                selectedOption={subCategory}
-                defaultOption={subCategory.length > 0 ? subCategory : language === 'RU' ? 'Выберите подкатегорию' : 'Select subcategory'}
+                setSelectedValue={(event) => {
+                  setSubCategory(event as ICategory)
+                  setLowerCatList(event.children as ICategory[])
+                  setLowerCat(undefined)
+                }}
+                selectedOption={subCategory ? subCategory?.title : ''}
+                defaultOption={subCategory ? subCategory.title : language === 'RU' ? 'Выберите подкатегорию' : 'Select subcategory'}
               />
             </div>
           </li>
         )}
-        {lowerCatList && lowerCatList.length > 0 && (
+        {subCategory && lowerCatList && lowerCatList.length > 0 && (
           <li className="w-full h-auto justify-center items-center inline-flex">
             <div className="w-full h-full relative flex-col justify-start items-start flex gap-2">
               <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
@@ -488,9 +531,9 @@ export const EditLotPage: FC = () => {
               </div>
               <SelectInput
                 optionsList={lowerCatList || []}
-                setSelectedValue={(event) => setLowerCat(event as string)}
-                selectedOption={lowerCat}
-                defaultOption={lowerCat.length > 0 ? lowerCat : language === 'RU' ? 'Выберите подкатегорию' : 'Select subcategory'}
+                setSelectedValue={(event) => setLowerCat(event as ICategory)}
+                selectedOption={lowerCat ? lowerCat?.title : ''}
+                defaultOption={lowerCat ? lowerCat.title : language === 'RU' ? 'Выберите подкатегорию' : 'Select subcategory'}
               />
             </div>
           </li>

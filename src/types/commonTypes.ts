@@ -38,4 +38,5 @@ export interface ICategory {
   title: string
   children: ICategory[]
   count_products: number
+  level: number
 }

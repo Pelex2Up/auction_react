@@ -14,7 +14,7 @@ export type SelectInputPropsT = {
   optionsList: DefaultOptions[]
   selectedOption?: string
   defaultOption?: string
-  setSelectedValue?: (value: string) => void
+  setSelectedValue?: (value: any) => void
 }
 
 export const SelectInput: FC<SelectInputPropsT> = ({ optionsList, selectedOption, defaultOption = 'выбрать', setSelectedValue }) => {
@@ -39,7 +39,13 @@ export const SelectInput: FC<SelectInputPropsT> = ({ optionsList, selectedOption
     toggleOptions()
     setSelectedIndex(index)
     setIsOptionsOpen(false)
-    setSelectedValue?.(typeof optionsList[index].id !== 'number' ? String(optionsList[index].value) : String(optionsList[index].id))
+    if (setSelectedValue) {
+      if ('value' in optionsList[index] && optionsList[index].value) {
+        setSelectedValue(typeof optionsList[index].id !== 'number' ? String(optionsList[index].value) : String(optionsList[index].id))
+      } else {
+        setSelectedValue(optionsList[index])
+      }
+    }
   }
 
   return (

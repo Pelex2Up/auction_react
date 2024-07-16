@@ -28,6 +28,7 @@ export const AdminAssistanceModal: FC<IModal> = ({ close }) => {
     e.preventDefault()
     const form = e.target as HTMLFormElement
     const formdata = new FormData(form)
+    formdata.append('accept_privacy_policy', 'true')
     if (formdata) {
       sendMessage(formdata)
         .unwrap()
