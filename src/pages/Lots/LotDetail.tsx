@@ -171,7 +171,9 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
                             type="number"
                             value={
                               lotData.auction_current_price
-                                ? Number(lotData.auction_current_price.split('.')[0]) + Number(lotData.step_bid.split('.')[0])
+                                ? lotData.ad_type === 'BUY'
+                                  ? Number(lotData.auction_current_price.split('.')[0]) - Number(lotData.step_bid.split('.')[0])
+                                  : Number(lotData.auction_current_price.split('.')[0]) + Number(lotData.step_bid.split('.')[0])
                                 : Number(lotData.price.split('.')[0]) + Number(lotData.step_bid.split('.')[0])
                             }
                           />
@@ -202,7 +204,9 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
                     <div className="w-[167px] text-zinc-500 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">
                       {language === 'RU' ? 'Мин.ставка:' : 'Min bid:'}{' '}
                       {lotData.auction_current_price
-                        ? Number(lotData.auction_current_price.split('.')[0]) + Number(lotData.step_bid.split('.')[0])
+                        ? lotData.ad_type === 'BUY'
+                          ? Number(lotData.auction_current_price.split('.')[0]) - Number(lotData.step_bid.split('.')[0])
+                          : Number(lotData.auction_current_price.split('.')[0]) + Number(lotData.step_bid.split('.')[0])
                         : Number(lotData.price.split('.')[0]) + Number(lotData.step_bid.split('.')[0])}{' '}
                       BYN, <br />
                       {language === 'RU' ? 'шаг ставки:' : 'step bid:'} {lotData.step_bid.split('.')[0]} BYN
@@ -319,7 +323,7 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
                   className="w-full"
                   variant={
                     lotData.profile.id !== user?.profile.id
-                      ? lotData.last_bid && lotData.last_bid.user !== user?.profile.id
+                      ? (lotData.last_bid && lotData.last_bid.user !== user?.profile.id) || !lotData.last_bid
                         ? 'primary'
                         : 'disabled'
                       : 'disabled'
@@ -347,7 +351,7 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
                 lotData.last_bid &&
                 lotData.last_bid.user === user?.profile.id && (
                   <div className="w-full flex-col justify-start items-center gap-[18px] inline-flex z-[2]">
-                    <div className="w-full lg:w-[422px] h-[0px] border border-zinc-300"/>
+                    <div className="w-full lg:w-[422px] h-[0px] border border-zinc-300" />
                     <div className="lg:w-[358px] w-full">
                       <span className="text-zinc-500 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">
                         {language === 'RU'

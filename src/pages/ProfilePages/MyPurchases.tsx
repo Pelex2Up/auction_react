@@ -37,7 +37,7 @@ export const MyPurchasesPage: FC = () => {
   }
   return (
     <div className="flex flex-col gap-4 w-full items-center justify-center">
-      <div className="w-full lg:h-[60px] h-auto flex lg:flex-row flex-col items-center justify-center lg:justify-between bg-stone-50 shadow-xl px-4 lg:py-0 py-2 lg:gap-0 gap-6">
+      <div className="w-full lg:h-[60px] h-auto flex lg:flex-row flex-col items-center justify-start lg:justify-start bg-stone-50 shadow-xl px-4 lg:py-0 py-2 lg:gap-0 gap-6">
         <div className="h-full justify-start items-center lg:gap-[37px] gap-4 inline-flex lg:flex-row flex-col">
           <div className="text-green-800 text-base font-medium font-['SF Pro Text'] leading-tight tracking-tight">
             {language === 'RU' ? 'Сортировать по' : 'Sort by'}
