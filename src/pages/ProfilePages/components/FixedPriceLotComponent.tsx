@@ -63,17 +63,19 @@ export const FixedPriceLotComponent: FC<ILotComp> = ({ lot, deleteLot, isDeletin
             } ${lot.profile.name}`}</div>
           </div>
         )}
-        <div className="w-32 h-10 ml-2 mt-2 flex-col justify-start items-start gap-1.5 inline-flex">
-          <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
-            {language == 'RU' ? 'Аукцион до:' : 'Auction until:'}
-          </div>
-          <div className="flex-col justify-start items-start gap-1.5 flex">
-            <div className="justify-start items-start gap-1.5 inline-flex">
-              <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">{endDate.toLocaleDateString()}</div>
-              <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">{endDate.toLocaleTimeString()}</div>
+        {lot.is_auction && (
+          <div className="w-32 h-10 ml-2 mt-2 flex-col justify-start items-start gap-1.5 inline-flex">
+            <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
+              {language == 'RU' ? 'Аукцион до:' : 'Auction until:'}
+            </div>
+            <div className="flex-col justify-start items-start gap-1.5 flex">
+              <div className="justify-start items-start gap-1.5 inline-flex">
+                <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">{endDate.toLocaleDateString()}</div>
+                <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">{endDate.toLocaleTimeString()}</div>
+              </div>
             </div>
           </div>
-        </div>
+        )}
         <div className="p-2 left-0 top-[10px] absolute bg-white rounded-tr rounded-br justify-start items-center gap-2.5 inline-flex">
           <div className="text-green-800 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">
             {lot.is_auction ? (language === 'RU' ? 'Аукцион' : 'Auction') : language === 'RU' ? 'Фиксированная цена' : 'Fixed price'}
