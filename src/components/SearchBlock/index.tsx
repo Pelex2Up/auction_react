@@ -168,7 +168,7 @@ export const SearchBlock: FC = () => {
           ))}
         </div>
         <div className="w-full h-[472px] gap-5 shadow-md px-6 py-8 flex flex-row relative lg:overflow-hidden overflow-x-scroll overflow-y-hidden scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
-          <div className="flex-col min-w-[138px] w-[138px] justify-start items-start gap-6 inline-flex overflow-y-scroll scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
+          <div className="flex-col min-w-[138px] w-[138px] justify-start items-start gap-4 inline-flex overflow-y-scroll scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
             {buyData &&
               buyData.map((category, index: number) => (
                 <button className="w-[138px] justify-start items-center gap-2 inline-flex" onClick={() => setSelectedBuyCategory(category)} key={index}>
