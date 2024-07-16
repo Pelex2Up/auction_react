@@ -75,14 +75,14 @@ export const CreateLotPage: FC = () => {
   const [sendForm, { isLoading }] = useCreateLotMutation()
   // const [sendPhoto] = useSendPhotoMutation()
   const [createdSuccessfuly, setCreatedSuccessfuly] = useState<boolean>(false)
-  const [category, setCategory] = useState<string>('')
+  const [category, setCategory] = useState<ICategory>()
   const [city, setCity] = useState<string>('')
   const [subCategoriesList, setSubCategoriesList] = useState<ICategory[]>([])
-  const [subCategory, setSubCategory] = useState<string>('')
+  const [subCategory, setSubCategory] = useState<ICategory>()
   const [region, setRegion] = useState<string>('')
   const [unit, setUnit] = useState<string>('PIECE')
   const [lowerCatList, setLowerCatList] = useState<ICategory[]>()
-  const [lowerCat, setLowerCat] = useState<string>('')
+  const [lowerCat, setLowerCat] = useState<ICategory>()
   const [getCatData] = useGetCategoryMutation()
 
   const typeGroup = [
@@ -180,22 +180,20 @@ export const CreateLotPage: FC = () => {
 
   useEffect(() => {
     if (subCategory) {
-      getCatData(subCategory)
-        .unwrap()
-        .then((data) => setLowerCatList(data.children))
+      setSubCategoriesList(subCategory.children)
     }
   }, [getCatData, subCategory])
 
   useEffect(() => {
     if (categories && categories.length > 0) {
       if (category) {
-        const currentCategory = categories.find((cat) => String(cat.id) === category || cat.title === category)
+        const currentCategory = categories.find((cat) => cat.id === category.id || cat.title === category.title)
         if (currentCategory?.children && currentCategory.children.length > 0) {
           setSubCategoriesList(currentCategory.children)
         } else {
           setSubCategoriesList([])
-          setSubCategory('')
-          setLowerCat('')
+          setSubCategory(undefined)
+          setLowerCat(undefined)
         }
       }
     }
@@ -275,15 +273,15 @@ export const CreateLotPage: FC = () => {
       formdata.append('region', region)
       formdata.append('username', username)
       formdata.append('unit', unit)
-      if (lowerCat && lowerCat.length > 0) {
-        const cat = lowerCatList?.find((cat) => cat.title === lowerCat || String(cat.id) === lowerCat)
+      if (lowerCat && lowerCat.title.length > 0) {
+        const cat = lowerCatList?.find((cat) => cat.title === lowerCat.title || cat.id === lowerCat.id)
         formdata.append('category', String(cat?.id))
-      } else if (subCategory && subCategory.length > 0) {
-        const subCat = categories?.find((cat) => cat.children.find((subCat) => String(subCat.id) === subCategory || subCat.title === subCategory))
-        const selectedSubCategory = subCat?.children?.find((sc) => String(sc.id) === subCategory || sc.title === subCategory)
+      } else if (subCategory && subCategory.title.length > 0) {
+        const subCat = categories?.find((cat) => cat.children.find((subCat) => subCat.id === subCategory.id || subCat.title === subCategory.title))
+        const selectedSubCategory = subCat?.children?.find((sc) => sc.id === subCategory.id || sc.title === subCategory.title)
         formdata.append('category', String(selectedSubCategory?.id))
       } else {
-        const cat = categories?.find((cat) => cat.title === category || String(cat.id) === category)
+        const cat = categories?.find((cat) => cat.title === category.title || cat.id === category.id)
         formdata.append('category', String(cat?.id))
       }
       photoList.map((photo) => photo.image !== null && formdata.append('photos_input', photo.image))
@@ -385,16 +383,18 @@ export const CreateLotPage: FC = () => {
             </div>
             <SelectInput
               optionsList={categories || []}
+              selectedOption={category ? category?.title : ''}
               setSelectedValue={(event) => {
-                setCategory(event as string)
-                setSubCategory('')
-                setLowerCat('')
+                setCategory(event as ICategory)
+                setSubCategoriesList(event.children as ICategory[])
+                setSubCategory(undefined)
+                setLowerCat(undefined)
               }}
-              defaultOption={language === 'RU' ? 'Выберите категорию' : 'Select category'}
+              defaultOption={category ? category.title : language === 'RU' ? 'Выберите категорию' : 'Select category'}
             />
           </div>
         </li>
-        {subCategoriesList && subCategoriesList.length > 0 && (
+        {category && subCategoriesList && subCategoriesList.length > 0 && (
           <li className="w-full h-auto justify-center items-center inline-flex">
             <div className="w-full h-full relative flex-col justify-start items-start flex gap-2">
               <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
@@ -404,16 +404,17 @@ export const CreateLotPage: FC = () => {
               <SelectInput
                 optionsList={subCategoriesList || []}
                 setSelectedValue={(event) => {
-                  setSubCategory(event as string)
-                  setLowerCat('')
+                  setSubCategory(event as ICategory)
+                  setLowerCatList(event.children as ICategory[])
+                  setLowerCat(undefined)
                 }}
-                selectedOption={subCategory}
-                defaultOption={subCategory.length > 0 ? subCategory : language === 'RU' ? 'Выберите подкатегорию' : 'Select subcategory'}
+                selectedOption={subCategory ? subCategory?.title : ''}
+                defaultOption={subCategory ? subCategory.title : language === 'RU' ? 'Выберите подкатегорию' : 'Select subcategory'}
               />
             </div>
           </li>
         )}
-        {lowerCatList && lowerCatList.length > 0 && (
+        {subCategory && lowerCatList && lowerCatList.length > 0 && (
           <li className="w-full h-auto justify-center items-center inline-flex">
             <div className="w-full h-full relative flex-col justify-start items-start flex gap-2">
               <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
@@ -422,9 +423,9 @@ export const CreateLotPage: FC = () => {
               </div>
               <SelectInput
                 optionsList={lowerCatList || []}
-                setSelectedValue={(event) => setLowerCat(event as string)}
-                selectedOption={lowerCat}
-                defaultOption={lowerCat.length > 0 ? lowerCat : language === 'RU' ? 'Выберите подкатегорию' : 'Select subcategory'}
+                setSelectedValue={(event) => setLowerCat(event as ICategory)}
+                selectedOption={lowerCat ? lowerCat?.title : ''}
+                defaultOption={lowerCat ? lowerCat.title : language === 'RU' ? 'Выберите подкатегорию' : 'Select subcategory'}
               />
             </div>
           </li>
@@ -594,6 +595,7 @@ export const CreateLotPage: FC = () => {
             </div>
             <SelectInput
               optionsList={oblastList}
+              selectedOption={region ? region : ''}
               setSelectedValue={(event) => setRegion(event as string)}
               defaultOption={language === 'RU' ? 'Не выбрано' : 'Not selected'}
             />
