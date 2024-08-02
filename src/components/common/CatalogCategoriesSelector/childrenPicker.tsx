@@ -18,7 +18,9 @@ export const ChildrenCatalogCategoriesSelector: FC<IPicker> = ({ category, searc
         <p
           className={`text-sm ${Number(categoryId) === category.id ? 'text-green-700' : 'text-zinc-500'} font-normal leading-tight tracking-tight`}
           onClick={() => updateUrl({ category: category.id })}
-        >{`${category.title} (${category.count_products})`}</p>
+        >
+          {category.title}
+        </p>
         {category.children.length > 0 && (
           <span className={`transition-all duration-100 ${open ? 'rotate-180' : ''}`} onClick={() => setOpen(!open)}>
             <ArrowDown />

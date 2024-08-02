@@ -12,6 +12,7 @@ import styles from './filterComponents/componentsStyles.module.scss'
 import { useGetCategoryMutation } from '../../../api/lotService'
 import { SelectInputFilters } from '../../../components/common/SelectInputFilters/SelectInput'
 import { selectLangSettings, useAppSelector } from '../../../store/hooks'
+import { Loader } from '../../../components/Loader'
 
 interface ISideBarCatalog {
   categories: ICategory[]
@@ -25,7 +26,7 @@ interface ISideBarCatalog {
 
 export const SideBarCatalog: FC<ISideBarCatalog> = ({ categories, currentCategory, lotsData, searchParams, updateUrl, catData, setCatData }) => {
   const { language } = useAppSelector(selectLangSettings)
-  const [getCategoryData, { data: categoryData, isSuccess }] = useGetCategoryMutation()
+  const [getCategoryData, { data: categoryData, isSuccess, isLoading, isError }] = useGetCategoryMutation()
   const [previousCategory, setPreviousCategory] = useState<string | null>(null)
 
   useEffect(() => {
@@ -42,7 +43,8 @@ export const SideBarCatalog: FC<ISideBarCatalog> = ({ categories, currentCategor
   }, [isSuccess, currentCategory, previousCategory, getCategoryData])
 
   return (
-    <ul className="w-full h-full xl:min-w-[312px] xl:w-[312px] xl:h-min flex flex-col gap-4 px-6 py-8 bg-[#F6F6F6] shadow-xl">
+    <ul className="w-full h-full xl:min-w-[312px] xl:w-[312px] xl:h-min flex flex-col gap-4 px-6 py-8 bg-[#F6F6F6] shadow-xl relative">
+      {(isLoading || isError) && <div className="absolute flex w-full h-full items-center justify-center inset-0 backdrop-blur-sm z-50" />}
       <div className="w-full h-full">
         <SelectInputFilters
           className={styles.selectInputWrapper}

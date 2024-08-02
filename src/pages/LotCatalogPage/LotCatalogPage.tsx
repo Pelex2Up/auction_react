@@ -14,7 +14,7 @@ import { ICategory } from '../../types/commonTypes'
 
 export const LotCatalogPage: FC = () => {
   const location = useLocation()
-  const { data: categories, isFetching } = useFetchCategoriesQuery()
+  const { data: categories, isFetching, isError: errorCategories } = useFetchCategoriesQuery()
   const [searchParams, setSearchParams] = useSearchParams(location.search)
   const [getPageData, { data, isSuccess, isLoading, isError }] = useSearchAdvertisementMutation()
   const [catalogData, setCatalogData] = useState<CatalogResponseT>()
@@ -100,7 +100,7 @@ export const LotCatalogPage: FC = () => {
     [getPageData]
   )
 
-  if (!catalogData || isFetching || isError) {
+  if (!catalogData || isFetching || isError || errorCategories) {
     return (
       <div className="w-full h-full flex items-center justify-center">
         <Loader />

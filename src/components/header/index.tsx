@@ -227,9 +227,7 @@ export default function Header() {
               </Tooltip>
               <LangChangeBlock />
             </div>
-            <div className={`${open ? 'flex' : 'hidden'} absolute top-[120%] w-full py-8 px-4 bg-white shadow-md z-20 rounded`}>
-              <SearchBlock />
-            </div>
+            <div className={`${open ? 'flex' : 'hidden'} absolute top-[120%] w-full py-8 px-4 bg-white shadow-md z-20 rounded`}>{open && <SearchBlock />}</div>
           </div>
         </div>
         {show && (

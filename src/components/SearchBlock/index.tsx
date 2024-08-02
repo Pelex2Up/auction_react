@@ -6,6 +6,7 @@ import { useGetSearchBlockDataQuery, useSearchInputDataMutation } from '../../ap
 import { ICategory } from '../../types/commonTypes'
 import { GreenArrowRight } from '../../assets/svg/arrowRight'
 import { useDebounceFunc } from '../../utils/useDebounceFunc'
+import { Loader } from '../Loader'
 
 export const SearchBlock: FC = () => {
   const [currentBuyLetter, setCurrentBuyLetter] = useState<string>()
@@ -17,8 +18,8 @@ export const SearchBlock: FC = () => {
   const { language } = useAppSelector(selectLangSettings)
   const alphabetRu = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя'.split('')
 
-  const { data: sellData, refetch: refetchSell, isSuccess: successSell } = useGetSearchBlockDataQuery(currentSellLetter)
-  const { data: buyData, refetch: refetchBuy, isSuccess: successBuy } = useGetSearchBlockDataQuery(currentBuyLetter)
+  const { data: sellData, refetch: refetchSell, isSuccess: successSell, isFetching: fetchingSell } = useGetSearchBlockDataQuery(currentSellLetter)
+  const { data: buyData, refetch: refetchBuy, isSuccess: successBuy, isFetching: fetchingBuy } = useGetSearchBlockDataQuery(currentBuyLetter)
 
   const [searchBuyTerm, setSearchBuyTerm] = useState<string>('')
   const [sendBuySearch, { data: searchBuyData, isLoading: loadingBuy }] = useSearchInputDataMutation()
@@ -42,6 +43,7 @@ export const SearchBlock: FC = () => {
 
   const handleBuyLetter = (letter: string) => {
     setCurrentBuyLetter(letter)
+    setSelectedBuyCategory(undefined)
   }
 
   const handleSellLetter = (letter: string) => {
@@ -107,7 +109,15 @@ export const SearchBlock: FC = () => {
           className="w-full h-[472px] gap-12 shadow-md px-6 py-8 flex flex-row relative lg:overflow-hidden overflow-x-scroll overflow-y-hidden scrollbar-hide"
           style={{ scrollbarWidth: 'none' }}
         >
-          <div className="flex-col justify-start items-start min-w-[138px] gap-4 w-[138px] inline-flex overflow-y-scroll scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
+          {fetchingSell && (
+            <div className="absolute flex w-full h-full items-center justify-center inset-0 backdrop-blur-md">
+              <Loader />
+            </div>
+          )}
+          <div
+            className="flex-col justify-start items-start min-w-[138px] gap-4 w-[138px] inline-flex overflow-y-scroll scrollbar-hide"
+            style={{ scrollbarWidth: 'none' }}
+          >
             {sellData &&
               sellData.map((category, index: number) => (
                 <button className="w-[138px] justify-start items-center gap-2 inline-flex" onClick={() => setSelectedSellCategory(category)} key={index}>
@@ -161,14 +171,25 @@ export const SearchBlock: FC = () => {
                 currentBuyLetter === el ? 'text-green-700' : 'text-zinc-900'
               } text-base font-medium font-['SF Pro Text'] leading-tight tracking-tight cursor-pointer`}
               key={index}
-              onClick={() => handleBuyLetter(el)}
+              onClick={() => (currentBuyLetter !== el ? handleBuyLetter(el) : handleBuyLetter(''))}
             >
               {el}
             </span>
           ))}
         </div>
-        <div className="w-full h-[472px] gap-5 shadow-md px-6 py-8 flex flex-row relative lg:overflow-hidden overflow-x-scroll overflow-y-hidden scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
-          <div className="flex-col min-w-[138px] w-[138px] justify-start items-start gap-4 inline-flex overflow-y-scroll scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
+        <div
+          className="w-full h-[472px] gap-5 shadow-md px-6 py-8 flex flex-row relative lg:overflow-hidden overflow-x-scroll overflow-y-hidden scrollbar-hide"
+          style={{ scrollbarWidth: 'none' }}
+        >
+          {fetchingBuy && (
+            <div className="absolute flex w-full h-full items-center justify-center inset-0 backdrop-blur-md">
+              <Loader />
+            </div>
+          )}
+          <div
+            className="flex-col min-w-[138px] w-[138px] justify-start items-start gap-4 inline-flex overflow-y-scroll scrollbar-hide"
+            style={{ scrollbarWidth: 'none' }}
+          >
             {buyData &&
               buyData.map((category, index: number) => (
                 <button className="w-[138px] justify-start items-center gap-2 inline-flex" onClick={() => setSelectedBuyCategory(category)} key={index}>
@@ -191,7 +212,10 @@ export const SearchBlock: FC = () => {
                 </button>
               ))}
           </div>
-          <div className="w-full lg:w-[420px] justify-start h-full overflow-y-auto scrollbar-hide flex-wrap items-start gap-2 flex-row inline-flex" style={{ scrollbarWidth: 'none' }}>
+          <div
+            className="w-full lg:w-[420px] justify-start h-full overflow-y-auto scrollbar-hide flex-wrap items-start gap-2 flex-row inline-flex"
+            style={{ scrollbarWidth: 'none' }}
+          >
             {selectedBuyCategory && selectedBuyCategory.children.length > 0 ? (
               selectedBuyCategory.children.map((subCat) => (
                 <div className="flex-col w-[195px] h-min justify-start items-start gap-3 flex" key={subCat.id}>
