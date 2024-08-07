@@ -128,7 +128,7 @@ export const LotsCatalogSchedule: FC<ICatalogTable> = ({ lotsData, addToCart, ad
                     </Tooltip>
                   ) : (
                     <Tooltip title={language === 'RU' ? 'Добавить в корзину' : 'Move to basket'}>
-                      <button onClick={() => addToCart({ advertisement_id: lot.id })}>
+                      <button onClick={() => addToCart({ advertisement_ids: lot.id })}>
                         <ShopperSVG />
                       </button>
                     </Tooltip>

@@ -14,7 +14,7 @@ export const LowerPriceFilter: FC<IFilter> = ({ searchParams, updateUrl }) => {
         control={
           <SwitchPicker
             checked={searchParams.get('old_price_reduced') === 'true'}
-            onChange={() => updateUrl({ old_price_reduced: searchParams.get('old_price_reduced') === 'true' ? 'false' : 'true' })}
+            onChange={() => updateUrl({ old_price_reduced: searchParams.get('old_price_reduced') === 'true' ? 'false' : 'true', page: 1 })}
           />
         }
         label={''}

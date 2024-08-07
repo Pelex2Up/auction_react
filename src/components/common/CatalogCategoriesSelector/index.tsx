@@ -33,7 +33,7 @@ export const CatalogCategoriesSelector: FC<IPicker> = ({ category, searchParams,
       <div className={`w-full flex justify-between items-center ${Number(categoryId) === category.id ? 'text-green-700' : 'text-black'}`}>
         <p
           className="text-base font-medium font-['SF Pro Text'] leading-tight tracking-tight cursor-pointer"
-          onClick={() => updateUrl({ category: category.id })}
+          onClick={() => updateUrl({ category: category.id, page: 1 })}
         >
           {category.title}
         </p>

@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import { SelectInputFilters } from '../../../components/common/SelectInputFilters/SelectInput'
 import { ArrowDown } from '../../../assets/svg/arrowDown'
 import { CatalogResponseT } from '../../../types/ResponseTypes'
@@ -25,23 +25,29 @@ export const FiltersCatalog: FC<IFilterCatalog> = ({ data, searchParams, updateU
     { label: language === 'RU' ? 'Дате добавления (от нового)' : 'Date (from new)', value: '-start_date' },
     { label: language === 'RU' ? 'Дате добавления (от старого)' : 'Date (from old)', value: 'start_date' }
   ]
+  const [selectedFilter, setSelectedFilter] = useState<string>('')
+
   return (
     <div className="flex w-full flex-col gap-4">
-      <div className="w-full lg:h-[60px] bg-[#F8F8F8] shadow flex justify-between items-center gap-4 p-6">
+      <div className="w-full lg:h-[60px] bg-[#F8F8F8] shadow flex flex-wrap justify-between items-center gap-4 p-6">
         <div className="flex lg:flex-row flex-col items-start lg:items-center gap-2">
           <span className="text-green-700 text-base font-medium font-['SF Pro Text'] leading-tight tracking-tight">
             {language === 'RU' ? 'Сортировать по' : 'Sort by'}
           </span>
           <div className="w-[199px] h-[36px] flex items-center">
             <SelectInputFilters
+              selectedOption={selectedFilter}
               optionsList={sortList}
               defaultOption={language === 'RU' ? 'Без сортировки' : "Don't sort"}
-              setSelectedValue={(event) => updateUrl({ ordering: event as string })}
+              setSelectedValue={(event) => {
+                setSelectedFilter(event as string)
+                updateUrl({ ordering: event as string })
+              }}
             />
           </div>
         </div>
 
-        <div className="w-auto h-7 justify-start items-center gap-2 inline-flex">
+        <div className="w-auto h-7 justify-start items-center self-end gap-2 inline-flex">
           <button
             className="w-3.5 h-3.5 flex items-center relative rotate-90"
             disabled={parseInt(searchParams.get('page') as string) === 1}
@@ -68,7 +74,7 @@ export const FiltersCatalog: FC<IFilterCatalog> = ({ data, searchParams, updateU
             <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-none">
               {language === 'RU' ? 'цена от' : 'price from'} {searchParams.get('price_min')}
             </div>
-            <button onClick={() => updateUrl({ price_min: '' })} className="cursor-pointer">
+            <button onClick={() => updateUrl({ price_min: '', page: 1 })} className="cursor-pointer">
               <CloseIconPath height={4} width={4} />
             </button>
           </div>
@@ -78,7 +84,7 @@ export const FiltersCatalog: FC<IFilterCatalog> = ({ data, searchParams, updateU
             <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-none">
               {language === 'RU' ? 'цена до' : 'price to'} {searchParams.get('price_max')}
             </div>
-            <button onClick={() => updateUrl({ price_max: '' })} className="cursor-pointer">
+            <button onClick={() => updateUrl({ price_max: '', page: 1 })} className="cursor-pointer">
               <CloseIconPath height={4} width={4} />
             </button>
           </div>
@@ -89,7 +95,7 @@ export const FiltersCatalog: FC<IFilterCatalog> = ({ data, searchParams, updateU
               {language === 'RU' ? 'состояние:' : 'condition:'}{' '}
               {searchParams.get('condition') === 'NEW' ? (language === 'RU' ? 'новое' : 'new') : language === 'RU' ? 'Б/У' : 'used'}
             </div>
-            <button onClick={() => updateUrl({ condition: '' })} className="cursor-pointer">
+            <button onClick={() => updateUrl({ condition: '', page: 1 })} className="cursor-pointer">
               <CloseIconPath height={4} width={4} />
             </button>
           </div>
@@ -100,7 +106,7 @@ export const FiltersCatalog: FC<IFilterCatalog> = ({ data, searchParams, updateU
               {language === 'RU' ? 'тип объявления:' : 'variant:'}{' '}
               {searchParams.get('ad_type') === 'BUY' ? (language === 'RU' ? 'покупка' : 'buy') : language === 'RU' ? 'продажа' : 'sell'}
             </div>
-            <button onClick={() => updateUrl({ ad_type: '' })} className="cursor-pointer">
+            <button onClick={() => updateUrl({ ad_type: '', page: 1 })} className="cursor-pointer">
               <CloseIconPath height={4} width={4} />
             </button>
           </div>
@@ -117,7 +123,7 @@ export const FiltersCatalog: FC<IFilterCatalog> = ({ data, searchParams, updateU
                 ? 'фиксированная цена'
                 : 'fixed price'}
             </div>
-            <button onClick={() => updateUrl({ is_auction: '' })} className="cursor-pointer">
+            <button onClick={() => updateUrl({ is_auction: '', page: 1 })} className="cursor-pointer">
               <CloseIconPath height={4} width={4} />
             </button>
           </div>
@@ -127,7 +133,7 @@ export const FiltersCatalog: FC<IFilterCatalog> = ({ data, searchParams, updateU
             <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-none">
               {language === 'RU' ? 'область:' : 'state:'} {searchParams.get('region')}
             </div>
-            <button onClick={() => updateUrl({ region: '' })} className="cursor-pointer">
+            <button onClick={() => updateUrl({ region: '', page: 1 })} className="cursor-pointer">
               <CloseIconPath height={4} width={4} />
             </button>
           </div>
@@ -137,7 +143,7 @@ export const FiltersCatalog: FC<IFilterCatalog> = ({ data, searchParams, updateU
             <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-none">
               {language === 'RU' ? 'город:' : 'city'} {searchParams.get('city')}
             </div>
-            <button onClick={() => updateUrl({ city: '' })} className="cursor-pointer">
+            <button onClick={() => updateUrl({ city: '', page: 1 })} className="cursor-pointer">
               <CloseIconPath height={4} width={4} />
             </button>
           </div>
@@ -145,7 +151,7 @@ export const FiltersCatalog: FC<IFilterCatalog> = ({ data, searchParams, updateU
         {searchParams.get('old_price_reduced') && searchParams.get('old_price_reduced') === 'true' && (
           <div className="w-max h-7 px-[13px] py-[5px] rounded border border-zinc-300 justify-between items-center gap-1.5 inline-flex">
             <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-none">{language === 'RU' ? 'сниженная цена' : 'discount price'}</div>
-            <button onClick={() => updateUrl({ old_price_reduced: 'false' })} className="cursor-pointer">
+            <button onClick={() => updateUrl({ old_price_reduced: 'false', page: 1 })} className="cursor-pointer">
               <CloseIconPath height={4} width={4} />
             </button>
           </div>
@@ -168,7 +174,7 @@ export const FiltersCatalog: FC<IFilterCatalog> = ({ data, searchParams, updateU
                   city: '',
                   old_price_reduced: '',
                   main_category: '',
-                  category: ''
+                  category: '', page: 1
                 })
               }}
               className="cursor-pointer"

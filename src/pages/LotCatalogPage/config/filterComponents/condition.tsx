@@ -13,19 +13,19 @@ export const ConditionFilter: FC<IFilter> = ({ searchParams, updateUrl }) => {
           type="radio"
           label={language === 'RU' ? 'Новое' : 'New'}
           checked={searchParams.get('condition') === 'NEW'}
-          onChange={() => updateUrl({ condition: 'NEW' })}
+          onChange={() => updateUrl({ condition: 'NEW', page: 1 })}
         />
         <Checkbox
           type="radio"
           label={language === 'RU' ? 'Бывшее в употреблении' : 'Used'}
           checked={searchParams.get('condition') === 'USED'}
-          onChange={() => updateUrl({ condition: 'USED' })}
+          onChange={() => updateUrl({ condition: 'USED', page: 1 })}
         />
         <Checkbox
           type="radio"
           label={language === 'RU' ? 'Все' : 'All'}
           checked={searchParams.get('condition') !== 'NEW' && searchParams.get('condition') !== 'USED'}
-          onChange={() => updateUrl({ condition: '' })}
+          onChange={() => updateUrl({ condition: '', page: 1 })}
         />
       </div>
     </li>

@@ -79,7 +79,7 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
       className={`w-[75.375rem] flex flex-col lg:flex-row items-start justify-start gap-4 lg:gap-[8.5rem] max-w-full text-left text-[0.875rem] text-main-black font-text-2 mq825:gap-[2.125rem] mq450:gap-[1.063rem] mq1125:flex-wrap mq1400:gap-[4.25rem] ${className}`}
     >
       <div className="flex-1 flex flex-col items-start justify-start gap-[2rem] max-w-full mq825:gap-[1rem] mq825:min-w-full">
-        <div className="w-[34.063rem] flex flex-row items-start justify-start gap-[0.75rem] max-w-full mq825:flex-wrap">
+        <div className="w-[34.063rem] flex flex-row items-start justify-start gap-[0.75rem] max-w-full flex-wrap">
           <a className="relative tracking-[0.04em] leading-[1.063rem] inline-block" href={PathE.Home}>
             {language === 'RU' ? 'Главная' : 'Home'}
           </a>
@@ -116,7 +116,7 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
         <div className="self-stretch max-w-[648px] h-[360px] lg:h-[468px] flex flex-col items-start justify-start gap-[1rem]">
           <div className="self-stretch h-full flex flex-col items-start justify-start relative">
             <LotPhotoSlider images={lotData.photos} />
-            <button className="cursor-pointer [border:none] p-[0.5rem] bg-white w-max min-w-[6.925rem] !m-[0] absolute top-[2rem] left-[0rem] rounded-tl-none rounded-tr rounded-br rounded-bl-none overflow-hidden flex flex-row items-start justify-start box-border whitespace-nowrap text-green-600 z-50">
+            <button className="cursor-pointer [border:none] p-[0.5rem] bg-white w-max min-w-[6.925rem] !m-[0] absolute top-[2rem] left-[0rem] rounded-tl-none rounded-tr rounded-br rounded-bl-none overflow-hidden flex flex-row items-start justify-start box-border whitespace-nowrap text-green-600 z-10">
               <div className="relative text-[0.75rem] tracking-[0.01em] leading-[120%] font-text-2 text-green text-left">
                 {lotData.is_auction ? (language === 'RU' ? 'Аукцион' : 'Auction') : language === 'RU' ? 'Фиксированная цена' : 'Fixed price'}
               </div>
@@ -135,7 +135,7 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
               <div className="relative tracking-[0.01em] leading-[1.063rem] inline-block">№{padWithZeros(String(lotData.id))}</div>
             </div>
           </div>
-          <div className="self-stretch bg-stone-50 flex flex-col items-start justify-start py-[1.5rem] px-[2rem] relative gap-[1.5rem] text-[0.875rem] text-dark-grey">
+          <div className="self-stretch bg-stone-50 flex flex-col items-start justify-start py-[1.5rem] px-[1rem] lg:px-[2rem] relative gap-[1.5rem] text-[0.875rem] text-dark-grey">
             <div className="w-full h-full absolute !m-[0] top-[0rem] right-[0rem] bottom-[0rem] left-[0rem] shadow-[0px_2px_1px_rgba(23,_23,_23,_0.04),_0px_8px_16px_rgba(23,_23,_23,_0.12)] rounded bg-whitesmoke-100" />
             <div className="self-stretch flex flex-row items-start justify-between">
               <div className="w-full flex flex-col items-start justify-start gap-[1.125rem]">
@@ -292,7 +292,7 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
                 )}
               </div>
               <button
-                className="h-[1.5rem] w-[1.5rem] relative overflow-hidden shrink-0 z-[1]"
+                className="absolute h-[1.5rem] w-[1.5rem] right-4 top-4 overflow-hidden shrink-0 z-[1]"
                 onClick={() => {
                   if (!lotData.cart) {
                     addToCart({ advertisement_ids: [lotData.id] })

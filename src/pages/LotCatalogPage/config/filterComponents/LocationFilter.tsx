@@ -57,7 +57,7 @@ export const LocationFilter: FC<IFilter> = ({ searchParams, updateUrl }) => {
           if (event !== 'Все') {
             updateUrl({ region: event as string })
           } else {
-            updateUrl({ region: '' })
+            updateUrl({ region: '', page: 1 })
           }
         }}
       />
@@ -72,7 +72,7 @@ export const LocationFilter: FC<IFilter> = ({ searchParams, updateUrl }) => {
         className="w-full h-[40px]"
         value={searchParams.get('city') ? (searchParams.get('city') as string) : ''}
         onChange={(event) => {
-          updateUrl({ city: event.target.value })
+          updateUrl({ city: event.target.value, page: 1 })
         }}
       />
     </li>

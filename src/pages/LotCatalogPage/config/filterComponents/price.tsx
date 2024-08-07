@@ -23,7 +23,7 @@ export const PriceFilter: FC<IFilter> = ({ updateUrl, searchParams }) => {
         <Input
           multiline={false}
           value={priceMin}
-          onChange={(event) => updateUrl({ price_min: event.target.value })}
+          onChange={(event) => updateUrl({ price_min: event.target.value, page: 1 })}
           className="h-7 w-full"
           placeholder={language === 'RU' ? 'от' : 'from'}
           onKeyDown={handleKeyPress}
@@ -33,7 +33,7 @@ export const PriceFilter: FC<IFilter> = ({ updateUrl, searchParams }) => {
         <Input
           multiline={false}
           value={priceMax}
-          onChange={(event) => updateUrl({ price_max: event.target.value })}
+          onChange={(event) => updateUrl({ price_max: event.target.value, page: 1 })}
           className="h-7 w-full"
           placeholder={language === 'RU' ? 'до' : 'to'}
           onKeyDown={handleKeyPress}

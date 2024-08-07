@@ -22,7 +22,7 @@ export const AdTypeFilter: FC<IFilter> = ({ searchParams, updateUrl }) => {
         <Checkbox
           checked={searchParams.get('ad_type') === 'SELL'}
           onChange={() => {
-            updateUrl({ ad_type: 'SELL', is_auction: '' })
+            updateUrl({ ad_type: 'SELL', is_auction: '', page: 1 })
             setCheckedBuy(false)
             setCheckedSell(true)
           }}
@@ -34,13 +34,13 @@ export const AdTypeFilter: FC<IFilter> = ({ searchParams, updateUrl }) => {
               label={language === 'RU' ? 'Аукцион' : 'Auction'}
               style={{ marginLeft: '37px' }}
               checked={searchParams.get('is_auction') === 'true'}
-              onChange={() => updateUrl({ is_auction: 'true' })}
+              onChange={() => updateUrl({ is_auction: 'true', page: 1 })}
             />
             <Checkbox
               label={language === 'RU' ? 'Фиксированная цена' : 'Fixed price'}
               style={{ marginLeft: '37px' }}
               checked={searchParams.get('is_auction') === 'false'}
-              onChange={() => updateUrl({ is_auction: 'false' })}
+              onChange={() => updateUrl({ is_auction: 'false', page: 1 })}
             />
           </>
         )}
@@ -48,7 +48,7 @@ export const AdTypeFilter: FC<IFilter> = ({ searchParams, updateUrl }) => {
           label={language === 'RU' ? 'Покупка' : 'Buy'}
           checked={searchParams.get('ad_type') === 'BUY'}
           onChange={() => {
-            updateUrl({ ad_type: 'BUY', is_auction: '' })
+            updateUrl({ ad_type: 'BUY', is_auction: '', page: 1 })
             setCheckedSell(false)
             setCheckedBuy(true)
           }}
@@ -73,7 +73,7 @@ export const AdTypeFilter: FC<IFilter> = ({ searchParams, updateUrl }) => {
           label={language === 'RU' ? 'Все' : 'All'}
           checked={(!checkedBuy && !checkedSell) || !searchParams.get('ad_type')}
           onChange={() => {
-            updateUrl({ ad_type: '', is_auction: '' })
+            updateUrl({ ad_type: '', is_auction: '', page: 1 })
             setCheckedSell(false)
             setCheckedBuy(false)
           }}

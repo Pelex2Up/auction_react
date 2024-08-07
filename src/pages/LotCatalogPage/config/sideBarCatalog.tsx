@@ -50,7 +50,7 @@ export const SideBarCatalog: FC<ISideBarCatalog> = ({ categories, currentCategor
           className={styles.selectInputWrapper}
           optionsList={categories || []}
           selectedOption={searchParams.get('main_category') ? (searchParams.get('main_category') as string) : ''}
-          setSelectedValue={(event) => updateUrl({ main_category: event, category: '' })}
+          setSelectedValue={(event) => updateUrl({ main_category: event, category: '', page: 1 })}
           defaultOption={language === 'RU' ? 'Выберите раздел' : 'Choose category'}
         />
       </div>
@@ -81,7 +81,8 @@ export const SideBarCatalog: FC<ISideBarCatalog> = ({ categories, currentCategor
             city: '',
             old_price_reduced: '',
             main_category: '',
-            category: ''
+            category: '',
+            page: 1
           })
         }}
       />

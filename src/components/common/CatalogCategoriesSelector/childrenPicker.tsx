@@ -17,7 +17,7 @@ export const ChildrenCatalogCategoriesSelector: FC<IPicker> = ({ category, searc
       <div className={`w-full flex justify-between items-center ${open ? 'text-green-700' : 'text-black'} cursor-pointer`}>
         <p
           className={`text-sm ${Number(categoryId) === category.id ? 'text-green-700' : 'text-zinc-500'} font-normal leading-tight tracking-tight`}
-          onClick={() => updateUrl({ category: category.id })}
+          onClick={() => updateUrl({ category: category.id, page: 1 })}
         >
           {category.title}
         </p>

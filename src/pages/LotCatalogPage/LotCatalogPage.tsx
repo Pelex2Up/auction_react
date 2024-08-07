@@ -66,6 +66,7 @@ export const LotCatalogPage: FC = () => {
   useEffect(() => {
     if (!isLoading && location && !catalogData && !isError) {
       getPageDataMemo(`?${searchParams}`).then((data) => setCatalogData(data))
+      updateUrl({ page: 1 })
     }
   }, [catalogData, isLoading, getPageDataMemo, searchParams])
 
