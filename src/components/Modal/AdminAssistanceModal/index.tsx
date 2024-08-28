@@ -46,7 +46,7 @@ export const AdminAssistanceModal: FC<IModal> = ({ close }) => {
   }
 
   return (
-    <div className="w-full md:w-[718px] xl:h-auto bg-white rounded shadow relative">
+    <div className="w-full md:w-[718px] xl:h-auto h-auto self-center m-auto bg-white rounded shadow relative">
       <form className="w-full h-full p-8 flex flex-col gap-8 justify-start items-center" onSubmit={handleSubmitForm}>
         <div className="w-full h-6 justify-between items-start inline-flex">
           <div className="text-zinc-900 text-lg font-normal font-['SF Pro Text'] leading-snug tracking-tight">Связаться с администратором</div>

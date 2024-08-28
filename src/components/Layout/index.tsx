@@ -13,7 +13,7 @@ export const RootLayout: FC = () => {
 
   return (
     <section className="w-screen flex justify-center">
-      <div className="w-full max-w-[1720px] min-h-screen flex relative flex-col gap-[20px]">
+      <div className="w-full max-w-[1720px] min-h-screen h-full flex relative flex-col gap-[20px]">
         <Suspense fallback={<></>}>
           <Header />
         </Suspense>
@@ -26,7 +26,7 @@ export const RootLayout: FC = () => {
             onClose={() => setOpenModal(false)}
             aria-labelledby="transition-modal-title"
             aria-describedby="transition-modal-description"
-            sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+            sx={{ display: 'flex', overflowY: 'auto' }}
           >
             <AdminAssistanceModal close={() => setOpenModal(false)} />
           </Modal>

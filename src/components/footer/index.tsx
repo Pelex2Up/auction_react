@@ -4,8 +4,9 @@ import BGImage from '../../assets/images/footerBg.png'
 import styles from './footer.module.scss'
 import { Button } from '../common/buttons'
 import DefaultLink from '../common/DefaultLink'
-import { PathE } from '../../enum'
+import { CatalogPathE, PathE } from '../../enum'
 import { selectLangSettings, useAppSelector } from '../../store/hooks'
+import { generatePath } from 'react-router-dom'
 
 export default function Footer({ openModal }: { openModal: () => void }) {
   const { language } = useAppSelector(selectLangSettings)
@@ -35,11 +36,17 @@ export default function Footer({ openModal }: { openModal: () => void }) {
           </div>
           <div className={`flex flex-col gap-[12px] w-max-content justify-start items-start ${styles.btnGroup}`}>
             <DefaultLink text={language === 'RU' ? 'Главная' : 'Home'} href={PathE.Home} />
-            <DefaultLink text={language === 'RU' ? 'Объявления о покупке' : 'Buy advertisements'} />
-            <DefaultLink text={language === 'RU' ? 'Объявления о продаже' : 'Advertisements for sale'} />
+            <DefaultLink
+              text={language === 'RU' ? 'Объявления о покупке' : 'Buy advertisements'}
+              href={generatePath(CatalogPathE.Catalog + '/?ad_type=BUY&page=1')}
+            />
+            <DefaultLink
+              text={language === 'RU' ? 'Объявления о продаже' : 'Advertisements for sale'}
+              href={generatePath(CatalogPathE.Catalog + '/?ad_type=SELL&page=1')}
+            />
             <DefaultLink text={language === 'RU' ? 'Правила участия' : 'Rules of participation'} href={PathE.Rules} />
             <DefaultLink text={language === 'RU' ? 'Тарифы' : 'Tariffs'} href={PathE.TarriffPlans} />
-            <DefaultLink text={language === 'RU' ? 'Реклама' : 'Advertising'} />
+            <DefaultLink text={language === 'RU' ? 'Реклама' : 'Advertising'} href={PathE.AdsPage} />
           </div>
           <div className={`flex flex-col gap-[12px] justify-start items-start text-sm leading-[16.8px] tracking-[1%] font-normal w-max-content`}>
             <span>{language === 'RU' ? 'Контакты' : 'Contact information'}</span>

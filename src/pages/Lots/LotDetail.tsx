@@ -322,9 +322,11 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
                 <Button
                   className="w-full"
                   variant={
-                    lotData.profile.id !== user?.profile.id
-                      ? (lotData.last_bid && lotData.last_bid.user !== user?.profile.id) || !lotData.last_bid
-                        ? 'primary'
+                    auth
+                      ? lotData.profile.id !== user?.profile.id
+                        ? (lotData.last_bid && lotData.last_bid.user !== user?.profile.id) || !lotData.last_bid
+                          ? 'primary'
+                          : 'disabled'
                         : 'disabled'
                       : 'disabled'
                   }
