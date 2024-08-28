@@ -43,11 +43,6 @@ export const CartLot: FC<CartLotT> = ({ lot, refetch }) => {
       <div className="w-full max-w-[150px] lg:max-w-[259px] h-full relative cursor-pointer">
         {lot.photos.length > 0 ? (
           <div className="relative h-[100px] lg:h-[187px]">
-            {lot.status === 'CLOSED' && (
-              <div className="absolute top-0 left-0 z-99 w-full h-full bg-[rgba(113,113,122,0.5)] text-red-600 rounded font-sans text-lg font-bold flex items-center justify-center">
-                завершен
-              </div>
-            )}
             <div className="self-stretch h-full flex flex-col items-start justify-start relative">
               <Swiper
                 ref={swiperRef}
@@ -62,6 +57,11 @@ export const CartLot: FC<CartLotT> = ({ lot, refetch }) => {
                   </SwiperSlide>
                 ))}
               </Swiper>
+              {lot.status === 'CLOSED' && (
+                <div className="absolute top-0 left-0 bottom-[36px] right-0 z-[60] w-full bg-[rgba(113,113,122,0.5)] text-red-600 rounded font-sans text-lg font-bold flex items-center justify-center">
+                  завершен
+                </div>
+              )}
               <button className="cursor-pointer [border:none] p-[0.5rem] bg-white w-max min-w-[4.925rem] !m-[0] absolute top-[1rem] left-[0rem] rounded-tl-none rounded-tr rounded-br rounded-bl-none overflow-hidden flex flex-row items-start justify-start box-border whitespace-nowrap text-green-600 z-50">
                 <div className="relative text-[0.75rem] tracking-[0.01em] leading-[120%] font-text-2 text-green text-left">
                   {lot.is_auction ? (language === 'RU' ? 'Аукцион' : 'Auction') : language === 'RU' ? 'Фиксированная цена' : 'Fixed price'}
@@ -81,9 +81,8 @@ export const CartLot: FC<CartLotT> = ({ lot, refetch }) => {
                 {lot.profile.name[0].toUpperCase()}
               </div>
             </div>
-            <div className="w-auto text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">{`${
-              lot.profile.type === 'person' ? 'ФЛ' : lot.profile.type === 'company' ? 'ЮЛ' : 'ИП'
-            } ${lot.profile.name}`}</div>
+            <div className="w-auto text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">{`${lot.profile.type === 'person' ? 'ФЛ' : lot.profile.type === 'company' ? 'ЮЛ' : 'ИП'
+              } ${lot.profile.name}`}</div>
           </div>
         )}
         <div className="p-2 left-0 top-[10px] absolute bg-white rounded-tr rounded-br justify-start items-center gap-2.5 inline-flex">

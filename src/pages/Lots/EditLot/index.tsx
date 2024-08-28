@@ -61,21 +61,21 @@ export const EditLotPage: FC = () => {
   const lotTypeGroup =
     typeOption === 'SELL'
       ? [
-          {
-            value: 'auction',
-            label: language === 'RU' ? 'Аукцион' : 'Auction'
-          },
-          {
-            value: 'fixPrice',
-            label: language === 'RU' ? 'Фиксированная цена' : 'Fixed price'
-          }
-        ]
+        {
+          value: 'auction',
+          label: language === 'RU' ? 'Аукцион' : 'Auction'
+        },
+        {
+          value: 'fixPrice',
+          label: language === 'RU' ? 'Фиксированная цена' : 'Fixed price'
+        }
+      ]
       : [
-          {
-            value: 'auction',
-            label: language === 'RU' ? 'Аукцион' : 'Auction'
-          }
-        ]
+        {
+          value: 'auction',
+          label: language === 'RU' ? 'Аукцион' : 'Auction'
+        }
+      ]
 
   const countList = [
     { value: 'PIECE', label: language === 'RU' ? 'шт' : 'piece' },
@@ -317,60 +317,68 @@ export const EditLotPage: FC = () => {
   const handleSubmitForm = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     if (lotData && lotPureData && categories) {
-      const formdata = new FormData()
-      if (typeOption !== lotPureData.ad_type) {
-        formdata.append('ad_type', typeOption)
-      }
-      if (lowerCat && lowerCat.title.length > 0) {
-        const cat = lowerCatList?.find((cat) => cat.title === lowerCat.title || cat.id === lowerCat.id)
-        formdata.append('category', String(cat?.id))
-      } else if (subCategory && subCategory.title.length > 0) {
-        const subCat = categories?.find((cat) => cat.children.find((subCat) => subCat.id === subCategory.id || subCat.title === subCategory.title))
-        const selectedSubCategory = subCat?.children?.find((sc) => sc.id === subCategory.id || sc.title === subCategory.title)
-        formdata.append('category', String(selectedSubCategory?.id))
+      if (Number(lotData.count) <= 0) {
+        toast(language === 'RU' ? 'Количество товара должно быть больше 0' : 'Count must be higher than 0', { type: 'warning' })
+      } else if (Number(lotData.price) <= 0) {
+        toast(language === 'RU' ? 'Стоимость товара должна быть больше 0' : 'Price must be higher than 0', { type: 'warning' })
+      } else if (lotData.region.length < 1) {
+        toast(language === 'RU' ? 'Пожалуйста введите область' : 'Please type a region', { type: 'warning' })
       } else {
-        const cat = categories?.find((cat) => cat.title === category?.title || cat.id === category?.id)
-        formdata.append('category', String(cat?.id))
-      }
-      if (lotTypeOption !== 'auction' && lotPureData.is_auction) {
-        formdata.append('is_auction', 'true')
-      } else {
-        formdata.append('is_auction', 'false')
-      }
-      if (lotData.city !== lotPureData.city) {
-        formdata.append('city', lotData.city)
-      }
-      if (productState !== lotPureData.condition) {
-        formdata.append('condition', productState)
-      }
-      if (lotData.count !== lotPureData.count) {
-        formdata.append('count', String(lotData.count))
-      }
-      if (lotData.description !== lotPureData.description) {
-        formdata.append('description', lotData.description)
-      }
-      if (lotData.price !== lotPureData.price) {
-        formdata.append('price', lotData.price)
-      }
-      if (lotData.region !== lotPureData.region) {
-        formdata.append('region', lotData.region)
-      }
-      if (lotData.title !== lotPureData.title) {
-        formdata.append('title', lotData.title)
-      }
-      if (lotData.unit !== lotPureData.unit) {
-        formdata.append('unit', lotData.unit)
-      }
-      if (lotData.username !== lotPureData.username) {
-        formdata.append('username', String(lotData.username))
-      }
-      formdata.append('user', String(lotData.profile.id))
+        const formdata = new FormData()
+        if (typeOption !== lotPureData.ad_type) {
+          formdata.append('ad_type', typeOption)
+        }
+        if (lowerCat && lowerCat.title.length > 0) {
+          const cat = lowerCatList?.find((cat) => cat.title === lowerCat.title || cat.id === lowerCat.id)
+          formdata.append('category', String(cat?.id))
+        } else if (subCategory && subCategory.title.length > 0) {
+          const subCat = categories?.find((cat) => cat.children.find((subCat) => subCat.id === subCategory.id || subCat.title === subCategory.title))
+          const selectedSubCategory = subCat?.children?.find((sc) => sc.id === subCategory.id || sc.title === subCategory.title)
+          formdata.append('category', String(selectedSubCategory?.id))
+        } else {
+          const cat = categories?.find((cat) => cat.title === category?.title || cat.id === category?.id)
+          formdata.append('category', String(cat?.id))
+        }
+        if (lotTypeOption !== 'auction' && lotPureData.is_auction) {
+          formdata.append('is_auction', 'true')
+        } else {
+          formdata.append('is_auction', 'false')
+        }
+        if (lotData.city !== lotPureData.city) {
+          formdata.append('city', lotData.city)
+        }
+        if (productState !== lotPureData.condition) {
+          formdata.append('condition', productState)
+        }
+        if (lotData.count !== lotPureData.count) {
+          formdata.append('count', String(lotData.count))
+        }
+        if (lotData.description !== lotPureData.description) {
+          formdata.append('description', lotData.description)
+        }
+        if (lotData.price !== lotPureData.price) {
+          formdata.append('price', lotData.price)
+        }
+        if (lotData.region !== lotPureData.region) {
+          formdata.append('region', lotData.region)
+        }
+        if (lotData.title !== lotPureData.title) {
+          formdata.append('title', lotData.title)
+        }
+        if (lotData.unit !== lotPureData.unit) {
+          formdata.append('unit', lotData.unit)
+        }
+        if (lotData.username !== lotPureData.username) {
+          formdata.append('username', String(lotData.username))
+        }
+        formdata.append('user', String(lotData.profile.id))
 
-      if (formdata) {
-        await updateLot({ data: formdata, lotId: lotData.id })
-          .unwrap()
-          .then(() => toast(language === 'RU' ? 'Лот успешно обновлен' : 'Advertisement has been changed successfuly', { type: 'success' }))
-          .catch(() => toast(language === 'RU' ? 'При редактировании лота произошла ошибка' : 'Something went wrong', { type: 'error' }))
+        if (formdata) {
+          await updateLot({ data: formdata, lotId: lotData.id })
+            .unwrap()
+            .then(() => toast(language === 'RU' ? 'Лот успешно обновлен' : 'Advertisement has been changed successfuly', { type: 'success' }))
+            .catch(() => toast(language === 'RU' ? 'При редактировании лота произошла непредвиденная ошибка' : 'Something went wrong', { type: 'error' }))
+        }
       }
     }
   }
@@ -772,12 +780,12 @@ export const EditLotPage: FC = () => {
                   ? 'Имя Фамилия Отчество'
                   : 'Full name'
                 : user?.profile.type === 'company'
-                ? language === 'RU'
-                  ? 'Название организации'
-                  : 'Company name'
-                : language === 'RU'
-                ? 'Название ИП'
-                : 'Sole-proprietor name'}
+                  ? language === 'RU'
+                    ? 'Название организации'
+                    : 'Company name'
+                  : language === 'RU'
+                    ? 'Название ИП'
+                    : 'Sole-proprietor name'}
             </div>
             <div className="w-full inline-flex gap-[10px] items-center">
               <div className="w-full max-w-[535px]">

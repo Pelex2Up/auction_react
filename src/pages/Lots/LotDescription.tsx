@@ -85,7 +85,7 @@ const LotDescription: FunctionComponent<FrameComponent4Type> = ({ className = ''
             <div className="relative tracking-[0.01em] leading-[1.375rem] font-medium inline-block">
               {lotData.ad_type === 'SELL' ? (language === 'RU' ? 'О продавце' : 'About seller') : language === 'RU' ? 'О покупателе' : 'About buyer'}
             </div>
-            <div className="self-stretch relative text-[1rem] tracking-[0.01em] leading-[120%] text-dark-grey">{lotData.profile.name}</div>
+            <div className="self-stretch break-all relative text-[1rem] tracking-[0.01em] leading-[120%] text-dark-grey">{lotData.profile.name}</div>
           </div>
           <div className="w-full flex flex-col items-start justify-start gap-[0.5rem] shrink-0 [debug_commit:bf4bc93] text-[1rem] text-dark-grey">
             <div className="relative tracking-[0.01em] leading-[120%] text-main-black inline-block min-w-[5rem] font-medium">

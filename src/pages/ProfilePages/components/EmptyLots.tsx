@@ -10,7 +10,7 @@ export const EmptyLots: FC = () => {
   const { pathname } = useLocation()
 
   return (
-    <div className="w-[499px] h-[168px] flex-col justify-start items-center gap-2 inline-flex">
+    <div className="max-w-[499px] h-[168px] flex-col justify-start items-center gap-2 inline-flex">
       <img src={bellIcon} alt="notification" className="w-[99px] h-[99px]" />
       <div className="flex-col justify-start items-center gap-1.5 flex">
         <div className="text-zinc-900 text-lg font-medium font-['SF Pro Text'] leading-snug">
@@ -23,7 +23,7 @@ export const EmptyLots: FC = () => {
             : `Don't have any orders`}
         </div>
         <div className="justify-start items-center gap-4 inline-flex">
-          <div className="w-[499px] text-center">
+          <div className="w-full text-center break-normal">
             <span className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px]">
               {language === 'RU' ? 'Ознакомиться с правилами подачи объявления можно ' : 'You can view the rules for submitting an ad '}{' '}
             </span>

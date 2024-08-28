@@ -27,11 +27,8 @@ export const MyTariffPage: FC = () => {
             {language === 'RU' ? 'Мой тариф' : 'My tariff'}
           </div>
           <div className="w-full max-w-[379px] h-[150px] relative bg-[#EFF6F3] shadow">
-            <div className="w-[331px] h-[102px] left-[24px] top-[24px] absolute">
-              <div className="left-0 top-[32px] absolute text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
-                {language === 'RU' ? 'Разовый платеж' : 'One-time payment'}
-              </div>
-              <div className="left-0 top-0 absolute">
+            <div className="w-full h-full p-[24px] absolute flex flex-col">
+              <div className="flex gap-[5px] flex-wrap items-center">
                 <span className="text-green-700 text-xl font-medium font-['SF Pro Text'] leading-normal mr-2 tracking-tight">
                   {user.subscription.tariff.name}
                 </span>
@@ -39,10 +36,13 @@ export const MyTariffPage: FC = () => {
                   {`(${user.subscription.tariff.unlim_ad_count} ${language === 'RU' ? 'объявлений' : 'advertisemets'})`}
                 </span>
               </div>
-              <div className="left-0 top-[53px] absolute text-zinc-900 text-xl font-normal font-['SF Pro Text'] leading-normal tracking-tight">
+              <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
+                {language === 'RU' ? 'Разовый платеж' : 'One-time payment'}
+              </div>
+              <div className="text-zinc-900 text-xl font-normal font-['SF Pro Text'] leading-normal tracking-tight">
                 {user.subscription.tariff.price} BYN
               </div>
-              <div className="left-[200px] lg:left-[247px] top-[53px] lg:top-0 absolute flex-col justify-start items-start gap-1.5 inline-flex">
+              <div className="bottom-[30px] right-[30px] lg:top-[24px] absolute flex-col justify-start items-start gap-1.5 inline-flex">
                 <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
                   {language === 'RU' ? 'Статус:' : 'Status:'}
                 </div>
@@ -65,21 +65,21 @@ export const MyTariffPage: FC = () => {
           {tariffs.map((tariff, index) => {
             if (tariff.name !== user.subscription.tariff.name)
               return (
-                <div className={`w-full max-w-[379px] h-[150px] relative shadow ${index % 2 === 0 ? 'bg-yellow-100' : 'bg-green-200'}`} key={index}>
-                  <div className="w-[331px] h-[102px] left-[24px] top-[24px] absolute">
-                    <div className="left-0 top-[32px] absolute text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
+                <div className={`w-full max-w-[379px] h-[150px] p-[24px] relative shadow ${index % 2 === 0 ? 'bg-yellow-100' : 'bg-green-200'}`} key={index}>
+                  <div className="w-full h-full">
+                    <div className="flex flex-wrap items-center gap-[5px]">
+                      <span className="text-green-800 text-xl font-medium font-['SF Pro Text'] leading-normal tracking-tight">{tariff.name}</span>
+                      <span className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">{` (${tariff.ad_count} ${language === 'RU' ? 'объявления' : 'advertisemets'
+                        })`}</span>
+                    </div>
+                    <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
                       {language === 'RU' ? 'Разовый платеж' : 'One-time payment'}
                     </div>
-                    <div className="left-[1px] top-[85px] absolute text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
+                    <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
                       {language === 'RU' ? `Период действия ${tariff.duration_days} дней` : `Validity period ${tariff.duration_days} days`}
                     </div>
-                    <div className="left-0 top-0 absolute">
-                      <span className="text-green-800 text-xl font-medium font-['SF Pro Text'] leading-normal tracking-tight">{tariff.name}</span>
-                      <span className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">{` (${tariff.ad_count} ${
-                        language === 'RU' ? 'объявления' : 'advertisemets'
-                      })`}</span>
-                    </div>
-                    <div className="left-0 top-[53px] absolute text-zinc-900 text-xl font-normal font-['SF Pro Text'] leading-normal tracking-tight">
+
+                    <div className="text-zinc-900 text-xl font-normal font-['SF Pro Text'] leading-normal tracking-tight">
                       {tariff.price} BYN
                     </div>
                   </div>

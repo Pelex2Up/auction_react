@@ -24,7 +24,7 @@ export const MyLots: FC = () => {
   const { language } = useAppSelector(selectLangSettings)
   const [selectedFilter, setSelectedFilter] = useState<string>('all')
   const [order, setOrder] = useState<boolean>(false)
-  const { data, refetch } = useFetchUserLotsQuery({ order: order ? 'asc' : 'desc', type: selectedFilter })
+  const { data, refetch } = useFetchUserLotsQuery({ order: order ? 'asc' : 'desc', type: selectedFilter }, { refetchOnMountOrArgChange: true })
   const [deleteLot, { isSuccess: deletedSuccess, isLoading: isDeleting, isError }] = useDeleteUserLotMutation()
 
   useEffect(() => {
@@ -68,25 +68,25 @@ export const MyLots: FC = () => {
           <div className="justify-start items-start gap-6 flex">
             {language === 'RU'
               ? sortVariantsRu.map((el, index) => (
-                  <RadioButton
-                    key={index + `_${el.value}`}
-                    id={el.value}
-                    value={el.value}
-                    checked={el.value === selectedFilter}
-                    onChange={(event) => handleChangeFilter(event.target.value)}
-                    text={el.label}
-                  />
-                ))
+                <RadioButton
+                  key={index + `_${el.value}`}
+                  id={el.value}
+                  value={el.value}
+                  checked={el.value === selectedFilter}
+                  onChange={(event) => handleChangeFilter(event.target.value)}
+                  text={el.label}
+                />
+              ))
               : sortVariantsEng.map((el, index) => (
-                  <RadioButton
-                    key={index + `_${el.value}`}
-                    id={el.value}
-                    value={el.value}
-                    checked={el.value === selectedFilter}
-                    onChange={(event) => handleChangeFilter(event.target.value)}
-                    text={el.label}
-                  />
-                ))}
+                <RadioButton
+                  key={index + `_${el.value}`}
+                  id={el.value}
+                  value={el.value}
+                  checked={el.value === selectedFilter}
+                  onChange={(event) => handleChangeFilter(event.target.value)}
+                  text={el.label}
+                />
+              ))}
           </div>
         </div>
         <div className="h-full justify-start items-center gap-4 inline-flex cursor-pointer" onClick={handleChangeOrder}>

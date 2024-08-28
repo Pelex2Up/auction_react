@@ -9,15 +9,12 @@ import styles from '../../profile/MainProfile.module.scss'
 import 'react-international-phone/style.css'
 import { useSendAdminMessageMutation } from '../../../api/userService'
 import { toast } from 'react-toastify'
+import { validateEmail, validatePhone } from '../../../utility/validations'
 
 export const AdminAssistanceModal: FC<IModal> = ({ close }) => {
   const { language } = useAppSelector(selectLangSettings)
   const [sendMessage, { isSuccess, isLoading }] = useSendAdminMessageMutation()
-
-  function formatPhoneNumber(e164Number: string): string {
-    // Убираем все символы, кроме цифр
-    return e164Number.replace(/[^+\d]/g, '')
-  }
+  const [emailErr, setEmailErr] = useState<boolean>(false)
 
   const countries = defaultCountries.filter((country) => {
     const { iso2 } = parseCountry(country)
@@ -30,18 +27,25 @@ export const AdminAssistanceModal: FC<IModal> = ({ close }) => {
     const formdata = new FormData(form)
     formdata.append('accept_privacy_policy', 'true')
     if (formdata) {
-      sendMessage(formdata)
-        .unwrap()
-        .then(() => {
-          toast(
-            language === 'RU'
-              ? 'Сообщение успешно отправлено, ожидайте ответа администратора на вашу электронную почту'
-              : 'Mail successfuly delivered, wait answer at your email.',
-            { type: 'success' }
-          )
-          close()
-        })
-        .catch(() => toast(language === 'RU' ? 'Что-то пошло не так' : 'smth went wrong', { type: 'error' }))
+      if (!validatePhone(String(formdata.get('phone_number')))) {
+        toast(language === 'RU' ? 'Проверьте правильность ввода номера телефона' : 'Phone number seems wrong', { type: 'error' })
+      } else if (!validateEmail(String(formdata.get('email')))) {
+        setEmailErr(true)
+        toast(language === 'RU' ? 'Проверьте правильность ввода электронной почты' : 'Email seems wrong', { type: 'error' })
+      } else {
+        sendMessage(formdata)
+          .unwrap()
+          .then(() => {
+            toast(
+              language === 'RU'
+                ? 'Сообщение успешно отправлено, ожидайте ответа администратора на вашу электронную почту'
+                : 'Mail successfuly delivered, wait answer at your email.',
+              { type: 'success' }
+            )
+            close()
+          })
+          .catch(() => toast(language === 'RU' ? 'Что-то пошло не так' : 'smth went wrong', { type: 'error' }))
+      }
     }
   }
 
@@ -69,6 +73,8 @@ export const AdminAssistanceModal: FC<IModal> = ({ close }) => {
               <Input
                 type="email"
                 required
+                error={emailErr}
+                onChange={() => setEmailErr(false)}
                 multiline={false}
                 placeholder={language === 'RU' ? 'Ваша электронная почта' : 'Your email'}
                 className="w-full"
@@ -90,7 +96,7 @@ export const AdminAssistanceModal: FC<IModal> = ({ close }) => {
                 required
                 placeholder={language === 'RU' ? 'Введите номер телефона' : 'Enter phone number'}
                 className={styles.PhoneInput}
-                // localization={ru}
+              // localization={ru}
               />
             </div>
           </div>

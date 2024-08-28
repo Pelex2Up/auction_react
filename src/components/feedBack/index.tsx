@@ -6,12 +6,14 @@ import { Button } from '../common/buttons'
 import DefaultLink from '../common/DefaultLink'
 import { selectLangSettings, useAppSelector } from '../../store/hooks'
 import { useSendFeedBackMutation } from '../../api/userService'
-import { FormEvent } from 'react'
+import { FormEvent, useState } from 'react'
 import { toast } from 'react-toastify'
+import { validateEmail } from '../../utility/validations'
 
 export default function FeedBack() {
   const { language } = useAppSelector(selectLangSettings)
   const [sendForm, { isSuccess }] = useSendFeedBackMutation()
+  const [emailErr, setEmailErr] = useState<boolean>(false)
 
   const handleForm = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -19,18 +21,22 @@ export default function FeedBack() {
     const formdata = new FormData(form)
     formdata.append('accept_privacy_policy', 'true')
     if (formdata) {
-      sendForm(formdata)
-        .unwrap()
-        .then(() => {
-          toast(
-            language === 'RU'
-              ? 'Сообщение успешно отправлено, ожидайте ответа администратора на вашу электронную почту'
-              : 'Mail successfuly delivered, wait answer at your email.',
-            { type: 'success' }
-          )
-          close()
-        })
-        .catch(() => toast(language === 'RU' ? 'Что-то пошло не так' : 'smth went wrong', { type: 'error' }))
+      if (!validateEmail(String(formdata.get('email')))) {
+        setEmailErr(true)
+        toast(language === 'RU' ? 'Проверьте правильность ввода электронной почты' : 'Email seems wrong', { type: 'error' })
+      } else {
+        sendForm(formdata)
+          .unwrap()
+          .then(() => {
+            toast(
+              language === 'RU'
+                ? 'Сообщение успешно отправлено, ожидайте ответа администратора на вашу электронную почту'
+                : 'Mail successfuly delivered, wait answer at your email.',
+              { type: 'success' }
+            )
+          })
+          .catch(() => toast(language === 'RU' ? 'Что-то пошло не так' : 'Smth went wrong', { type: 'warning' }))
+      }
     }
   }
 
@@ -71,7 +77,7 @@ export default function FeedBack() {
         <form onSubmit={handleForm} className="grid lg:grid-cols-2 grid-rows-1 w-full gap-[20px]">
           <div className="grid grid-cols-2 w-full gap-[10px]">
             <Input className="w-full" required multiline={false} placeholder={language === 'RU' ? 'Имя' : 'Your Name'} name="name" />
-            <Input className="w-full" required multiline={false} placeholder={language === 'RU' ? 'Электронная почта' : 'Email'} name="email" />
+            <Input error={emailErr} className="w-full" onChange={() => setEmailErr(false)} required multiline={false} placeholder={language === 'RU' ? 'Электронная почта' : 'Email'} name="email" />
             <Input multiline rows={2} required placeholder={language === 'RU' ? 'Сообщение' : 'Message'} className="col-span-2" name="message" aria-multiline />
           </div>
           <div className="flex flex-col gap-[20px]">

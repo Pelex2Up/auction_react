@@ -256,6 +256,12 @@ export const CreateLotPage: FC = () => {
     }
     if (!city) {
       toast(language === 'RU' ? 'Пожалуйста, укажите город' : 'Please select city', { type: 'warning' })
+    } else if (Number(count) <= 0) {
+      toast(language === 'RU' ? 'Количество товара должно быть больше 0' : 'Count must be higher than 0', { type: 'warning' })
+    }else if (Number(price) <= 0) {
+      toast(language === 'RU' ? 'Стоимость товара должна быть больше 0' : 'Price must be higher than 0', { type: 'warning' })
+    } else if (!region) {
+      toast(language === 'RU' ? 'Пожалуйста, укажите область' : 'Please select region', { type: 'warning' })
     } else if (!category) {
       toast(language === 'RU' ? 'Необходимо указать категорию товара' : 'Need to choose category', { type: 'warning' })
     } else {

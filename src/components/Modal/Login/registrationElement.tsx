@@ -9,6 +9,7 @@ import { useRegisterMutation } from '../../../api/loginService'
 import { Loader } from '../../Loader'
 import { toast } from 'react-toastify'
 import { selectLangSettings, useAppSelector } from '../../../store/hooks'
+import { validateEmail } from '../../../utility/validations'
 
 interface IElement {
   changeAction: Dispatch<SetStateAction<number>>
@@ -46,19 +47,27 @@ export const RegistrationElement: FC<IElement> = ({ changeAction, close }) => {
     const formdata = new FormData(form)
     const pass1 = formdata.get('password') as string
     const pass2 = formdata.get('password_confirmation') as string
-    if (formdata && pass1 === pass2 && pass1.length >= 8) {
-      register(formdata)
-        .unwrap()
-        .then(() => {
-          toast('Регистрация прошла успешно, письмо для подтверждения отправлено на электронную почту', { type: 'success' })
-          navigate(generatePath(PathE.RegistrationConfirm, { email: String(formdata.get('email')) }))
-          close()
-        })
-        .catch((err: any) => setErrors((prevErrors) => ({ ...prevErrors, email: err.email })))
-    } else if (pass1 !== pass2) {
-      setErrors({ ...errors, pass: 'Пароли не совпадают' })
-    } else if (pass1.length < 8 || pass2.length < 8) {
-      setErrors({ ...errors, pass: 'Пароль должен содержать минимум 8 символов' })
+    if (!validateEmail(String(formdata.get('email')))) {
+      toast(language === 'RU' ? 'Проверьте правильность ввода электронной почты' : 'Email seems wrong', { type: 'error' })
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        email: language === 'RU' ? 'Неверный формат' : 'Wrong email'
+      }))
+    } else {
+      if (formdata && pass1 === pass2 && pass1.length >= 8) {
+        register(formdata)
+          .unwrap()
+          .then(() => {
+            toast('Регистрация прошла успешно, письмо для подтверждения отправлено на электронную почту', { type: 'success' })
+            navigate(generatePath(PathE.RegistrationConfirm, { email: String(formdata.get('email')) }))
+            close()
+          })
+          .catch((err: any) => setErrors((prevErrors) => ({ ...prevErrors, email: err.email })))
+      } else if (pass1 !== pass2) {
+        setErrors({ ...errors, pass: 'Пароли не совпадают' })
+      } else if (pass1.length < 8 || pass2.length < 8) {
+        setErrors({ ...errors, pass: 'Пароль должен содержать минимум 8 символов' })
+      }
     }
   }
 
@@ -139,7 +148,7 @@ export const RegistrationElement: FC<IElement> = ({ changeAction, close }) => {
           <label className="text-zinc-500 text-base font-normal font-['SF Pro Text'] leading-snug">
             {language === 'RU' ? 'Уже есть аккаунт?' : 'Already have an account?'}
           </label>
-          <DefaultLink className='h-full flex items-center' onClick={() => changeAction(1)} text={language === 'RU'? "Войти": 'Log in'} style={{ fontSize: '16px', color: '#008001' }} />
+          <DefaultLink className='h-full flex items-center' onClick={() => changeAction(1)} text={language === 'RU' ? "Войти" : 'Log in'} style={{ fontSize: '16px', color: '#008001' }} />
         </div>
       </div>
     </form>

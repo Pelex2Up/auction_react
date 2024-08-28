@@ -29,7 +29,7 @@ export const FiltersCatalog: FC<IFilterCatalog> = ({ data, searchParams, updateU
 
   return (
     <div className="flex w-full flex-col gap-4">
-      <div className="w-full lg:h-[60px] bg-[#F8F8F8] shadow flex flex-wrap justify-between items-center gap-4 p-6">
+      <div className="w-full lg:h-[60px] bg-[#F8F8F8] shadow flex flex-wrap justify-between items-center gap-4 px-6 lg:py-0 py-6">
         <div className="flex lg:flex-row flex-col items-start lg:items-center gap-2">
           <span className="text-green-700 text-base font-medium font-['SF Pro Text'] leading-tight tracking-tight">
             {language === 'RU' ? 'Сортировать по' : 'Sort by'}
@@ -47,7 +47,7 @@ export const FiltersCatalog: FC<IFilterCatalog> = ({ data, searchParams, updateU
           </div>
         </div>
 
-        <div className="w-auto h-7 justify-start items-center self-end gap-2 inline-flex">
+        <div className="w-auto h-7 justify-start items-center gap-2 inline-flex">
           <button
             className="w-3.5 h-3.5 flex items-center relative rotate-90"
             disabled={parseInt(searchParams.get('page') as string) === 1}

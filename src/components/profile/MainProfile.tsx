@@ -211,27 +211,27 @@ export const MainProfile: FC = () => {
         <li className="justify-start items-start xl:items-center gap-[9px] flex flex-col xl:flex-row xl:inline-flex">
           {language === 'RU'
             ? radioGroupRu.map((option) => (
-                <RadioButton
-                  key={option.label + option.value}
-                  name="type"
-                  id={option.value}
-                  value={option.value}
-                  text={option.label}
-                  onChange={handleChangeOption}
-                  checked={selectedOption === option.value}
-                />
-              ))
+              <RadioButton
+                key={option.label + option.value}
+                name="type"
+                id={option.value}
+                value={option.value}
+                text={option.label}
+                onChange={handleChangeOption}
+                checked={selectedOption === option.value}
+              />
+            ))
             : radioGroupEng.map((option) => (
-                <RadioButton
-                  key={option.label + option.value}
-                  name="type"
-                  id={option.value}
-                  value={option.value}
-                  text={option.label}
-                  onChange={handleChangeOption}
-                  checked={selectedOption === option.value}
-                />
-              ))}
+              <RadioButton
+                key={option.label + option.value}
+                name="type"
+                id={option.value}
+                value={option.value}
+                text={option.label}
+                onChange={handleChangeOption}
+                checked={selectedOption === option.value}
+              />
+            ))}
         </li>
         <li className="flex-col justify-center items-start gap-1.5 inline-flex">
           <label htmlFor="name" className="text-zinc-900 text-sm font-normal leading-[16.80px] tracking-tight">
@@ -240,12 +240,12 @@ export const MainProfile: FC = () => {
                 ? 'Имя Фамилия Отчество'
                 : 'Full name'
               : selectedOption === 'company'
-              ? language === 'RU'
-                ? 'Название организации'
-                : 'Company name'
-              : language === 'RU'
-              ? 'Название ИП'
-              : 'Company name'}
+                ? language === 'RU'
+                  ? 'Название организации'
+                  : 'Company name'
+                : language === 'RU'
+                  ? 'Название ИП'
+                  : 'Company name'}
             <span className="text-red-500 text-xl font-normal leading-[16.80px] tracking-tight">*</span>
           </label>
           <Input
@@ -346,7 +346,7 @@ export const MainProfile: FC = () => {
             value={userProfile?.profile.phone_number || ''}
             placeholder={language === 'RU' ? 'Введите номер телефона' : 'Enter phone number'}
             className={styles.PhoneInput}
-            // localization={ru}
+          // localization={ru}
           />
           {/* <Input
             multiline={false}
