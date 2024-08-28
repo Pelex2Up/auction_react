@@ -1,7 +1,7 @@
 import { LotT } from '../types/lotTypes'
 import { IProfile, ISubscription, ITariff } from '../types/profile'
 import { formDataConverter } from '../utils/formDataConverter'
-import { CartT, IFeedBackForm } from './apiTypes'
+import { CartT, IFeedBackForm, IFooter } from './apiTypes'
 import { baseQuery } from './baseApi'
 import { createApi } from '@reduxjs/toolkit/query/react'
 
@@ -103,11 +103,15 @@ export const userService = createApi({
           body: data
         }
       }
+    }),
+    fetchFooterData: builder.query<IFooter, void>({
+      query: () => '/site/content/footer/'
     })
   })
 })
 
 export const {
+  useFetchFooterDataQuery,
   useSendAdminMessageMutation,
   useSendFeedBackMutation,
   useFetchUserAdvertisementsQuery,

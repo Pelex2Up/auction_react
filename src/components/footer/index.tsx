@@ -7,9 +7,11 @@ import DefaultLink from '../common/DefaultLink'
 import { CatalogPathE, PathE } from '../../enum'
 import { selectLangSettings, useAppSelector } from '../../store/hooks'
 import { generatePath } from 'react-router-dom'
+import { useFetchFooterDataQuery } from '../../api/userService'
 
 export default function Footer({ openModal }: { openModal: () => void }) {
   const { language } = useAppSelector(selectLangSettings)
+  const { data: footerData, refetch } = useFetchFooterDataQuery()
 
   return (
     <>
@@ -50,7 +52,7 @@ export default function Footer({ openModal }: { openModal: () => void }) {
           </div>
           <div className={`flex flex-col gap-[12px] justify-start items-start text-sm leading-[16.8px] tracking-[1%] font-normal w-max-content`}>
             <span>{language === 'RU' ? 'Контакты' : 'Contact information'}</span>
-            <a href="mailto:stock@gmail.com?subject=Вопрос" className="flex items-center gap-2 text-[#808080] font-normal">
+            <a href={`mailto:${footerData?.email}}?subject=Вопрос`} className="flex items-center gap-2 text-[#808080] font-normal">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
                   d="M21.4308 3H2.57366C1.62689 3 0.859375 3.76751 0.859375 4.71429V19.2857C0.859375 20.2325 1.62689 21 2.57366 21H21.4308C22.3776 21 23.1451 20.2325 23.1451 19.2857V4.71429C23.1451 3.76751 22.3776 3 21.4308 3Z"
@@ -65,9 +67,9 @@ export default function Footer({ openModal }: { openModal: () => void }) {
                   strokeLinejoin="round"
                 />
               </svg>
-              www.stock@gmail.com
+              {footerData?.email}
             </a>
-            <a href="tel:+375 (29) 123 45 67" type="tel" className="flex items-center gap-2 text-[#808080] font-normal">
+            <a href={`tel:${footerData?.phone_number}`} type="tel" className="flex items-center gap-2 text-[#808080] font-normal">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g clipPath="url(#clip0_1118_539)">
                   <path
@@ -83,7 +85,7 @@ export default function Footer({ openModal }: { openModal: () => void }) {
                   </clipPath>
                 </defs>
               </svg>
-              +375 (29) 123 45 67
+              {footerData?.phone_number}
             </a>
             <Button
               variant="secondary"
@@ -108,10 +110,10 @@ export default function Footer({ openModal }: { openModal: () => void }) {
             </svg>
             2024, ООО Стоковая Биржа
           </p>
-          <a className="text-sm font-normal text-[#808080] cursor-pointer no-underline">
+          <a className="text-sm font-normal text-[#808080] cursor-pointer no-underline" href={footerData?.user_agreement || '#'} rel='noreferrer' target={footerData?.user_agreement ? '_blank': '_parent'}>
             {language === 'RU' ? 'Пользовательское соглашение' : 'User agreement'}
           </a>
-          <a className="text-sm font-normal text-[#808080] cursor-pointer no-underline">
+          <a className="text-sm font-normal text-[#808080] cursor-pointer no-underline" href={footerData?.privacy_policy || '#'} rel='noreferrer' target={footerData?.privacy_policy ? '_blank': '_parent'}>
             {language === 'RU' ? 'Политика конфиденциальности' : 'Privacy policy'}
           </a>
           <div className="w-[251px]"></div>

@@ -32,3 +32,11 @@ export interface IFeedBackForm {
   message: string
   accept_privacy_policy: boolean
 }
+
+export interface IFooter {
+  email: string
+  phone_number: string
+  privacy_policy: string
+  requisites: string
+  user_agreement: string
+}
