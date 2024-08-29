@@ -8,7 +8,7 @@ import { CatalogPathE, PathE } from '../../enum'
 import { selectLangSettings, useAppSelector } from '../../store/hooks'
 import { generatePath } from 'react-router-dom'
 import { useFetchFooterDataQuery } from '../../api/userService'
-import parse from 'html-react-parser';
+import parse from 'html-react-parser'
 
 export default function Footer({ openModal }: { openModal: () => void }) {
   const { language } = useAppSelector(selectLangSettings)
@@ -112,10 +112,20 @@ export default function Footer({ openModal }: { openModal: () => void }) {
             </svg>
             2024, ООО Стоковая Биржа
           </p>
-          <a className="text-sm font-normal text-[#808080] cursor-pointer no-underline" href={footerData?.user_agreement || '#'} rel='noreferrer' target={footerData?.user_agreement ? '_blank': '_parent'}>
+          <a
+            className="text-sm font-normal text-[#808080] cursor-pointer no-underline"
+            href={footerData?.user_agreement || PathE.Home}
+            rel="noreferrer"
+            target={footerData?.user_agreement ? '_blank' : '_self'}
+          >
             {language === 'RU' ? 'Пользовательское соглашение' : 'User agreement'}
           </a>
-          <a className="text-sm font-normal text-[#808080] cursor-pointer no-underline" href={footerData?.privacy_policy || '#'} rel='noreferrer' target={footerData?.privacy_policy ? '_blank': '_parent'}>
+          <a
+            className="text-sm font-normal text-[#808080] cursor-pointer no-underline"
+            href={footerData?.privacy_policy || PathE.Home}
+            rel="noreferrer"
+            target={footerData?.privacy_policy ? '_blank' : '_self'}
+          >
             {language === 'RU' ? 'Политика конфиденциальности' : 'Privacy policy'}
           </a>
           <div className="w-[251px]"></div>
