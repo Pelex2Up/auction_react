@@ -18,8 +18,6 @@ export const SliderAds: FC = () => {
   const laptopDisplay = useMediaQuery('(min-width:1300px)', { noSsr: true })
   const mediumDisplay = useMediaQuery('(min-width:1024px)', { noSsr: true })
 
-  console.log('laptop?', laptopDisplay)
-
   useEffect(() => {
     if (laptopDisplay) {
       setPageSize(4)
