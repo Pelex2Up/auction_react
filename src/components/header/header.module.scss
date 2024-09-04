@@ -84,7 +84,7 @@
     position: absolute;
     padding: 0 1rem;
     width: 100vw;
-    height: 100vh;
+    min-height: 100vh;
     top: 100%;
     right: -100vw;
     bottom: 0;
@@ -94,6 +94,8 @@
     display: flex;
     gap: 1rem;
     flex-direction: column;
+    padding-bottom: 300px;
+    overflow-y: auto;
   }
 }
 
