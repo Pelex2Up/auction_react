@@ -5,6 +5,7 @@ import DefaultLink from '../../components/common/DefaultLink'
 import { PathE } from '../../enum'
 import { useFetchProfileQuery, useFetchTariffsQuery } from '../../api/userService'
 import { selectLangSettings, useAppSelector } from '../../store/hooks'
+import { changeWordByNumber } from '../../utility/wordChangerByCount'
 
 export const MyTariffPage: FC = () => {
   const { language } = useAppSelector(selectLangSettings)
@@ -33,7 +34,11 @@ export const MyTariffPage: FC = () => {
                   {user.subscription.tariff.name}
                 </span>
                 <span className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
-                  {`(${user.subscription.tariff.unlim_ad_count} ${language === 'RU' ? 'объявлений' : 'advertisemets'})`}
+                  {`(${user.subscription.tariff.unlim_ad_count} ${
+                    language === 'RU'
+                      ? changeWordByNumber(user.subscription.tariff.unlim_ad_count, 'объявление', 'объявления', 'объявлений')
+                      : changeWordByNumber(user.subscription.tariff.unlim_ad_count, 'advertisemet', 'advertisemets', 'advertisemets')
+                  })`}
                 </span>
               </div>
               <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
@@ -68,7 +73,9 @@ export const MyTariffPage: FC = () => {
                     <div className="flex flex-wrap items-center gap-[5px]">
                       <span className="text-green-800 text-xl font-medium font-['SF Pro Text'] leading-normal tracking-tight">{tariff.name}</span>
                       <span className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">{` (${tariff.ad_count} ${
-                        language === 'RU' ? 'объявления' : 'advertisemets'
+                        language === 'RU'
+                          ? changeWordByNumber(tariff.ad_count, 'объявление', 'объявления', 'объявлений')
+                          : changeWordByNumber(tariff.ad_count, 'advertisemet', 'advertisemets', 'advertisemets')
                       })`}</span>
                     </div>
                     <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">

@@ -277,7 +277,7 @@ export const MainProfile: FC = () => {
               required
               maxLength={12}
               minLength={9}
-              type='number'
+              type="number"
               onKeyDown={handleNumberKeyPress}
               error={errors && errors.name.length > 0}
               defaultValue={userProfile?.profile.unp || ''}
