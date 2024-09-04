@@ -14,6 +14,7 @@ import { Loader } from '../Loader'
 import { PhoneInput, defaultCountries, parseCountry } from 'react-international-phone'
 import styles from './MainProfile.module.scss'
 import 'react-international-phone/style.css'
+import { validatePhone } from '../../utility/validations'
 
 interface IProfileError {
   name: string
@@ -89,6 +90,7 @@ export const MainProfile: FC = () => {
     const form = event.target as HTMLFormElement
     const formdata = new FormData(form)
     const profileFormData = new FormData()
+    const phone = formdata.get('phone_number') as string
     if (formdata.get('name')) {
       const name = formdata.get('name') as string
       if (name !== userProfile?.profile.name) {
@@ -103,12 +105,11 @@ export const MainProfile: FC = () => {
     }
     if (formdata.get('unp')) {
       const unp = formdata.get('unp') as string
-      if (unp !== userProfile?.profile.unp) {
+      if (String(unp) !== String(userProfile?.profile.unp)) {
         profileFormData.append('profile.unp', unp)
       }
     }
-    if (formdata.get('phone_number')) {
-      const phone = formdata.get('phone_number') as string
+    if (phone.length > 1) {
       if (formatPhoneNumber(phone) !== userProfile?.profile.phone_number) {
         profileFormData.append('profile.phone_number', formatPhoneNumber(phone))
       }
@@ -127,7 +128,9 @@ export const MainProfile: FC = () => {
       profileFormData.append('profile.avatar', avatarFile)
     }
 
-    if (
+    if (!validatePhone(phone)) {
+      toast(language === 'RU' ? 'Проверьте правильность ввода номера телефона' : 'Phone number is invalid', { type: 'warning' })
+    } else if (
       profileFormData.get('profile.name') ||
       profileFormData.get('username') ||
       profileFormData.get('profile.phone_number') ||
@@ -211,27 +214,27 @@ export const MainProfile: FC = () => {
         <li className="justify-start items-start xl:items-center gap-[9px] flex flex-col xl:flex-row xl:inline-flex">
           {language === 'RU'
             ? radioGroupRu.map((option) => (
-              <RadioButton
-                key={option.label + option.value}
-                name="type"
-                id={option.value}
-                value={option.value}
-                text={option.label}
-                onChange={handleChangeOption}
-                checked={selectedOption === option.value}
-              />
-            ))
+                <RadioButton
+                  key={option.label + option.value}
+                  name="type"
+                  id={option.value}
+                  value={option.value}
+                  text={option.label}
+                  onChange={handleChangeOption}
+                  checked={selectedOption === option.value}
+                />
+              ))
             : radioGroupEng.map((option) => (
-              <RadioButton
-                key={option.label + option.value}
-                name="type"
-                id={option.value}
-                value={option.value}
-                text={option.label}
-                onChange={handleChangeOption}
-                checked={selectedOption === option.value}
-              />
-            ))}
+                <RadioButton
+                  key={option.label + option.value}
+                  name="type"
+                  id={option.value}
+                  value={option.value}
+                  text={option.label}
+                  onChange={handleChangeOption}
+                  checked={selectedOption === option.value}
+                />
+              ))}
         </li>
         <li className="flex-col justify-center items-start gap-1.5 inline-flex">
           <label htmlFor="name" className="text-zinc-900 text-sm font-normal leading-[16.80px] tracking-tight">
@@ -240,17 +243,18 @@ export const MainProfile: FC = () => {
                 ? 'Имя Фамилия Отчество'
                 : 'Full name'
               : selectedOption === 'company'
-                ? language === 'RU'
-                  ? 'Название организации'
-                  : 'Company name'
-                : language === 'RU'
-                  ? 'Название ИП'
-                  : 'Company name'}
+              ? language === 'RU'
+                ? 'Название организации'
+                : 'Company name'
+              : language === 'RU'
+              ? 'Название ИП'
+              : 'Company name'}
             <span className="text-red-500 text-xl font-normal leading-[16.80px] tracking-tight">*</span>
           </label>
           <Input
             multiline={false}
             required
+            maxLength={90}
             error={errors && errors.name.length > 0}
             defaultValue={userProfile?.profile.name || ''}
             onChange={() => setErrors({ ...errors, name: '' })}
@@ -270,6 +274,8 @@ export const MainProfile: FC = () => {
             <Input
               multiline={false}
               required
+              maxLength={12}
+              minLength={9}
               error={errors && errors.name.length > 0}
               defaultValue={userProfile?.profile.unp || ''}
               onChange={() => setErrors({ ...errors, unp: '' })}
@@ -346,7 +352,7 @@ export const MainProfile: FC = () => {
             value={userProfile?.profile.phone_number || ''}
             placeholder={language === 'RU' ? 'Введите номер телефона' : 'Enter phone number'}
             className={styles.PhoneInput}
-          // localization={ru}
+            // localization={ru}
           />
           {/* <Input
             multiline={false}
