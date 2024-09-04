@@ -15,6 +15,7 @@ import { PhoneInput, defaultCountries, parseCountry } from 'react-international-
 import styles from './MainProfile.module.scss'
 import 'react-international-phone/style.css'
 import { validatePhone } from '../../utility/validations'
+import { handleNumberKeyPress } from '../../pages/Lots/MakeLot'
 
 interface IProfileError {
   name: string
@@ -276,6 +277,8 @@ export const MainProfile: FC = () => {
               required
               maxLength={12}
               minLength={9}
+              type='number'
+              onKeyDown={handleNumberKeyPress}
               error={errors && errors.name.length > 0}
               defaultValue={userProfile?.profile.unp || ''}
               onChange={() => setErrors({ ...errors, unp: '' })}
