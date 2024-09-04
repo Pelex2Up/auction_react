@@ -14,7 +14,8 @@ const langList = [
 
 const cashList = [
   { label: 'USD - Доллар США', value: 'USD' },
-  { label: 'BYN - Белорусский рубль', value: 'BYN' }
+  { label: 'BYN - Белорусский рубль', value: 'BYN' },
+  { label: 'RUB - Российский рубль', value: 'RUB' }
 ]
 
 export const LangChangeBlock: FC = () => {
@@ -23,7 +24,7 @@ export const LangChangeBlock: FC = () => {
   const dispatch = useAppDispatch()
   const langState = useAppSelector(selectLangSettings)
   const [language, setLanguage] = useState<'RU' | 'ENG'>(langState.language)
-  const [money, setMoney] = useState<'BYN' | 'USD'>(langState.money)
+  const [money, setMoney] = useState<'BYN' | 'USD' | 'RUB'>(langState.money)
 
   const handleOutsideClick = useCallback(
     (event: MouseEvent) => {
@@ -125,7 +126,7 @@ export const LangChangeBlock: FC = () => {
                 optionsList={cashList}
                 defaultOption="Выберите валюту"
                 selectedOption={langState.money}
-                setSelectedValue={(event) => (event === 'BYN' || event === 'USD') && setMoney(event)}
+                setSelectedValue={(event) => (event === 'BYN' || event === 'USD' || event === 'RUB') && setMoney(event)}
               />
             </div>
             <div className="flex w-full justify-center">

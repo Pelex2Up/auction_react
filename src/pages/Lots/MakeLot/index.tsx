@@ -14,7 +14,7 @@ import { useCreateLotMutation, useFetchCategoriesQuery, useGetCategoryMutation }
 import { Loader } from '../../../components/Loader'
 import CreateLotSuccess from './SuccessCreated'
 import { ICategory } from '../../../types/commonTypes'
-import { useFetchProfileQuery } from '../../../api/userService'
+import { useFetchFooterDataQuery, useFetchProfileQuery } from '../../../api/userService'
 import { selectLangSettings, useAppSelector } from '../../../store/hooks'
 
 export const daysList: { value: string; label: string }[] = Array.from({ length: 31 }, (_, i) => ({
@@ -41,8 +41,15 @@ export const handleKeyPress: React.KeyboardEventHandler<HTMLInputElement> & Reac
   }
 }
 
+export const handleNumberKeyPress: React.KeyboardEventHandler<HTMLInputElement> & React.KeyboardEventHandler<HTMLTextAreaElement> = (event) => {
+  if (!/[0-9]/.test(event.key) && event.key !== 'Backspace') {
+    event.preventDefault()
+  }
+}
+
 export const CreateLotPage: FC = () => {
   const { language } = useAppSelector(selectLangSettings)
+  const { data: overAllData } = useFetchFooterDataQuery()
   const dateNow = new Date()
   const { data: categories } = useFetchCategoriesQuery()
   const { data: user, isFetching, isSuccess } = useFetchProfileQuery()
@@ -254,11 +261,13 @@ export const CreateLotPage: FC = () => {
     if (user) {
       formdata.append('user', String(user.profile.id))
     }
-    if (!city) {
+    if (auctionEndDate.getDate() !== parseInt(date.day)) {
+      toast(language === 'RU' ? 'Проверьте правильность выбранной даты' : 'Selected incorrect date', { type: 'warning' })
+    } else if (!city) {
       toast(language === 'RU' ? 'Пожалуйста, укажите город' : 'Please select city', { type: 'warning' })
     } else if (Number(count) <= 0) {
       toast(language === 'RU' ? 'Количество товара должно быть больше 0' : 'Count must be higher than 0', { type: 'warning' })
-    }else if (Number(price) <= 0) {
+    } else if (Number(price) <= 0) {
       toast(language === 'RU' ? 'Стоимость товара должна быть больше 0' : 'Price must be higher than 0', { type: 'warning' })
     } else if (!region) {
       toast(language === 'RU' ? 'Пожалуйста, укажите область' : 'Please select region', { type: 'warning' })
@@ -483,7 +492,7 @@ export const CreateLotPage: FC = () => {
               value={count}
               required
               type="number"
-              onKeyDown={handleKeyPress}
+              onKeyDown={handleNumberKeyPress}
               onChange={(event) => setCount(String(event.target.value))}
             />
           </div>
@@ -756,7 +765,12 @@ export const CreateLotPage: FC = () => {
               label={
                 <p className="w-full text-xs text-[#808080] font-normal">
                   {language === 'RU' ? 'Я принимаю условия' : 'I accept'}{' '}
-                  <DefaultLink text={language === 'RU' ? 'Пользовательского соглашения' : 'User agreement'} style={{ color: '#008001' }} />
+                  <DefaultLink
+                    href={overAllData?.user_agreement ? process.env.REACT_APP_HOST_URL + overAllData?.user_agreement : '#'}
+                    target={overAllData?.user_agreement ? '_blank' : '_self'}
+                    text={language === 'RU' ? 'Пользовательского соглашения' : 'User agreement'}
+                    style={{ color: '#008001' }}
+                  />
                 </p>
               }
             />

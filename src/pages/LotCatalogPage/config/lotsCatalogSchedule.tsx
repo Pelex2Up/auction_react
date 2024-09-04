@@ -8,16 +8,20 @@ import { LotPathE, PathE } from '../../../enum'
 import cartImage from '../../../assets/images/cart.png'
 import { selectLangSettings, selectUser, useAppSelector } from '../../../store/hooks'
 import { Tooltip } from '@mui/material'
+import { usdConverter } from '../../../utility/usdConverter'
 
 interface ICatalogTable {
   lotsData: LotT[]
   addToCart: (arg: any) => void
   addManyToCart: (arg: any) => void
+  isLoading: boolean
+  isError: boolean
 }
 
-export const LotsCatalogSchedule: FC<ICatalogTable> = ({ lotsData, addToCart, addManyToCart }) => {
+export const LotsCatalogSchedule: FC<ICatalogTable> = ({ lotsData, addToCart, addManyToCart, isError, isLoading }) => {
   const { language } = useAppSelector(selectLangSettings)
   const { user } = useAppSelector(selectUser)
+  const { money } = useAppSelector(selectLangSettings)
   const [checkAll, setCheckAll] = useState<boolean>(false)
   const MAX_LENGTH = 60
   const navigate = useNavigate()
@@ -35,7 +39,8 @@ export const LotsCatalogSchedule: FC<ICatalogTable> = ({ lotsData, addToCart, ad
   }
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto relative">
+      {(isLoading || isError) && <div className="absolute flex w-full h-full items-center justify-center inset-0 backdrop-blur-sm z-50" />}
       <div className="flex flex-row items-center justify-start gap-6 py-4">
         <button className="flex flex-row items-center justify-start gap-2" onClick={() => setCheckAll(!checkAll)}>
           <span className="w-[24px]">
@@ -90,12 +95,12 @@ export const LotsCatalogSchedule: FC<ICatalogTable> = ({ lotsData, addToCart, ad
               <td className="p-1 border border-zinc-300 text-zinc-500 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">{`${
                 lot.count
               } ${lot.unit === 'PIECE' ? 'шт' : lot.unit === 'KG' ? 'кг' : 'тонн'}`}</td>
+              <td className="p-1 border border-zinc-300 text-green-700 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">{`${usdConverter(
+                lot.price
+              )} ${money}`}</td>
               <td className="p-1 border border-zinc-300 text-green-700 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">{`${
-                lot.price.split('.')[0]
-              } BYN`}</td>
-              <td className="p-1 border border-zinc-300 text-green-700 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">{`${
-                parseInt(lot.price.split('.')[0]) * (lot.count ?? 1)
-              } BYN`}</td>
+                usdConverter(lot.price) * (lot.count ?? 1)
+              } ${money}`}</td>
               <td className="p-1 border border-zinc-300 text-zinc-500 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">
                 {lot.ad_type === 'BUY' ? 'Покупка' : 'Продажа'}
               </td>

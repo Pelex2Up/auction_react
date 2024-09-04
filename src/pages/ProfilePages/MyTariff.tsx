@@ -39,9 +39,7 @@ export const MyTariffPage: FC = () => {
               <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
                 {language === 'RU' ? 'Разовый платеж' : 'One-time payment'}
               </div>
-              <div className="text-zinc-900 text-xl font-normal font-['SF Pro Text'] leading-normal tracking-tight">
-                {user.subscription.tariff.price} BYN
-              </div>
+              <div className="text-zinc-900 text-xl font-normal font-['SF Pro Text'] leading-normal tracking-tight">{user.subscription.tariff.price} BYN</div>
               <div className="bottom-[30px] right-[30px] lg:top-[24px] absolute flex-col justify-start items-start gap-1.5 inline-flex">
                 <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
                   {language === 'RU' ? 'Статус:' : 'Status:'}
@@ -69,8 +67,9 @@ export const MyTariffPage: FC = () => {
                   <div className="w-full h-full">
                     <div className="flex flex-wrap items-center gap-[5px]">
                       <span className="text-green-800 text-xl font-medium font-['SF Pro Text'] leading-normal tracking-tight">{tariff.name}</span>
-                      <span className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">{` (${tariff.ad_count} ${language === 'RU' ? 'объявления' : 'advertisemets'
-                        })`}</span>
+                      <span className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">{` (${tariff.ad_count} ${
+                        language === 'RU' ? 'объявления' : 'advertisemets'
+                      })`}</span>
                     </div>
                     <div className="text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">
                       {language === 'RU' ? 'Разовый платеж' : 'One-time payment'}
@@ -79,9 +78,7 @@ export const MyTariffPage: FC = () => {
                       {language === 'RU' ? `Период действия ${tariff.duration_days} дней` : `Validity period ${tariff.duration_days} days`}
                     </div>
 
-                    <div className="text-zinc-900 text-xl font-normal font-['SF Pro Text'] leading-normal tracking-tight">
-                      {tariff.price} BYN
-                    </div>
+                    <div className="text-zinc-900 text-xl font-normal font-['SF Pro Text'] leading-normal tracking-tight">{tariff.price} BYN</div>
                   </div>
                 </div>
               )

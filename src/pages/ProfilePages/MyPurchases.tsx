@@ -12,7 +12,7 @@ export const MyPurchasesPage: FC = () => {
   const { language } = useAppSelector(selectLangSettings)
   const [selectedFilter, setSelectedFilter] = useState<string>('all')
   const [order, setOrder] = useState<boolean>(false)
-  const { data: myOrders, isFetching, isError, refetch } = useFetchMyOrdersQuery({ order: order ? 'asc' : 'desc', type: selectedFilter })
+  const { data: myOrders, isFetching, isError, refetch } = useFetchMyOrdersQuery({ order: order ? 'asc' : 'desc', type: selectedFilter }, { refetchOnMountOrArgChange: true })
 
   const handleChangeOrder = async () => {
     setOrder((prevOrder) => !prevOrder)

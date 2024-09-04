@@ -1,19 +1,24 @@
-import { useUsdConverter } from '../../utility/usdConverter'
+import { usdConverter } from '../../utility/usdConverter'
 import { LotT } from '../../types/lotTypes'
 
-function getPriceInByn(lot: any) {
+export function getPriceInByn(lot: LotT) {
   if (lot.auction_current_price) {
-    return lot.auction_current_price.split('.')[0]
+    // if (lot.auction_current_price.split('.')[1] === '00') {
+    //   return lot.auction_current_price.split('.')[0]
+    // } else {
+    //   return lot.auction_current_price
+    // }
+    return parseFloat(lot.auction_current_price)
   } else {
-    return lot.price?.split('.')[0] || '0'
+    return parseFloat(lot.price)
   }
 }
 
-function getPriceInUsd(lot: any) {
+export function getPriceInUsd(lot: any) {
   if (lot.auction_current_price) {
-    return useUsdConverter(lot.auction_current_price.split('.')[0])
+    return usdConverter(lot.auction_current_price)
   } else if (lot.price) {
-    return useUsdConverter(lot.price.split('.')[0])
+    return usdConverter(lot.price)
   } else {
     return '0'
   }
@@ -21,7 +26,7 @@ function getPriceInUsd(lot: any) {
 
 function getOldPriceInByn(lot: any) {
   if (lot.old_price) {
-    return lot.old_price.split('.')[0]
+    return parseFloat(lot.old_price)
   } else {
     return '0'
   }
@@ -29,7 +34,7 @@ function getOldPriceInByn(lot: any) {
 
 function getOldPriceInUsd(lot: any) {
   if (lot.old_price) {
-    return useUsdConverter(lot.old_price.split('.')[0])
+    return usdConverter(lot.old_price)
   } else {
     return '0'
   }

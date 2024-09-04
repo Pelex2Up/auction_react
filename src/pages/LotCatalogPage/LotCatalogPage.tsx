@@ -122,7 +122,7 @@ export const LotCatalogPage: FC = () => {
       />
       <div className="w-full flex-col flex gap-4">
         <FiltersCatalog catData={catData} setCatData={setCatData} data={catalogData} searchParams={searchParams} updateUrl={updateUrl} />
-        <LotsCatalogSchedule lotsData={catalogData.results} addToCart={addToCart} addManyToCart={addManyToCart} />
+        <LotsCatalogSchedule lotsData={catalogData.results} addToCart={addToCart} addManyToCart={addManyToCart} isLoading={isLoading} isError={isError} />
         {/* {parseInt(searchParams.get('page') as string) > 1 && ( */}
         <div className="w-full flex items-center justify-center mt-6">
           <Pagination

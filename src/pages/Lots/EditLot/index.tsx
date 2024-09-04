@@ -15,7 +15,7 @@ import Checkbox from '../../../components/common/checkbox'
 import DefaultLink from '../../../components/common/DefaultLink'
 import { PhoneInput, defaultCountries, parseCountry } from 'react-international-phone'
 import styles from './MakeLot.module.scss'
-import { handleKeyPress } from '../MakeLot'
+import { handleKeyPress, handleNumberKeyPress } from '../MakeLot'
 import { ICategory } from '../../../types/commonTypes'
 import { ProfilePathE } from '../../../enum'
 
@@ -598,7 +598,7 @@ export const EditLotPage: FC = () => {
               value={lotData.count || ''}
               required
               type="number"
-              onKeyDown={handleKeyPress}
+              onKeyDown={handleNumberKeyPress}
               onChange={(event) => changeLotFields('count', Number(event.target.value))}
             />
           </div>

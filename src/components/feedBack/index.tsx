@@ -5,7 +5,7 @@ import Checkbox from '../common/checkbox'
 import { Button } from '../common/buttons'
 import DefaultLink from '../common/DefaultLink'
 import { selectLangSettings, useAppSelector } from '../../store/hooks'
-import { useSendFeedBackMutation } from '../../api/userService'
+import { useFetchFooterDataQuery, useSendFeedBackMutation } from '../../api/userService'
 import { FormEvent, useState } from 'react'
 import { toast } from 'react-toastify'
 import { validateEmail } from '../../utility/validations'
@@ -14,6 +14,7 @@ export default function FeedBack() {
   const { language } = useAppSelector(selectLangSettings)
   const [sendForm, { isSuccess }] = useSendFeedBackMutation()
   const [emailErr, setEmailErr] = useState<boolean>(false)
+  const { data: overAllData } = useFetchFooterDataQuery()
 
   const handleForm = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -76,8 +77,16 @@ export default function FeedBack() {
         </span>
         <form onSubmit={handleForm} className="grid lg:grid-cols-2 grid-rows-1 w-full gap-[20px]">
           <div className="grid grid-cols-2 w-full gap-[10px]">
-            <Input className="w-full" required multiline={false} placeholder={language === 'RU' ? 'Имя' : 'Your Name'} name="name" />
-            <Input error={emailErr} className="w-full" onChange={() => setEmailErr(false)} required multiline={false} placeholder={language === 'RU' ? 'Электронная почта' : 'Email'} name="email" />
+            <Input maxLength={50} className="w-full" required multiline={false} placeholder={language === 'RU' ? 'Имя' : 'Your Name'} name="name" />
+            <Input
+              error={emailErr}
+              className="w-full"
+              onChange={() => setEmailErr(false)}
+              required
+              multiline={false}
+              placeholder={language === 'RU' ? 'Электронная почта' : 'Email'}
+              name="email"
+            />
             <Input multiline rows={2} required placeholder={language === 'RU' ? 'Сообщение' : 'Message'} className="col-span-2" name="message" aria-multiline />
           </div>
           <div className="flex flex-col gap-[20px]">
@@ -86,9 +95,19 @@ export default function FeedBack() {
               label={
                 <p className="max-w-[230px] text-sm text-[#808080] font-normal">
                   {language === 'RU' ? `Я принимаю условия` : 'I accept'}{' '}
-                  <DefaultLink text={language === 'RU' ? 'Пользовательского соглашения' : 'User agreement'} style={{ color: '#008001' }} />{' '}
+                  <DefaultLink
+                    text={language === 'RU' ? 'Пользовательского соглашения' : 'User agreement'}
+                    href={overAllData?.user_agreement ? process.env.REACT_APP_HOST_URL + overAllData?.user_agreement : '#'}
+                    target={overAllData?.user_agreement ? '_blank' : '_self'}
+                    style={{ color: '#008001' }}
+                  />{' '}
                   {language === 'RU' ? 'и' : 'and'}{' '}
-                  <DefaultLink text={language === 'RU' ? 'Политику конфиденциальности' : 'Privacy policy'} style={{ color: '#008001' }} />
+                  <DefaultLink
+                    target={overAllData?.privacy_policy ? '_blank' : '_self'}
+                    href={overAllData?.privacy_policy ? process.env.REACT_APP_HOST_URL + overAllData?.privacy_policy : '#'}
+                    text={language === 'RU' ? 'Политику конфиденциальности' : 'Privacy policy'}
+                    style={{ color: '#008001' }}
+                  />
                 </p>
               }
             />

@@ -19,7 +19,6 @@ export const SameLotsBlock: FC<ISameBlock> = ({ id }) => {
   const [getLots, { data, isSuccess, isLoading, isError }] = useFetchSameLotsMutation()
   const lotsListSwiperRef = useRef<SwiperRef>(null)
   const [lotsData, setLotsData] = useState<LotT[]>()
-  console.log(lotsData)
 
   useEffect(() => {
     if (!lotsData && !isLoading && !isError && id) {

@@ -15,8 +15,9 @@ import { useMakeBidMutation, usePurchaseLotMutation } from '../../api/lotService
 import { changeWordByNumber } from '../../utility/wordChangerByCount'
 import DefaultLink from '../../components/common/DefaultLink'
 import { Loader } from '../../components/Loader'
-import { selectLangSettings, selectUser, useAppSelector } from '../../store/hooks'
-import { LotDetailOldPrice, LotDetailPrice } from '../../components/PriceDisplay'
+import { selectCourse, selectLangSettings, selectUser, useAppSelector } from '../../store/hooks'
+import { LotDetailOldPrice, LotDetailPrice, getPriceInUsd } from '../../components/PriceDisplay'
+import { usdConverter } from '../../utility/usdConverter'
 
 export type ContentWrapperType = {
   className?: string
@@ -35,6 +36,12 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
   const [addToCart, { isSuccess, isError, error }] = useAppendLotInCartMutation()
   const [purchaseLot, { isSuccess: purchasedSuccess }] = usePurchaseLotMutation()
   const endDate = new Date(lotData.auction_end_date)
+  const auctionBid = lotData.auction_current_price
+    ? lotData.ad_type === 'BUY'
+      ? parseFloat(lotData.auction_current_price) - parseFloat(lotData.step_bid)
+      : parseFloat(lotData.auction_current_price) + parseFloat(lotData.step_bid)
+    : parseFloat(lotData.price) + parseFloat(lotData.step_bid)
+  const usdBid = usdConverter(auctionBid)
 
   useEffect(() => {
     if (error && 'data' in error && error.data && 'status' in error && isError && error.status === 400) {
@@ -146,37 +153,30 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
                     </div>
                     <div className="flex flex-row w-full items-center gap-2">
                       <LotDetailPrice money={money} lot={lotData} />
-                      <p className="text-right text-zinc-500 text-lg font-normal font-['SF Pro Text'] leading-snug tracking-tight">{`/ ${lotData.count} ${lotData.unit === 'PIECE'
-                        ? language === 'RU'
-                          ? 'шт'
-                          : 'pcs'
-                        : lotData.unit === 'KG'
+                      <p className="text-right text-zinc-500 text-lg font-normal font-['SF Pro Text'] leading-snug tracking-tight">{`/ ${lotData.count} ${
+                        lotData.unit === 'PIECE'
+                          ? language === 'RU'
+                            ? 'шт'
+                            : 'pcs'
+                          : lotData.unit === 'KG'
                           ? language === 'RU'
                             ? 'кг'
                             : 'kg'
                           : language === 'RU'
-                            ? changeWordByNumber(Number(lotData.count), 'тонну', 'тонны', 'тонн')
-                            : 'ton'
-                        }
+                          ? changeWordByNumber(Number(lotData.count), 'тонну', 'тонны', 'тонн')
+                          : 'ton'
+                      }
                       `}</p>
                     </div>
                     <div className="flex w-full flex-wrap flex-row justify-between gap-3 items-center">
                       <div className="w-[170px] h-12 relative">
                         <div className="w-[170px] h-10 p-3 left-0 top-[8px] absolute rounded border border-zinc-300 justify-between items-center inline-flex">
-                          <input
-                            className="bg-transparent border-none w-full text-zinc-500"
-                            maxLength={12}
-                            disabled
-                            type="number"
-                            value={
-                              lotData.auction_current_price
-                                ? lotData.ad_type === 'BUY'
-                                  ? Number(lotData.auction_current_price.split('.')[0]) - Number(lotData.step_bid.split('.')[0])
-                                  : Number(lotData.auction_current_price.split('.')[0]) + Number(lotData.step_bid.split('.')[0])
-                                : Number(lotData.price.split('.')[0]) + Number(lotData.step_bid.split('.')[0])
-                            }
-                          />
-                          <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[17px]">BYN</div>
+                          {money === 'BYN' ? (
+                            <input className="bg-transparent border-none w-full text-zinc-500" maxLength={12} disabled type="number" value={auctionBid} />
+                          ) : (
+                            <input className="bg-transparent border-none w-full text-zinc-500" maxLength={12} disabled type="number" value={usdBid} />
+                          )}
+                          <div className="text-zinc-500 text-sm font-normal font-['SF Pro Text'] leading-[17px]">{money}</div>
                         </div>
                         <div className="px-1 left-[8px] top-0.5 absolute bg-stone-50 justify-start items-start gap-2.5 inline-flex">
                           <div className="text-zinc-500 text-xs font-normal font-['SF Pro Text'] leading-none">
@@ -201,14 +201,8 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
                       </div>
                     </div>
                     <div className="w-[167px] text-zinc-500 text-xs font-normal font-['SF Pro Text'] leading-[14.40px] tracking-tight">
-                      {language === 'RU' ? 'Мин.ставка:' : 'Min bid:'}{' '}
-                      {lotData.auction_current_price
-                        ? lotData.ad_type === 'BUY'
-                          ? Number(lotData.auction_current_price.split('.')[0]) - Number(lotData.step_bid.split('.')[0])
-                          : Number(lotData.auction_current_price.split('.')[0]) + Number(lotData.step_bid.split('.')[0])
-                        : Number(lotData.price.split('.')[0]) + Number(lotData.step_bid.split('.')[0])}{' '}
-                      BYN, <br />
-                      {language === 'RU' ? 'шаг ставки:' : 'step bid:'} {lotData.step_bid.split('.')[0]} BYN
+                      {language === 'RU' ? 'След. ставка:' : 'Next bid:'} {money === 'BYN' ? auctionBid : usdBid} {money}, <br />
+                      {language === 'RU' ? 'шаг ставки:' : 'step bid:'} {usdConverter(parseFloat(lotData.step_bid))} {money}
                     </div>
                   </div>
                 ) : (
@@ -220,12 +214,12 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
                           ? 'единицу'
                           : 'piece'
                         : lotData.unit === 'KG'
-                          ? language === 'RU'
-                            ? 'кг'
-                            : 'kg'
-                          : language === 'RU'
-                            ? 'тонну'
-                            : 'ton'}
+                        ? language === 'RU'
+                          ? 'кг'
+                          : 'kg'
+                        : language === 'RU'
+                        ? 'тонну'
+                        : 'ton'}
                     </div>
                     <b className="self-stretch relative text-[2rem] tracking-[0.01em] leading-[120%] text-green-600 mq825:text-[1.625rem] mq825:leading-[1.938rem] mq450:text-[1.188rem] mq450:leading-[1.438rem]">
                       {lotData.price.split('.')[0]} BYN
@@ -265,23 +259,25 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
                                 ? 'единицу'
                                 : 'pcs'
                               : lotData.unit === 'KG'
-                                ? language === 'RU'
-                                  ? 'кг'
-                                  : 'kg'
-                                : language === 'RU'
-                                  ? 'тонну'
-                                  : 'ton'}
+                              ? language === 'RU'
+                                ? 'кг'
+                                : 'kg'
+                              : language === 'RU'
+                              ? 'тонну'
+                              : 'ton'}
                           </div>
                         </div>
                       </div>
 
                       {lotData.purchase_count > 0 && (
                         <div className="w-full text-zinc-500 relative text-[0.875rem] tracking-[0.01em] leading-[1.063rem] text-dark-grey inline-block z-[1]">
-                          {`${language === 'RU' ? changeWordByNumber(lotData.purchase_count, 'Подана', 'Подано', 'Подано') : 'Accepted'} ${lotData.purchase_count
-                            } ${language === 'RU'
+                          {`${language === 'RU' ? changeWordByNumber(lotData.purchase_count, 'Подана', 'Подано', 'Подано') : 'Accepted'} ${
+                            lotData.purchase_count
+                          } ${
+                            language === 'RU'
                               ? changeWordByNumber(lotData.purchase_count, 'заявка', 'заявки', 'заявок')
                               : changeWordByNumber(lotData.purchase_count, 'order', 'orders', 'orders')
-                            }`}
+                          }`}
                         </div>
                       )}
                     </div>
@@ -310,8 +306,8 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
                         ? 'Написать продавцу'
                         : 'Message seller'
                       : language === 'RU'
-                        ? 'Написать покупателю'
-                        : 'Message buyer'
+                      ? 'Написать покупателю'
+                      : 'Message buyer'
                   }
                 />
               </a>
@@ -327,7 +323,13 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
                         : 'disabled'
                       : 'disabled'
                   }
-                  disabled={lotData.profile.id === user?.profile.id || (lotData.last_bid && lotData.last_bid.user === user?.profile.id) || !auth || lotData.status === 'CLOSED' || lotData.status === 'MODERATION'}
+                  disabled={
+                    lotData.profile.id === user?.profile.id ||
+                    (lotData.last_bid && lotData.last_bid.user === user?.profile.id) ||
+                    !auth ||
+                    lotData.status === 'CLOSED' ||
+                    lotData.status === 'MODERATION'
+                  }
                   text={language === 'RU' ? 'Сделать ставку' : 'Make bid'}
                   onClick={() => makeBid(lotData.id)}
                 >
@@ -337,7 +339,9 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
                 <Button variant="disabled" className="w-full" text={language === 'RU' ? 'Куплено' : 'Purchased'} disabled />
               ) : (
                 <Button
-                  variant={lotData.profile.id !== user?.profile.id && auth && lotData.status !== 'CLOSED' && lotData.status !== 'MODERATION' ? 'primary' : 'disabled'}
+                  variant={
+                    lotData.profile.id !== user?.profile.id && auth && lotData.status !== 'CLOSED' && lotData.status !== 'MODERATION' ? 'primary' : 'disabled'
+                  }
                   disabled={lotData.profile.id === user?.profile.id || !auth || lotData.status === 'CLOSED' || lotData.status === 'MODERATION'}
                   className="w-full"
                   text={language === 'RU' ? 'Купить' : 'Purchase'}
@@ -345,12 +349,14 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
                 />
               )}
             </div>
-            {lotData.status === 'CLOSED' ? <div className="w-full flex-col justify-start items-center gap-[18px] inline-flex z-[2]">
-              <div className="w-full lg:w-[422px] h-[0px] border border-zinc-300" />
-              <span className="text-zinc-500 w-full text-xs font-normal text-start font-['SF Pro Text'] leading-[14.40px] tracking-tight">
-                {language === 'RU' ? 'Объявление закрыто.' : 'Advertisement closed.'}
-              </span>
-            </div> : auth ? (
+            {lotData.status === 'CLOSED' ? (
+              <div className="w-full flex-col justify-start items-center gap-[18px] inline-flex z-[2]">
+                <div className="w-full lg:w-[422px] h-[0px] border border-zinc-300" />
+                <span className="text-zinc-500 w-full text-xs font-normal text-start font-['SF Pro Text'] leading-[14.40px] tracking-tight">
+                  {language === 'RU' ? 'Объявление закрыто.' : 'Advertisement closed.'}
+                </span>
+              </div>
+            ) : auth ? (
               lotData.is_auction && lotData.profile.id !== user?.profile.id ? (
                 lotData.last_bid &&
                 lotData.last_bid.user === user?.profile.id && (
@@ -372,7 +378,9 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
                     </div>
                   </div>
                 )
-              ) : ((lotData.profile.id !== user?.profile.id) ? <></> :
+              ) : lotData.profile.id !== user?.profile.id ? (
+                <></>
+              ) : (
                 <div className="w-full flex-col justify-start items-center gap-[18px] inline-flex z-[2]">
                   <div className="w-full lg:w-[422px] h-[0px] border border-zinc-300" />
                   <span className="text-zinc-500 w-full text-xs font-normal text-start font-['SF Pro Text'] leading-[14.40px] tracking-tight">
@@ -389,8 +397,7 @@ const LotDetail: FC<ContentWrapperType> = ({ className = '', lotData, category, 
                     : 'You must be authenticated to participate any advertisements.'}
                 </span>
               </div>
-            )
-            }
+            )}
           </div>
         </div>
       </div>

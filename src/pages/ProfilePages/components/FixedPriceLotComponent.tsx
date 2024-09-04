@@ -54,13 +54,13 @@ export const FixedPriceLotComponent: FC<ILotComp> = ({ lot, deleteLot, isDeletin
               </div>
             )}
             <div className="w-[65px] h-[65px] pl-[21px] pr-[23px] pt-[15px] pb-3.5 bg-green-800 rounded justify-center items-center inline-flex">
-              <div className="w-auto h-9 text-white text-3xl font-medium font-['SF Pro Text'] leading-9 tracking-tight">
+              <p className="w-auto h-9 text-white text-3xl font-medium font-['SF Pro Text'] leading-9 tracking-tight">
                 {lot.profile.name[0].toUpperCase()}
-              </div>
+              </p>
             </div>
             <div className="w-auto text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">{`${
               lot.profile.type === 'person' ? 'ФЛ' : lot.profile.type === 'company' ? 'ЮЛ' : 'ИП'
-            } ${lot.profile.name}`}</div>
+            } ${lot.profile.name.length > 15 ? lot.profile.name.slice(0, 15) + '...' : lot.profile.name}`}</div>
           </div>
         )}
         {lot.is_auction && (

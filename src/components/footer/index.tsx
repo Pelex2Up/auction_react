@@ -114,7 +114,7 @@ export default function Footer({ openModal }: { openModal: () => void }) {
           </p>
           <a
             className="text-sm font-normal text-[#808080] cursor-pointer no-underline"
-            href={footerData?.user_agreement || PathE.Home}
+            href={footerData?.user_agreement ? process.env.REACT_APP_HOST_URL + footerData?.user_agreement : PathE.Home}
             rel="noreferrer"
             target={footerData?.user_agreement ? '_blank' : '_self'}
           >
@@ -122,7 +122,7 @@ export default function Footer({ openModal }: { openModal: () => void }) {
           </a>
           <a
             className="text-sm font-normal text-[#808080] cursor-pointer no-underline"
-            href={footerData?.privacy_policy || PathE.Home}
+            href={footerData?.privacy_policy ? process.env.REACT_APP_HOST_URL + footerData?.privacy_policy : PathE.Home}
             rel="noreferrer"
             target={footerData?.privacy_policy ? '_blank' : '_self'}
           >

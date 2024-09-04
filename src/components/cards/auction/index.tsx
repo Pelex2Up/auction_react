@@ -31,7 +31,7 @@ export const AuctionCard: FC<ICard> = ({ lot, refetch }) => {
       toast(language === 'RU' ? 'Лот успешно добавлен в корзину' : 'Added to basket', { type: 'success' })
       refetch()
     }
-  }, [isSuccessCart, language, refetch, money])
+  }, [isSuccessCart, language])
 
   return (
     <div className="w-[255px] h-[430px] flex flex-col justify-between pb-3 relative bg-white rounded shadow">
@@ -70,7 +70,7 @@ export const AuctionCard: FC<ICard> = ({ lot, refetch }) => {
               </div>
               <div className="w-auto text-zinc-900 text-sm font-normal font-['SF Pro Text'] leading-[16.80px] tracking-tight">{`${
                 lot.profile.type === 'person' ? 'ФЛ' : lot.profile.type === 'company' ? 'ЮЛ' : 'ИП'
-              } ${lot.profile.name}`}</div>
+              } ${lot.profile.name.length > 15 ? lot.profile.name.slice(0, 15) + '...' : lot.profile.name}`}</div>
             </div>
           )}
           <div className="w-[243px] left-0 top-[9px] absolute justify-between items-center inline-flex">

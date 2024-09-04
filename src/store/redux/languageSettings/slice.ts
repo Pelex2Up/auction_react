@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 export interface LangState {
   language: 'RU' | 'ENG'
-  money: 'BYN' | 'USD'
+  money: 'BYN' | 'USD' | 'RUB'
 }
 
 const initialState: LangState = {
